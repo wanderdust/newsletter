@@ -41,11 +41,11 @@ In this section, I’ll explain Hash and BTree indexes. These are two popular ty
 ### Hash Indexes
 These are indexes for key-value data. They are stored using hash maps, which would look similar to a Python dictionary. The way they work is that each key points to the location of a row in the database, not the value itself. So if you are looking for a specific ID in your data, it will tell you where in the database that row with that ID is stored.
 
-Hash Indexes are particularly efficient in equality (=) matches - when you are looking for a record that matches a specific value.
+Hash Indexes are particularly efficient in equality (`=`) matches - when you are looking for a record that matches a specific value.
 
 Hash indexes are fast because they can be loaded into memory and it can quickly find the location in the database for a particular value. They work particularly well when your keys in the database are not updated as often as the values.
 
-For example, let’s imagine we have a table with 2 columns, video_url and number_of_clicks. If we create an index on video_url it will create a key such as http://my_video and the value will point to the location of that row in the database. Now we can quickly search for that video using the URL and update the number of clicks.
+For example, let’s imagine we have a table with 2 columns, `video_url` and `number_of_clicks`. If we create an index on `video_url` it will create a key such as `http://my_video` and the value will point to the location of that row in the database. Now we can quickly search for that video using the URL and update the number of clicks.
 
 ```sql
 UPDATE number_of_clicks
@@ -62,8 +62,10 @@ When adding a new key it is simply appended to our list of indexes.
 If we want to update a key with a new value then we append the key value at the end of the list. This will create a duplicate index: the new version with the new value and the old version containing the older value. To handle this, the database will run a merge operation from time to time to merge duplicate keys keeping the latest entry only (remember we are appending, so the last one will be the newest one).
 
 ```
-key1:123, key2:323, key3:231, key2: 333 →
-
+key1:123, key2:323, key3:231, key2: 333
+```
+and merge
+```
 merge → key1:123, key2:333, key3:231
 ```
 
@@ -71,13 +73,13 @@ The reason why appending is a better idea than updating the value in place is be
 
 **Pros of Hash Indexes:**
 
-- Good for equality searches WHERE columns = value as they allow for direct computation of where the row is stored.
+- Good for equality searches `WHERE` columns = value as they allow for direct computation of where the row is stored.
 
 - They are fast because keys can be loaded into memory
 
 **Cons of Hash Indexes:**
 
-- Equality Searches only. Doing something like WHERE column > value won’t bring any benefit.
+- Equality Searches only. Doing something like `WHERE` column `>` value won’t bring any benefit.
 
 ### Binary Tree Indexes
 Binary trees (BTrees) are the indexes you use when you want to query range data efficiently. Instead of each key pointing to the exact location of the row like in hash indexes, each key points to a range of indexes.
