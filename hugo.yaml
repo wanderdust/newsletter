@@ -1,5 +1,5 @@
 baseURL: "https://examplesite.com/"
-title: ExampleSite
+title: Pablo Lopez 
 theme: PaperMod
 pagination:
   pagerSize: 5
@@ -15,14 +15,13 @@ minify:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: ExampleSite
-  description: "ExampleSite description"
-  keywords: [Blog, Portfolio, PaperMod]
-  # author: ["Me", "You"] # multiple authors
+  title: Pablo Lopez 
+  description: "Pablo's Newsletter"
+  keywords: [Blog, Newsletter]
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
-  defaultTheme: auto # dark, light
-  disableThemeToggle: false
+  defaultTheme: light # dark, light
+  disableThemeToggle: true 
 
   ShowReadingTime: true
   ShowShareButtons: true
