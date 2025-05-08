@@ -73,9 +73,9 @@ params:
 
   socialIcons:
     - name: github
-      url: "https://github.com/"
+      url: "https://github.com/wanderdust"
     - name: linkedin
-      url: "https://linkedin.com/"
+      url: "https://www.linkedin.com/in/lopezsantoripablo/"
 
 
   analytics:
