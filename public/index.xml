@@ -21,5 +21,12 @@
       <description>&lt;p&gt;In this post, I share how to build a Reverse ETL pipeline to upsert data from Delta (Databricks) into Postgres to provide sub-second response times to our tables.&lt;/p&gt;
 &lt;p&gt;The goal is to make warehouse data available to downstream systems that require millisecond response times. These systems could be front-end applications that need to consume this data, or online machine learning models that require additional data as input to generate predictions in real time.&lt;/p&gt;</description>
     </item>
+    <item>
+      <title>Understanding Database Indexes</title>
+      <link>http://localhost:1313/posts/navigating_database_indexes/</link>
+      <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
+      <guid>http://localhost:1313/posts/navigating_database_indexes/</guid>
+      <description>&lt;p&gt;Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.&lt;/p&gt;</description>
+    </item>
   </channel>
 </rss>
