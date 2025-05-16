@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Test on Pablo Lopez</title>
+    <link>http://localhost:1313/tags/test/</link>
+    <description>Recent content in Test on Pablo Lopez</description>
+    <image>
+      <title>Pablo Lopez</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.147.3</generator>
+    <language>en</language>
+    <lastBuildDate>Fri, 16 May 2025 15:09:39 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/test/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Locust_postgres</title>
+      <link>http://localhost:1313/posts/locust_postgres/</link>
+      <pubDate>Fri, 16 May 2025 15:09:39 +0100</pubDate>
+      <guid>http://localhost:1313/posts/locust_postgres/</guid>
+      <description>&lt;p&gt;I recently needed to run load tests on a PostgreSQL database. Postgres is no question a reliable and scalable database ready for production use cases, but there might be times when you’ll need to confirm it can handle your specific use case. This might be necessary if you’re using a PostgreSQL database hosted by a third party or if you want to check if your current instance size and specs can manage your existing load.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

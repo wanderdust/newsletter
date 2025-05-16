@@ -32,6 +32,13 @@
 &lt;p&gt;The goal is to make warehouse data available to downstream systems that require millisecond response times. These systems could be front-end applications that need to consume this data, or online machine learning models that require additional data as input to generate predictions in real time.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Load Testing PostgeSQL using Locust</title>
+      <link>http://localhost:1313/posts/locust_postgres/</link>
+      <pubDate>Fri, 10 Jan 2025 15:09:39 +0100</pubDate>
+      <guid>http://localhost:1313/posts/locust_postgres/</guid>
+      <description>&lt;p&gt;I recently needed to run load tests on a PostgreSQL database. Postgres is no question a reliable and scalable database ready for production use cases, but there might be times when you’ll need to confirm it can handle your specific use case. This might be necessary if you’re using a PostgreSQL database hosted by a third party or if you want to check if your current instance size and specs can manage your existing load.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Understanding Database Indexes</title>
       <link>http://localhost:1313/posts/navigating_database_indexes/</link>
       <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
