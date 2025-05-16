@@ -1,6 +1,6 @@
 ---
 title: 'Kubernetes_exam'
-date: '2025-05-16T15:37:39+01:00'
+date: '2024-09-10T15:37:39+01:00'
 draft: false
 summary: ''
 tags: []

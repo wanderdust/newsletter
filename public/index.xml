@@ -11,18 +11,8 @@
     </image>
     <generator>Hugo -- 0.147.3</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 16 May 2025 15:37:39 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 16 May 2025 13:14:57 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>Kubernetes_exam</title>
-      <link>http://localhost:1313/posts/kubernetes_exam/</link>
-      <pubDate>Fri, 16 May 2025 15:37:39 +0100</pubDate>
-      <guid>http://localhost:1313/posts/kubernetes_exam/</guid>
-      <description>&lt;p&gt;&lt;img alt=&#34;Kubernetes diploma&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/kubernetes_exam/kubernetes-cert.jpg&#34;&gt;&lt;/p&gt;
-&lt;h2 id=&#34;learning&#34;&gt;Learning&lt;/h2&gt;
-&lt;p&gt;To prepare for the exam I took the Udemy Kubernetes Certified Application Developer (CKAD) with Tests which I could access for free through my company. The course covers all the topics required for the exam with labs to practice each section which I found super helpful. The labs are hosted on KodeKloud and they are free to access as part of the course.&lt;/p&gt;
-&lt;p&gt;I had some previous experience interacting with kubernetes as part of my job, but I lacked a good understanding of the basic concepts.&lt;/p&gt;</description>
-    </item>
     <item>
       <title>Postgres Replication</title>
       <link>http://localhost:1313/posts/postgres_replication/</link>
@@ -89,6 +79,16 @@
       <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
       <guid>http://localhost:1313/posts/navigating_database_indexes/</guid>
       <description>&lt;p&gt;Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Kubernetes_exam</title>
+      <link>http://localhost:1313/posts/kubernetes_exam/</link>
+      <pubDate>Tue, 10 Sep 2024 15:37:39 +0100</pubDate>
+      <guid>http://localhost:1313/posts/kubernetes_exam/</guid>
+      <description>&lt;p&gt;&lt;img alt=&#34;Kubernetes diploma&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/kubernetes_exam/kubernetes-cert.jpg&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;learning&#34;&gt;Learning&lt;/h2&gt;
+&lt;p&gt;To prepare for the exam I took the Udemy Kubernetes Certified Application Developer (CKAD) with Tests which I could access for free through my company. The course covers all the topics required for the exam with labs to practice each section which I found super helpful. The labs are hosted on KodeKloud and they are free to access as part of the course.&lt;/p&gt;
+&lt;p&gt;I had some previous experience interacting with kubernetes as part of my job, but I lacked a good understanding of the basic concepts.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Career Transition into AI</title>
