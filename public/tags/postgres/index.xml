@@ -11,8 +11,18 @@
     </image>
     <generator>Hugo -- 0.147.3</generator>
     <language>en</language>
-    <lastBuildDate>Thu, 08 May 2025 13:21:30 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 16 May 2025 13:14:57 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/postgres/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Postgres Replication</title>
+      <link>http://localhost:1313/posts/postgres_replication/</link>
+      <pubDate>Fri, 16 May 2025 13:14:57 +0100</pubDate>
+      <guid>http://localhost:1313/posts/postgres_replication/</guid>
+      <description>&lt;h1 id=&#34;leader-follower-replication-strategy&#34;&gt;Leader-Follower replication strategy&lt;/h1&gt;
+&lt;p&gt;A replica consists of a full copy of the database. There are two types of replicas, we have leaders and followers.&lt;/p&gt;
+&lt;p&gt;The leader or primary replica is used for writing operations to the database. Any write operation needs to go through the writer replica. It can also be used for reading.&lt;/p&gt;
+&lt;p&gt;The follower or reader replicas can only be used for reading the data. Whenever the data is written to the primary replica, it also sends the data changes to the writers.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Building a Reverse ETL Pipeline: Upserting Delta Lake Data into Postgres with Structured Streaming</title>
       <link>http://localhost:1313/posts/reverse_etl_databricks_to_postgres/</link>

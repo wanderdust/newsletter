@@ -21,10 +21,9 @@ params:
   disableThemeToggle: true
   ShowReadingTime: true
   ShowShareButtons: true
-  ShowPostNavLinks: true
-  ShowBreadCrumbs: true
+  ShowPostNavLinks: trued
+  ShowBreadCrumbs: false
   ShowCodeCopyButtons: false
-  ShowWordCount: true
   ShowRssButtonInSectionTermList: true
   UseHugoToc: true
   disableSpecial1stPost: false
@@ -32,8 +31,10 @@ params:
   comments: false
   hidemeta: false
   hideSummary: false
-  showtoc: true
-  tocopen: true
+  showtoc: false
+  tocOpen: false
+  ShowReadingTime: true
+  ShowWordCount: false
   assets:
     # disableHLJS: true # to disable highlight.js
     # disableFingerprinting: true

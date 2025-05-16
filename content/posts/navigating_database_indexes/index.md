@@ -10,11 +10,6 @@ cover:
   alt: ''
   caption: ''
 images: []
-showToc: false 
-tocOpen: false 
-ShowBreadCrumbs: true
-ShowReadingTime: true
-ShowWordCount: false 
 ---
 Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.
 

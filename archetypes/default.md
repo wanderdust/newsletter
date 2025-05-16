@@ -10,11 +10,6 @@ cover:
   alt: ''
   caption: ''
 images: []
-showToc: false 
-tocOpen: false 
-ShowBreadCrumbs: true
-ShowReadingTime: true
-ShowWordCount: false 
 ---
 
 ---
