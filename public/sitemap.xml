@@ -23,8 +23,38 @@
     <loc>http://localhost:1313/tags/databricks/</loc>
     <lastmod>2025-05-08T13:21:30+01:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/tags/partitions/</loc>
+    <lastmod>2025-03-16T14:46:55+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/postgres_bad_partitions/</loc>
+    <lastmod>2025-03-16T14:46:55+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/locust_postgres/</loc>
+    <lastmod>2025-01-10T15:09:39+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/test/</loc>
+    <lastmod>2025-01-10T15:09:39+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/test_driven_development/</loc>
+    <lastmod>2024-12-13T15:52:46+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/indexes/</loc>
+    <lastmod>2024-12-08T16:32:43+01:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/posts/navigating_database_indexes/</loc>
     <lastmod>2024-12-08T16:32:43+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/kubernetes/</loc>
+    <lastmod>2024-09-10T15:37:39+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/kubernetes_exam/</loc>
+    <lastmod>2024-09-10T15:37:39+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/tags/career/</loc>
+    <lastmod>2023-12-16T14:59:43+01:00</lastmod>
+  </url><url>
+    <loc>http://localhost:1313/posts/career_transition_into_ai/</loc>
+    <lastmod>2023-12-16T14:59:43+01:00</lastmod>
   </url><url>
     <loc>http://localhost:1313/archives/</loc>
   </url><url>

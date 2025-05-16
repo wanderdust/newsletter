@@ -27,5 +27,40 @@
       <guid>http://localhost:1313/tags/databricks/</guid>
       <description></description>
     </item>
+    <item>
+      <title>Partitions</title>
+      <link>http://localhost:1313/tags/partitions/</link>
+      <pubDate>Sun, 16 Mar 2025 14:46:55 +0100</pubDate>
+      <guid>http://localhost:1313/tags/partitions/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Test</title>
+      <link>http://localhost:1313/tags/test/</link>
+      <pubDate>Fri, 10 Jan 2025 15:09:39 +0100</pubDate>
+      <guid>http://localhost:1313/tags/test/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Indexes</title>
+      <link>http://localhost:1313/tags/indexes/</link>
+      <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
+      <guid>http://localhost:1313/tags/indexes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Kubernetes</title>
+      <link>http://localhost:1313/tags/kubernetes/</link>
+      <pubDate>Tue, 10 Sep 2024 15:37:39 +0100</pubDate>
+      <guid>http://localhost:1313/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Career</title>
+      <link>http://localhost:1313/tags/career/</link>
+      <pubDate>Sat, 16 Dec 2023 14:59:43 +0100</pubDate>
+      <guid>http://localhost:1313/tags/career/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

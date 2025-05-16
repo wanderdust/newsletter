@@ -2,7 +2,7 @@ baseURL: "https://examplesite.com/"
 title: Pablo Lopez
 theme: PaperMod
 pagination:
-  pagerSize: 5
+  pagerSize: 20
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
