@@ -57,9 +57,9 @@ params:
     imageTitle: my image
     buttons:
       - name: Posts
-        url: /posts
+        url: /posts/
       - name: Tags
-        url: /tags
+        url: /tags/
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
