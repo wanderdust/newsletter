@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Kubernetes on Pablo Lopez</title>
+    <link>http://localhost:1313/tags/kubernetes/</link>
+    <description>Recent content in Kubernetes on Pablo Lopez</description>
+    <image>
+      <title>Pablo Lopez</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.147.3</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 10 Sep 2024 15:37:39 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes_exam</title>
+      <link>http://localhost:1313/posts/kubernetes_exam/</link>
+      <pubDate>Tue, 10 Sep 2024 15:37:39 +0100</pubDate>
+      <guid>http://localhost:1313/posts/kubernetes_exam/</guid>
+      <description>&lt;p&gt;&lt;img alt=&#34;Kubernetes diploma&#34; loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/kubernetes_exam/kubernetes-cert.jpg&#34;&gt;&lt;/p&gt;
+&lt;h2 id=&#34;learning&#34;&gt;Learning&lt;/h2&gt;
+&lt;p&gt;To prepare for the exam I took the Udemy Kubernetes Certified Application Developer (CKAD) with Tests which I could access for free through my company. The course covers all the topics required for the exam with labs to practice each section which I found super helpful. The labs are hosted on KodeKloud and they are free to access as part of the course.&lt;/p&gt;
+&lt;p&gt;I had some previous experience interacting with kubernetes as part of my job, but I lacked a good understanding of the basic concepts.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

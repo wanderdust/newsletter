@@ -3,7 +3,7 @@ title: 'Career Transition into AI'
 date: '2023-12-16T14:59:43+01:00'
 draft: false
 summary: ''
-tags: [career]
+tags: ["career"]
 categories: []
 cover:
   image: ''

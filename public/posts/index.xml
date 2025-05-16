@@ -74,6 +74,14 @@
       <description>&lt;p&gt;I recently needed to run load tests on a PostgreSQL database. Postgres is no question a reliable and scalable database ready for production use cases, but there might be times when you’ll need to confirm it can handle your specific use case. This might be necessary if you’re using a PostgreSQL database hosted by a third party or if you want to check if your current instance size and specs can manage your existing load.&lt;/p&gt;</description>
     </item>
     <item>
+      <title>Test Driven Development</title>
+      <link>http://localhost:1313/posts/test_driven_development/</link>
+      <pubDate>Fri, 13 Dec 2024 15:52:46 +0100</pubDate>
+      <guid>http://localhost:1313/posts/test_driven_development/</guid>
+      <description>&lt;p&gt;We all know that person that always asks for unit tests on your Pull Request. You curse under your breath wondering why they have nothing better to do than ruining your day.&lt;/p&gt;
+&lt;p&gt;Unit tests let you know if your codebase is behaving as expected. As long as you’ve written good tests, you can be happy your codebase is healthy if tests are showing &lt;em&gt;green&lt;/em&gt;. Any time a test appears in &lt;em&gt;red&lt;/em&gt;, you will know that you’ve introduced a bug and you can fix it before it hits production.&lt;/p&gt;</description>
+    </item>
+    <item>
       <title>Understanding Database Indexes</title>
       <link>http://localhost:1313/posts/navigating_database_indexes/</link>
       <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
@@ -81,7 +89,7 @@
       <description>&lt;p&gt;Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.&lt;/p&gt;</description>
     </item>
     <item>
-      <title>Kubernetes_exam</title>
+      <title>Preparing for the Kubernetes Application Developer Exam</title>
       <link>http://localhost:1313/posts/kubernetes_exam/</link>
       <pubDate>Tue, 10 Sep 2024 15:37:39 +0100</pubDate>
       <guid>http://localhost:1313/posts/kubernetes_exam/</guid>
