@@ -64,8 +64,7 @@
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Filter: &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;customer_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 12345&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;Seq Scan on orders_2024_q3  &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;cost&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;0.00..25000.00 &lt;span class=&#34;nv&#34;&gt;rows&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;m&#34;&gt;10000&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;width&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;64&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
 &lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;cl&#34;&gt;  Filter: &lt;span class=&#34;o&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;customer_id&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; 12345&lt;span class=&#34;o&#34;&gt;)&lt;/span&gt;
-&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;&amp;hellip; to infinity and beyond
-If you look closely at the query, there is no filter based on the partition key (order_id). Which explains why the query plan needs to look at every single partition to see if it includes the customer_id. If your partitions are large or without the correct indexes it can make your queries slow.&lt;/p&gt;</description>
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;If you look closely at the query, there is no filter based on the partition key (order_id). Which explains why the query plan needs to look at every single partition to see if it includes the customer_id. If your partitions are large or without the correct indexes it can make your queries slow.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Understanding Database Indexes</title>
@@ -73,6 +72,14 @@ If you look closely at the query, there is no filter based on the partition key 
       <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
       <guid>http://localhost:1313/posts/navigating_database_indexes/</guid>
       <description>&lt;p&gt;Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Career Transition into AI</title>
+      <link>http://localhost:1313/posts/career_transition_into_ai/</link>
+      <pubDate>Sat, 16 Dec 2023 14:59:43 +0100</pubDate>
+      <guid>http://localhost:1313/posts/career_transition_into_ai/</guid>
+      <description>&lt;p&gt;This is my story of how I went from non-tech into becoming a Machine Learning Engineer. I must have told this story multiple times in many different forms, but this will be the first time it goes into writing. Enjoy.&lt;/p&gt;
+&lt;p&gt;I have a bachelor’s degree in Commerce. I found the last few years of school so exhausting that the thought of doing an engineering degree put me off. Four + years of no life? Oft, no thanks. I also thought I wasn’t smart enough to do engineering anyway so instead I chose Commerce - which “coincidentally” was the same degree my brother was doing.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

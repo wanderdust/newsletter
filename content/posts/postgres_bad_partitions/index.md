@@ -46,7 +46,6 @@ Seq Scan on orders_2024_q3  (cost=0.00..25000.00 rows=10000 width=64)
   Filter: (customer_id = 12345)
 ```
 
-... to infinity and beyond
 If you look closely at the query, there is no filter based on the partition key (order_id). Which explains why the query plan needs to look at every single partition to see if it includes the customer_id. If your partitions are large or without the correct indexes it can make your queries slow.
 
 What’s happening is that in Postgres you create indexes per partition. Each partition is basically a separate table, and there are no indexes across partitions.
@@ -55,7 +54,6 @@ We then thought about creating a global index that spans all partitions. This in
 
 ![global_index](./global_index.png)
 
-Our vision of what we wanted these indexes to look like
 During our google research (yes, chatgpt too), we found this thread where this type of feature was proposed, but strongly rejected from the very start (if you follow the thread, the discussion gets a bit heated). Long story short, there are no such things as global indexes in Postgres.
 
 In the end, we didn’t find a solution to our problem, other than being reminded of the single most important principle in data engineering (according to me):
