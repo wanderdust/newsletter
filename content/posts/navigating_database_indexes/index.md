@@ -3,7 +3,7 @@ title: 'Understanding Database Indexes'
 date: '2024-12-08T16:32:43+01:00'
 draft: false
 summary: ''
-tags: []
+tags: ["postgres"]
 categories: []
 cover:
   image: ''

@@ -1,28 +1,24 @@
 baseURL: "https://examplesite.com/"
-title: Pablo Lopez 
+title: Pablo Lopez
 theme: PaperMod
 pagination:
   pagerSize: 5
-
 enableRobotsTXT: true
 buildDrafts: false
 buildFuture: false
 buildExpired: false
-
 minify:
   disableXML: true
   minifyOutput: true
-
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: Pablo Lopez 
+  title: Pablo Lopez
   description: "Pablo's Newsletter"
   keywords: [Blog, Newsletter]
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
   defaultTheme: light # dark, light
-  disableThemeToggle: true 
-
+  disableThemeToggle: true
   ShowReadingTime: true
   ShowShareButtons: true
   ShowPostNavLinks: true
@@ -38,7 +34,6 @@ params:
   hideSummary: false
   showtoc: true
   tocopen: true
-
   assets:
     # disableHLJS: true # to disable highlight.js
     # disableFingerprinting: true
@@ -47,37 +42,30 @@ params:
     favicon32x32: "<link / abs url>"
     apple_touch_icon: "<link / abs url>"
     safari_pinned_tab: "<link / abs url>"
-
   label:
     text: "Pablo Lopez"
     icon: /apple-touch-icon.png
     iconHeight: 35
-
   # profile-mode
   profileMode:
-    enabled: false # needs to be explicitly set
-    title: Pablo Lopez 
-    subtitle: "This is subtitle"
-    imageUrl: "<img location>"
+    enabled: true # needs to be explicitly set
+    title: Pablo Lopez
+    subtitle: "Writing as a way of learning"
     imageWidth: 120
     imageHeight: 120
     imageTitle: my image
     buttons:
       - name: Posts
-        url: posts
-
-  # home-info mode
-  homeInfoParams:
-    Title: "My Newsletter"
-    Content: This is my blog where I write about the cool stuff I'm building or working on. 
-
+        url: /posts
+      - name: Tags
+        url: /tags
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
     - name: linkedin
       url: "https://www.linkedin.com/in/lopezsantoripablo/"
-
-
+    - name: buymeacoffee
+      url: "https://buymeacoffee.com/pablolopeza"
   analytics:
     google:
       SiteVerificationTag: "XYZabc"
@@ -85,13 +73,10 @@ params:
       SiteVerificationTag: "XYZabc"
     yandex:
       SiteVerificationTag: "XYZabc"
-
   cover:
     hidden: true # hide everywhere but not in structured data
     hiddenInList: true # hide on list pages and home
     hiddenInSingle: true # hide on single page
-
-
   # for search
   # https://fusejs.io/api/options.html
   fuseOpts:
@@ -109,6 +94,14 @@ menu:
       name: Posts
       url: /posts/
       weight: 5
+    - identifier: tags
+      name: Tags
+      url: /tags/
+      weight: 10
+    - identifier: Archive
+      name: Archive
+      url: /archives/
+      weight: 15
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
@@ -119,7 +112,6 @@ markup:
     # guessSyntax: true
     # lineNos: true
     # style: monokai
-
 caches:
   images:
     dir: :cacheDir/images

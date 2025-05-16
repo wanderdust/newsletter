@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Posts on Pablo Lopez</title>
-    <link>http://localhost:1313/posts/</link>
-    <description>Recent content in Posts on Pablo Lopez</description>
+    <title>Databricks on Pablo Lopez</title>
+    <link>http://localhost:1313/tags/databricks/</link>
+    <description>Recent content in Databricks on Pablo Lopez</description>
     <image>
       <title>Pablo Lopez</title>
       <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
@@ -12,7 +12,7 @@
     <generator>Hugo -- 0.147.3</generator>
     <language>en</language>
     <lastBuildDate>Thu, 08 May 2025 13:21:30 +0100</lastBuildDate>
-    <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/databricks/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Building a Reverse ETL Pipeline: Upserting Delta Lake Data into Postgres with Structured Streaming</title>
       <link>http://localhost:1313/posts/reverse_etl_databricks_to_postgres/</link>
@@ -20,13 +20,6 @@
       <guid>http://localhost:1313/posts/reverse_etl_databricks_to_postgres/</guid>
       <description>&lt;p&gt;In this post, I share how to build a Reverse ETL pipeline to upsert data from Delta (Databricks) into Postgres to provide sub-second response times to our tables.&lt;/p&gt;
 &lt;p&gt;The goal is to make warehouse data available to downstream systems that require millisecond response times. These systems could be front-end applications that need to consume this data, or online machine learning models that require additional data as input to generate predictions in real time.&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>Understanding Database Indexes</title>
-      <link>http://localhost:1313/posts/navigating_database_indexes/</link>
-      <pubDate>Sun, 08 Dec 2024 16:32:43 +0100</pubDate>
-      <guid>http://localhost:1313/posts/navigating_database_indexes/</guid>
-      <description>&lt;p&gt;Indexes are like going to the airport and looking at the signs to see where your gate is located. The signs tell you how to get to your gate quickly. The alternative to not having signs is walking the whole airport randomly until you come across your gate. So by having the signs you can reach your gate a lot faster. Makes sense right? This is the idea behind indexes.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>
