@@ -1,5 +1,5 @@
 ---
-title: 'Using Neovim with tmux'
+title: 'tmux + NeoVim ❤️'
 date: '2025-05-20T12:09:22+01:00'
 draft: true 
 summary: ''
@@ -11,69 +11,84 @@ cover:
   caption: ''
 images: []
 ---
+![](./tmux_and_nvvim.png)
 
+I currently have a basic setup in NeoVim: I use [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) to get pretty text highlighting, [telescope](https://github.com/nvim-telescope/telescope.nvim) to navgate files, and [conform](https://github.com/stevearc/conform.nvim) for all my formatting needs. This is enough to get me by.
 
-I've been using NeoVim for the past few months. I've always been a VSCode user, but then someone in my team suggested that VSCode is shit compared to IntelliJ Idea Ultimate. I then started using IntelliJ for a month or two with the VIM extension. At one point, I was starting to learn IntelliJ shortcuts to try and use the mouse less and less, and then I realised that I'd rather use an open source tool like NeoVIM rather than learning a bunch of shortcuts from a vendor tool.
+The thing that has been annoying me the most lately is the terminal workflow. For starters, the terminal does not save any history across sessions, which is incredibly annoying. I'm pretty sure there are many workarounds online, but I'm not the kind of person who cares much about tinkering with the config, I just want something easy out of the box.
 
-After these few months, I still feel like I'm using NeoVim at a very basic level. I don't particularly feel much faster than using IntelliJ or VScode, but it _feels_ better, which is why I keep coming back to it. 
+The second thing that's been annoying me lately is navigating buffers. I'm pretty sure I'm missing something here, but I always end up circulating my buffers using the `tab` key, which can get pretty slow if you have many tabs open. In a lot of cases I just want a single key tap to go to my terminal from whatever window I'm currtently at.
 
-I've currently got some basic setup: I use treesitter to get pretty looking text, telescope to navgate files, and [conform](https://github.com/stevearc/conform.nvim) for all my formatting needs. This is enough to get me by.
+And finally, I find the the `ctrl \` command to detach from the current terminal very awkward to use.
 
-The thing that has been annoying me the most lately is the terminal workflow. For starters, the terminal does not save any history across sessions, which is incredibly annoying. I often find myself wanting to look for commands in my history using `ctlr-r`, and for some reason the terminal in NeoVim does not save these (I use the `:terminal` command to start terminals). I'm pretty sure there are many workarounds online, but I'm not the kind of person who cares much about tinkering with the config, I just want something easy out of the box.
+For these reasons - and because I'm too lazy to properly research how to _fix_ these things with my current setup - I have decided to learn tmux so that I can run neovim inside it. I believe it might solve my problems. It also feels like _tmux_ is a useful tool to have under you belt, so why not?
 
-The second thing that's been annoying me lately is navigating buffers (or tabs as I think of them). I'm pretty sure I'm missing something here, but I always end up circulating my buffers using the `tab` key, which can get pretty slow if you have many tabs open. In a lot of cases I just want a single tap to go to my terminal from wherever window I'm currtently at.
+# Using tmux
 
-And finally, I find the the `ctrl \` command to detach from the current terminal so I can go to a separate buffer very awkward to use.
+It took me around 20 minutes to research into tmux and get a basic setup going on. It is incredibly easy to use and I believe I already have a much tider workflow than I did before. Here are some basics on how to install it and use it. I found this [blog](https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/) post very useful.
 
-For these reasons, and because I'm too lazy to properly research how to _fix_ these things with my current setup, I have decided to learn tmux so that I can run neovim inside it which I believe will solve all those problems. It also feels like _tmux_ is a useful tool to know, so I'm going to invest in it.
-
-
-(20 minutes later ...)
-
-Okay, so I wrote the text above just before looking into tmux. Getting setup and running takes almost no time. In the first 20 minutes that I've spent installing it and seeing how it works I believe I already have a much nicer workflow.
-
-Here is a quick guide on how to get setup
-
-## Install
+### Install
 
 ```brew install tmux```
 
-## Creating panels
+### Creating panels
 - Starting a tmux terminal: `tmux`
-- Creating a vertical panel: `ctrl-b %` - that is, press `control` + `b`, relase and then press `%`
+- Creating a vertical panel: `ctrl-b %` (that means, press `control` + `b`, release and then press `%`)
 - Creating a horizontal panel: `ctrl-b "`
-- Move to left/right/up/down panel: `ctrl-b arrow-key`
-- Closing pane: `ctrl d` or type `exit`
+- Move to left/right/up/down panel: `ctrl-b <arrow-key>`
+- Closing pane: `ctrl-d` or type `exit`
 
-## Creating Sessions
-Sessions are like different desktops. For example you use one session to have your vim and another to have your terminal and lazygit.
+### Creating Sessions
+Sessions are like different desktops. For example you use one session to have your vim and another to have your terminal and lazygit. You can view your active sessions on the green bar at the bottom left.
 
 - Create a new session: `ctrl-b c`
 - Move to next/previous session: `ctrl-b n` and `ctrl-b p`
 - Move to specific session: `ctrl-b <number>`
 
 
-## Other
-- Renaming a sessions: `ctrl-b ,`
-- Current panel full size: `ctrl-b z`
+### Other
+- Renaming a session: `ctrl-b ,`
+- Current panel full size toggle: `ctrl-b z`
 - Detaching current session: `ctrl-b d`
 - Attaching a session: `tmux ls` to list sessions and `tmux attach -t <number>`
 
-## Resizing
+### Resizing
 Resizing windows can be accomplished by pressing `ctl-b ctrl-<arrow>`. That is, you press `ctrl` and `b` first, then you release and then you press `ctrl` and `<arrow>` to resize.
 
 I should note that mac already uses the `ctrl-<arrow>` keybinding for something else, so you'll need to disable it in your keyboard shortcut settings for this to work.
 
 
-## Creating a config
-You can create a tmux config for customisation at `~/.tmux.conf`
+### Creating a config
+You can create a tmux config file for customisation at `~/.tmux.conf`. This is my config
+
+```conf
+# Use vim keybindings in copy mode
+setw -g mode-keys vi
+
+# Allow mouse to switch panes
+set -g mouse on
+
+# Split panes
+bind | split-window -h
+bind - split-window -v
+
+# Easier pane switching
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# Auto reload config
+bind r source-file ~/.tmux.conf
+
+# remap prefix from 'C-b' to 'C-a'
+unbind C-b
+set-option -g prefix C-a
+
+```
 
 ## Conclusion
  [Use this setup for a few days and say]
-
-
----
-Resources: https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux/
 
 ---
 ## My Newsletter

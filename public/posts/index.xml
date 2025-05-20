@@ -11,17 +11,27 @@
     </image>
     <generator>Hugo -- 0.147.3</generator>
     <language>en</language>
-    <lastBuildDate>Fri, 16 May 2025 13:14:57 +0100</lastBuildDate>
+    <lastBuildDate>Tue, 20 May 2025 12:09:22 +0100</lastBuildDate>
     <atom:link href="http://localhost:1313/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>tmux &#43; NeoVim ❤️</title>
+      <link>http://localhost:1313/posts/neovim_and_tmux/</link>
+      <pubDate>Tue, 20 May 2025 12:09:22 +0100</pubDate>
+      <guid>http://localhost:1313/posts/neovim_and_tmux/</guid>
+      <description>&lt;p&gt;&lt;img loading=&#34;lazy&#34; src=&#34;http://localhost:1313/posts/neovim_and_tmux/tmux_and_nvvim.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;I currently have a basic setup in NeoVim: I use &lt;a href=&#34;https://github.com/nvim-treesitter/nvim-treesitter&#34;&gt;treesitter&lt;/a&gt; to get pretty text highlighting, &lt;a href=&#34;https://github.com/nvim-telescope/telescope.nvim&#34;&gt;telescope&lt;/a&gt; to navgate files, and &lt;a href=&#34;https://github.com/stevearc/conform.nvim&#34;&gt;conform&lt;/a&gt; for all my formatting needs. This is enough to get me by.&lt;/p&gt;
+&lt;p&gt;The thing that has been annoying me the most lately is the terminal workflow. For starters, the terminal does not save any history across sessions, which is incredibly annoying. I&amp;rsquo;m pretty sure there are many workarounds online, but I&amp;rsquo;m not the kind of person who cares much about tinkering with the config, I just want something easy out of the box.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Postgres Replication</title>
       <link>http://localhost:1313/posts/postgres_replication/</link>
       <pubDate>Fri, 16 May 2025 13:14:57 +0100</pubDate>
       <guid>http://localhost:1313/posts/postgres_replication/</guid>
-      <description>&lt;h1 id=&#34;leader-follower-replication-strategy&#34;&gt;Leader-Follower replication strategy&lt;/h1&gt;
-&lt;p&gt;A replica consists of a full copy of the database. There are two types of replicas, we have leaders and followers.&lt;/p&gt;
-&lt;p&gt;The leader or primary replica is used for writing operations to the database. Any write operation needs to go through the writer replica. It can also be used for reading.&lt;/p&gt;
-&lt;p&gt;The follower or reader replicas can only be used for reading the data. Whenever the data is written to the primary replica, it also sends the data changes to the writers.&lt;/p&gt;</description>
+      <description>&lt;p&gt;(Add an intro here)&lt;/p&gt;
+&lt;h1 id=&#34;leader-follower-replication-strategy&#34;&gt;Leader-Follower replication strategy&lt;/h1&gt;
+&lt;p&gt;A replica consists of a full copy of the database. There are two types: leaders and followers.&lt;/p&gt;
+&lt;p&gt;The leader or primary replica is used for writing operations to the database. All write operations need to go through the writer replica.
+The follower or reader replicas can only be used for reading the data. Whenever the data is written to the leader replica, it also sends the data changes to the followers.&lt;/p&gt;</description>
     </item>
     <item>
       <title>Building a Reverse ETL Pipeline: Upserting Delta Lake Data into Postgres with Structured Streaming</title>

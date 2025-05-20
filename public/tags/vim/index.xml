@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Vim on Pablo Lopez</title>
+    <link>http://localhost:1313/tags/vim/</link>
+    <description>Recent content in Vim on Pablo Lopez</description>
+    <image>
+      <title>Pablo Lopez</title>
+      <url>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</url>
+      <link>http://localhost:1313/%3Clink%20or%20path%20of%20image%20for%20opengraph,%20twitter-cards%3E</link>
+    </image>
+    <generator>Hugo -- 0.147.3</generator>
+    <language>en</language>
+    <lastBuildDate>Tue, 20 May 2025 12:09:22 +0100</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/vim/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Using Neovim with tmux</title>
+      <link>http://localhost:1313/posts/neovim_and_tmux/</link>
+      <pubDate>Tue, 20 May 2025 12:09:22 +0100</pubDate>
+      <guid>http://localhost:1313/posts/neovim_and_tmux/</guid>
+      <description>&lt;p&gt;I&amp;rsquo;ve been using NeoVim for the past few months. I&amp;rsquo;ve always been a VSCode user, but then someone in my team suggested that VSCode is shit compared to IntelliJ Idea Ultimate. I then started using IntelliJ for a month or two with the VIM extension. At one point, I was starting to learn IntelliJ shortcuts to try and use the mouse less and less, and then I realised that I&amp;rsquo;d rather use an open source tool like NeoVIM rather than learning a bunch of shortcuts from a vendor tool.&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

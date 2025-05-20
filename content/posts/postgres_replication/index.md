@@ -20,7 +20,6 @@ images: []
 A replica consists of a full copy of the database. There are two types: leaders and followers.
 
 The leader or primary replica is used for writing operations to the database. All write operations need to go through the writer replica.
-
 The follower or reader replicas can only be used for reading the data. Whenever the data is written to the leader replica, it also sends the data changes to the followers.
 
 In Postgres, by default, there is only one leader but there can be more than one follower. When a write operation comes through, it is redirected to the writer, which then updates the reader replicas. Read operations can go to any replica, including the leader.
