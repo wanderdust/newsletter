@@ -21,13 +21,13 @@ A replica consists of a full copy of the database. There are two types: leaders 
 
 The leader or primary replica is used for writing operations to the database. All write operations need to go through the writer replica.
 
-The follower or reader replicas can only be used for reading the data. Whenever the data is written to the primary replica, it also sends the data changes to the followers.
+The follower or reader replicas can only be used for reading the data. Whenever the data is written to the leader replica, it also sends the data changes to the followers.
 
-In Postgres, by default, there is only one leader but there can be more than one follower. When a write operation comes through, it is redirected to the writer, which then updates the reader replicas. Read operations can go to any replica, including the primary.
+In Postgres, by default, there is only one leader but there can be more than one follower. When a write operation comes through, it is redirected to the writer, which then updates the reader replicas. Read operations can go to any replica, including the leader.
 
 (Diagram here)
 
-Each replica runs on its own compute instance, which means it can be useful for load balancing if we have a high load of read operations. On the other hand, writes must always go through the leader replica. Since postgres leverages vertical scaling, a high volume of writes can lead to bottlenecks in the primary replica.
+Each replica runs on its own compute instance, which means it can be useful for load balancing if we have a high load of read operations. On the other hand, writes must always go through the leader replica. Since postgres leverages vertical scaling, a high volume of writes can lead to bottlenecks in the leader replica.
 
 (Diagram here)
 
@@ -41,7 +41,7 @@ Slow writes will block further writes, which can cause issues if we deal with a 
 
 (diagram)
 
-Asynchronous replication does not wait for the replicas to acknoweledge the updates. As soon as the update happens in the primary replica, it returns a succesful answer to the client. The replicas are then updated synchronously. The main advantage of this approach is that the primary does not have to wait, meaning that writes are a lot faster. This can be required for transactional systems with a high volume of writes. The main dowsnside is that users querying the same data, could potentially be getting outdated results. For example, if a user queries the primary and another user queries the follower replica, the second user might be looking at outdadet results.
+Asynchronous replication does not wait for the replicas to acknoweledge the updates. As soon as the update happens in the leader replica, it returns a succesful answer to the client. The replicas are then updated synchronously. The main advantage of this approach is that the leader does not have to wait, meaning that writes are a lot faster. This can be required for transactional systems with a high volume of writes. The main dowsnside is that users querying the same data, could potentially be getting outdated results. For example, if a user queries the leader and another user queries the follower replica, the second user might be looking at outdadet results.
 
 (diagram)
 
@@ -73,11 +73,11 @@ One of the main advantages of replicated systems is the ability to handle situat
 
 This is also known as availability, which means that if part of the system goes down, you are still capable of serving data to the user. Replicated systems also ensure there is no data loss when some of the replicas go down.
 
-If you remember from the previous section, all the writes in postgres have to go through the primary replica, which creates a single point of failure for write operations. If the primary goes down, we will no longer be able to serve write requests. Users will only be able to run read operations from the read only replicas.
+If you remember from the previous section, all the writes in postgres have to go through the leader replica, which creates a single point of failure for write operations. If the leader goes down, we will no longer be able to serve write requests. Users will only be able to run read operations from the read only replicas.
 
 There are different ways to approach this problem. Postgres does not provide the functionality to identify and handle failures on the leader. So the default behaviour if the leader fails would be that users are unable to run write operations until the leader is back online. Users will still be able to run read operations from the follower replicas.
 
-A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. However, this adds additional complexity to our system. If the primary server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
+A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. However, this adds additional complexity to our system. If the leader server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
 
 Postgres does not provide out of the box functionality to identify a failure on the leader and deal with it, for this we’d need to use a third party tool.
 
