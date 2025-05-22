@@ -13,7 +13,7 @@ images: []
 ---
 ![](./tmux_neovim.png)
 
-I currently have a basic setup in NeoVim: I use nvchad by default plus [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) to get pretty text highlighting, [telescope](https://github.com/nvim-telescope/telescope.nvim) to navgate files, [conform](https://github.com/stevearc/conform.nvim) for all my formatting needs and some python utilities such as pyright. This is enough to get me by.
+I currently have a basic setup in NeoVim: I use [NvChad](https://nvchad.com/) by default with [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) to get pretty text highlighting, [telescope](https://github.com/nvim-telescope/telescope.nvim) to navgate files, [conform](https://github.com/stevearc/conform.nvim) for all my formatting needs and some python utilities such as pyright. This is enough to get me by.
 
 The thing that has been annoying me the most lately is the terminal workflow in NeoVim. For starters, the terminal does not save any history across sessions, which is incredibly annoying. I'm pretty sure there are many workarounds online, but I'm not the kind of person who cares much about tinkering with the config, I just want something easy out of the box.
 
