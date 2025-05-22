@@ -76,14 +76,14 @@ If you remember from the previous section, all the writes in postgres have to go
 
 There are different ways to approach this problem. Postgres does not provide the functionality to identify and handle failures on the leader. So the default behaviour if the leader fails would be that users are unable to run write operations until the leader is back online. Users will still be able to run read operations from the follower replicas.
 
-A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. However, this adds additional complexity to our system. If the leader server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
+A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. This is how other systems like dynamoDB or Kafka handle these situations. However this is not built into Postgres by default which adds additional complexity: If the leader server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
 
 Postgres does not provide out of the box functionality to identify a failure on the leader and deal with it, for this we’d need to use a third party tool.
 
 
 # Multi Leader Replication
 
-There is another option to still be able to serve write operations even when the leader goes down. We can use a multi-leader replication approach, although this is also not available by default.
+There is another option to still be able to serve write operations even when the leader goes down. We can use a multi-leader replication approach, although this is also not available by default in Postgres.
 
 In the multi-leader approach, we have multiple replicas that can handle writes instead of just a single one. This approach removes the single point of failure of having a single leader replica, so if one goes down, you can still serve write requests without any downtime (High Availability). It allows you to have your database distributed across different regions, to ensure it will still work even in the case of an outage.
 
@@ -96,6 +96,10 @@ We can encounter situations where two users write on the same data, at the same 
 (diagram)
 
 Another solution, would be to wait until the other leaders have recieved the update before we can write to it, essentially synchronously updating the other leaders. The problem is that networking speed becomes your bottleneck here. Also, if one of the primaries goes down, you need to have a method to skip the sync so that it doesn’t get stuck waiting for the other primaries to come back up, otherwise you’d be losing the advantages of having multiple primaries.
+
+# Conclusion
+
+???
 
 ---
 ## My Newsletter
