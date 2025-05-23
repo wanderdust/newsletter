@@ -87,24 +87,25 @@ In other situations, users seeing outdated data might not be a problem at all. I
 
 So far we've seen different strategies for working handling and working with our replicated Postgres database. But we still have no idea how the replication process happens.
 
-When the leader recieves a write operation, the operation is first _logged_ into the disk. Only after it has been logged, the database actually updates the data and acknoweldges the operation to the user. The followers can then use this log to replay the data changes on their end to keep themselves up to date. 
+When the leader recieves a write operation, the operation is first _logged_ into a log or file. Only after it has been logged, the database actually updates the data and acknoweldges the operation to the user. The log contains a sequential list of operations that the followers can use to keep their data up-to-date. 
 
-The reason for logging the operation before updating the actual data is so that the transaction gets recorded first in case of the replica (leader or follower) going down. That way if there is a failover and the database needs to restart, it can simply look at the logs and pick up from where it left off.
+The reason for logging the operation before updating the actual data is so that the transaction gets recorded first in case of the replica (leader or follower) goes down. That way if there is a failover and the database needs to restart, it can simply look at the logs and pick up from where it left off.
 
-There are different ways to write the logs. One way is to log the actual statements, for example the actual SQL, and then run those operations in order in the replicas. The main advantage of this, is that the logs are very intuitive and easy to read. The problem is when we have non determinstic operations, we have no way of replicating it across the replicas leading to inconsistencies (example)
+There are different ways to write the logs. One way is to log the actual SQL statements, and then run those statements in order in the replicas. The main advantage of this, is that the logs are very intuitive and easy to read. The problem is when we have non determinstic operations, we have no way of consistently replicating it across the replicas.
 
+For example, this statement wild insert different results each time it gets executed.
 ```sql
---- If we record the SQL in the log we cannot replicate this across replicas
 INSERT INTO table (col1)
 VALUES (FLOOR(RAND() * 100));
 ```
-The other method is to log the data changes rather than the statements themselves. For example, we run the SQL statement in memory and record how the data will change in the log. Only after the log has been written we update the data itself. The changes are then sent to the follower replicas to update the data on their end. Using this method we can replicate the data consistently even for non deterministic operations, because the statement is only ran once, and then the data changes are applied equally across replicas. In this case the log might look like this:
+
+Another method is to log the data changes rather than the statements themselves. For example, we run the SQL statement in memory first and observe how the data will change, and then we record this change to the log. Only after the log has been written we update the data itself. Using this method we can replicate the data consistently even for non deterministic operations because the statement is only ran once, and then the data changes are applied equally across replicas. In this case the log might look like this:
 
 ```bash
 Block 0xA1B2C3 changed from 0xXYZ to 0x123
 ```
 
-If any of the replicas goes down, it can look at the logs, and replay all the changes from the last log it recorded to become up to date with the leader.
+If any of the replicas goes down, as it restarts, it can look at the logs and replay all the changes from where it left off to become up to date with the leader.
 
 # Multi Leader Replication
 
