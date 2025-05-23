@@ -93,10 +93,12 @@ The reason for logging the operation before updating the actual data is so that 
 
 There are different ways to write the logs. One way is to log the actual statements, for example the actual SQL, and then run those operations in order in the replicas. The main advantage of this, is that the logs are very intuitive and easy to read. The problem is when we have non determinstic operations, we have no way of replicating it across the replicas leading to inconsistencies (example)
 
-The other is binary ...
-
-...
-Replication is the process of replicating the data from the leader replica into the followers. Replication happens by writing the changes to a log file and sending it to the replicas to implement those same changes. Any time a write operation occurs (INSERT, UPDATE, DELETE), the underlying data changes are logged. The logs are then pushed to the replicas to apply. As you can see, we don’t record the SQL statements that get executed, but rather the changes at the disk (binary) level.
+```sql
+--- If we record the SQL in the log we cannot replicate this across replicas
+INSERT INTO table (col1)
+VALUES (FLOOR(RAND() * 100));
+```
+The other method is to log the data changes rather than the statements themselves. For example, we run the SQL statement in memory and record how the data will change in the log. Only after the log has been written we update the data itself. The changes are then sent to the follower replicas to update the data on their end. Using this method we can replicate the data consistently even for non deterministic operations, because the statement is only ran once, and then the data changes are applied equally across replicas. In this case the log might look like this:
 
 ```bash
 Block 0xA1B2C3 changed from 0xXYZ to 0x123
