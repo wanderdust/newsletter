@@ -91,7 +91,9 @@ When the leader recieves a write operation, the operation is first _logged_ into
 
 The reason for logging the operation before updating the actual data is so that the transaction gets recorded first in case of the replica (leader or follower) going down. That way if there is a failover and the database needs to restart, it can simply look at the logs and pick up from where it left off.
 
-There are different ways to log (statement vs binary)
+There are different ways to write the logs. One way is to log the actual statements, for example the actual SQL, and then run those operations in order in the replicas. The main advantage of this, is that the logs are very intuitive and easy to read. The problem is when we have non determinstic operations, we have no way of replicating it across the replicas leading to inconsistencies (example)
+
+The other is binary ...
 
 ...
 Replication is the process of replicating the data from the leader replica into the followers. Replication happens by writing the changes to a log file and sending it to the replicas to implement those same changes. Any time a write operation occurs (INSERT, UPDATE, DELETE), the underlying data changes are logged. The logs are then pushed to the replicas to apply. As you can see, we don’t record the SQL statements that get executed, but rather the changes at the disk (binary) level.
