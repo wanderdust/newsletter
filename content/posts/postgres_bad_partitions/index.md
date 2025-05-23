@@ -47,7 +47,7 @@ Seq Scan on orders_2024_q3  (cost=0.00..25000.00 rows=10000 width=64)
   Filter: (customer_id = 12345)
 ```
 
-If you look closely at the query, there is no filter based on the partition key (order_id). Which explains why the query plan needs to look at every single partition to see if it includes the customer_id. If your partitions are large or without the correct indexes it can make your queries slow.
+If you look closely at the query, there is no filter based on the partition key `order_id`. Which explains why the query plan needs to look at every single partition to see if it includes the `customer_id`. If your partitions are large or without the correct indexes it can make your queries slow.
 
 What’s happening is that in Postgres you create indexes per partition. Each partition is basically a separate table, and there are no indexes across partitions.
 
