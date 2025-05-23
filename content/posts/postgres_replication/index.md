@@ -13,22 +13,40 @@ images: []
 ---
 
 
-(Add an intro here)
+Replication refers to having a copies of your data. Instances hosting your database will inevitably fail or go down at some point. Hoving a copy of your data somewhere else will avoid data loss.
 
 # Leader-Follower replication strategy
 
-A replica consists of a full copy of the database. There are two types: leaders and followers.
+This is the most common strategy for replication across databases, and the one used by Postgres as well. In the Leader-Follower strategy there are two types of replicas: leaders and followers.
 
-The leader or primary replica is used for writing operations to the database. All write operations need to go through the writer replica.
-The follower or reader replicas can only be used for reading the data. Whenever the data is written to the leader replica, it also sends the data changes to the followers.
+The leader or primary replica is used for writing operations to the database. All write operations can only go through the writer replica.
 
-In Postgres, by default, there is only one leader but there can be more than one follower. When a write operation comes through, it is redirected to the writer, which then updates the reader replicas. Read operations can go to any replica, including the leader.
+The follower replicas keep an up-to-date copy of the data. Whenever any data is written to the leader, the updates are propagated to the followers so they can stay up to date. Follower replicas can only do read operations.
+
+In Postgres, there is one leader but we can have more than one follower. When a write operation comes through, it is goes to the writer, which then updates the follower replicas. Read operations can go to any replica, including the leader.
+
+(Diagram here)
+
+This strategy brings several benefits. To begin with, if one of our replicas goes down, we still have a copy of the data in the remaning replicas, which means there is no data loss. The other benefit of having replicas in different nodes is that we can load balance the read operations across replicas to reduce the load.
 
 (Diagram here)
 
-Each replica runs on its own compute instance, which means it can be useful for load balancing if we have a high load of read operations. On the other hand, writes must always go through the leader replica. Since postgres leverages vertical scaling, a high volume of writes can lead to bottlenecks in the leader replica.
+On the other hand, if the leader happens to go down, we will be unable to handle write operations since the followers can only do reads. We'll discuss strategies on how to handle failover in the next section.
 
-(Diagram here)
+# Handling Failover
+
+One of the main advantages of replicated systems is the ability to handle situations where one or more of the replicas go down, and being able to still serve requests to the user from the remaining replicas. 
+
+This is also known as availability, which means that if part of the system goes down, you are still capable of serving data to the user. Replicated systems also ensure there is no data loss when some of the replicas go down.
+
+If you remember from the previous section, all the writes in postgres have to go through the leader replica, which creates a single point of failure for write operations. If the leader goes down, we will no longer be able to serve write requests. Users will only be able to run read operations from the read only replicas.
+
+There are different ways to approach this problem. Postgres does not provide the functionality to identify and handle failures on the leader. So the default behaviour if the leader fails would be that users are unable to run write operations until the leader is back online. Users will still be able to run read operations from the follower replicas.
+
+A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. This is how other systems like dynamoDB or Kafka handle these situations. However this is not built into Postgres by default which adds additional complexity: If the leader server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
+
+Postgres does not provide out of the box functionality to identify a failure on the leader and deal with it, for this we’d need to use a third party tool.
+
 
 # Updating the replicas
 
@@ -65,21 +83,6 @@ Block 0xA1B2C3 changed from 0xXYZ to 0x123
 ```
 
 If any of the replicas goes down, it can look at the logs, and replay all the changes from the last log it recorded to become up to date with the leader.
-
-# Handling Failover
-
-One of the main advantages of replicated systems is the ability to handle situations where one or more of the replicas go down, and being able to still serve requests to the user from the remaining replicas. 
-
-This is also known as availability, which means that if part of the system goes down, you are still capable of serving data to the user. Replicated systems also ensure there is no data loss when some of the replicas go down.
-
-If you remember from the previous section, all the writes in postgres have to go through the leader replica, which creates a single point of failure for write operations. If the leader goes down, we will no longer be able to serve write requests. Users will only be able to run read operations from the read only replicas.
-
-There are different ways to approach this problem. Postgres does not provide the functionality to identify and handle failures on the leader. So the default behaviour if the leader fails would be that users are unable to run write operations until the leader is back online. Users will still be able to run read operations from the follower replicas.
-
-A possible approach to handle such sutiuations is to have a standby server that can take over the leader duties when it goes down. For example, one of the follower replicas could be promoted to a leader when the current leader fails. This is how other systems like dynamoDB or Kafka handle these situations. However this is not built into Postgres by default which adds additional complexity: If the leader server fails and the standby server becomes the new leader, and then the old leader restarts, you must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
-
-Postgres does not provide out of the box functionality to identify a failure on the leader and deal with it, for this we’d need to use a third party tool.
-
 
 # Multi Leader Replication
 
