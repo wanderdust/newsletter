@@ -22,8 +22,9 @@ Let’s pretend this was the slow query:
 ```shell
 EXPLAIN ANALYZE
 SELECT * FROM orders WHERE customer_id = 12345;
+```
 Upon inspection, we observed that the query plan was scanning at every single partition! And in our case, there were a lot of them.
-
+```shell
 Seq Scan on orders_2020  (cost=0.00..25000.00 rows=10000 width=64)
   Filter: (customer_id = 12345)
 Seq Scan on orders_2021  (cost=0.00..25000.00 rows=10000 width=64)
