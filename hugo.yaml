@@ -55,11 +55,7 @@ params:
     imageWidth: 120
     imageHeight: 120
     imageTitle: my image
-    buttons:
-      - name: Posts
-        url: /posts/
-      - name: Tags
-        url: /tags/
+
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
