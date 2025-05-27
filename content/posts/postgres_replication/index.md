@@ -12,7 +12,9 @@ cover:
 images: []
 ---
 
-Replication refers to having copies of your data, so if your database goes down, you still have a backup to prevent data loss. In this post I give an overview of how Postgres handles replication. One thing to note is that a lot of the strategies mentioned in this blog are not only applicable to postgres, in fact, they are common techniques used across many database systems.
+Replication refers to having copies or backups of your data, so if your database goes down, you still have a backup to prevent data loss.
+
+In this post I give an overview of how Postgres handles replication. One thing to note is that a lot of the strategies mentioned in this blog are not only applicable to postgres but are in fact common to many database systems.
 
 # Leader-Follower replication strategy
 
@@ -20,27 +22,23 @@ This is the most common strategy for replication across databases, and the one u
 
 The leader replica is in charge of the write operations to the database. All write operations can only go through the leader replica.
 
-The follower replicas keep an up-to-date copy of the data in the leader. Whenever any data is written to the leader, the updates are propagated to the followers so they can stay up to date. Follower replicas can only do read operations.
+The follower replicas keep an up-to-date copy of the data from the leader. Whenever any data is written to the leader, the updates are propagated to the followers so they can stay up to date. Follower replicas can only do read operations (because read operations don't change the data)
 
 In Postgres, there is one leader but we can have more than one follower. When a write operation comes through, it is goes to the leader, which then updates the follower replicas. Read operations can go to any replica, including the leader.
 
 (Diagram here)
 
-This strategy brings several benefits. To begin with, if one of our replicas goes down, we still have a copy of the data in the remaning replicas, which means there is no data loss. Another benefit of having replicas in different nodes is that we can load balance the read operations across the replicas.
-
-(Diagram here)
-
-On the other hand, if the leader happens to go down, we will be unable to handle write operations since the followers can only do reads. We'll discuss strategies on how to handle failover in the next section.
-
 # Handling Failover
 
-One of the main advantages of replicated systems is the ability to serve requests, even when one or more of the replicas go down.
+The main reason for having replication is to avoid data loss if our database goes down, thanks to having copies of the data in different instances.
 
-This is also known as availability, which means that if part of the system goes down, the database is still capable of serving data to the user.
+The nice thing about replication is that even if one of our replicas goes down, we are still able to serve data to our users through the other replicas. This is also known as availability.
 
-If you remember from the previous section, all the writes have to go through the leader replica, which creates a single point of failure for write operations. If the leader goes down, we will no longer be able to serve write requests. Users will only be able to run read operations from the follower replicas. Which means write operations won't be availabe until the leader comes back up.
+If you remember from the previous section, all the writes have to go through the leader, which creates a single point of failure for _write_ operations. If the leader goes down, we won't be able to serve _write_ requests and users will only be able to run _read_ operations from the follower replicas. This means _write_ operations won't be available until the leader comes back up, which could mean potential data loss if we are not able to process incoming requests.
 
-A possible approach to handle such situations is to promote a follower to become the leader when the current leader fails. This is how systems like dynamoDB or Kafka handle these situations, but it is not part of Postgres by default. There are third party tools that can be used to implement this functionality, but it adds an additional layer of complexity to your system. For example, if the leader fails and a follower becomes the new leader, and then the old leader comes back to life, we must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
+A possible approach to handle such situations is to promote a follower to become the leader when the current leader fails. This is how systems like dynamoDB or Kafka handle these situations, but it is not part of Postgres by default.
+
+There are third party tools that can be used to implement this functionality, but it adds an additional layer of complexity to your system. For example, if the leader fails and a follower becomes the new leader, and then the old leader comes back to life, we must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
 
 # Sync vs Async replication
 
