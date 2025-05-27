@@ -17,11 +17,11 @@ I currently have a basic setup in NeoVim: I use [NvChad](https://nvchad.com/) by
 
 The thing that has been annoying me the most lately is the terminal workflow in NeoVim. For starters, the terminal does not save any history across sessions, which is incredibly annoying. I'm pretty sure there are many workarounds online, but I'm not the kind of person who cares much about tinkering with the config, I just want something easy out of the box.
 
-The second thing that's been annoying me lately is navigating buffers. I'm pretty sure I'm missing something here, but I always end up circulating my buffers using the `tab` key, which can get pretty slow if you have many tabs open. In a lot of cases I just want a single key tap to go to my terminal from whatever window I'm currtently at.
+The second thing that's been annoying me lately is navigating buffers. I always end up circulating my buffers using the `tab` key, which can get pretty slow if you have many tabs open. In a lot of cases I just want a single key tap to go to my terminal from whatever window I'm currtently at.
 
 And finally, I find the the `ctrl-\ n` command to detach from the current terminal very awkward to use.
 
-For these reasons - and because I'm too lazy to properly research how to _fix_ these things with my current setup - I have decided to learn tmux so that I can run neovim inside it. I believe it might solve my problems. It also feels like tmux is a useful tool to have under you belt, so why not?
+For these reasons - and because I'm too lazy to properly research how to _fix_ these things with my current setup - I have decided to learn tmux so that I can run neovim inside it. I believe it might solve my problems. It also feels like tmux is a useful tool to have under my belt, so why not?
 
 # Using tmux
 
