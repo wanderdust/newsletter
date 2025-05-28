@@ -26,7 +26,7 @@ The follower replicas keep an up-to-date copy of the data from the leader. Whene
 
 In Postgres, there is one leader but there can be more than one follower. When a write operation comes through, it goes to the leader, which then updates the follower replicas. Read operations can go to any replica, including the leader.
 
-(Diagram here)
+![](./replication.png)
 
 # Handling Failover
 
@@ -50,9 +50,11 @@ The main advantage of synchronous replication is that all replicas will always b
 
 The downside is that _write_ operations will be slower since we need to wait until all replicas have been updated. Communication between replicas goes through the network, which means that if we have networking issues the transaction can be slow.
 
-Slow writes will block further writes, which can cause issues if we deal with a high volume of write operations.
+![](./replication_sync.png)
 
-(diagram)
+From the diagram, keep in mind that steps 2 and 3 might take different amounts of time to execute on each replica. When working with a sync system the transaction will be as slow as your slowest replica.
+
+Slow writes will block further writes, which can cause issues if we deal with a high volume of write operations.
 
 Asynchronous replication does not wait for the replicas to acknoweledge the updates. As soon as the update happens in the leader replica, the transaction is marked as succesful. The replicas are then updated asynchronously.
 
@@ -60,7 +62,7 @@ The main advantage of this approach is that the leader does not have to wait, me
 
 The main dowsnside is that users querying the same data, could potentially be getting outdated results. For example, if a user writes to the leader and another user reads from a follower replica that hasn't yet been updated, the second user might be looking at outdated results.
 
-(diagram)
+![](./replication_async.png)
 
 Long story short, asynchronous replication is used when synchronous would be too slow. Postgres supports both types of replication strategies, using asynchronous by default.
 
@@ -70,15 +72,14 @@ What happens in the scenario where one user writes some data, and then immediate
 
 If we are using asynchronous replication, there could be a situation where the user reads data from the follower before it has had the chance to update. In this case they would see outdated data. In some situations, this can lead to confusion.
 
-(diagram)
-
-For example, in a social media site, when a user updates their profile image, it should immediately reflect that change to the user, otherwise they may think the change has not taken effect. This can happen when the update goes through the leader, but the user tries to read the changes immediately after form a follower replica which has not been updated. In this case, what we could do is to always read user profile information from the leader replica to ensure the user is always seeing the latest changes.
+![](./read_after_write_problem.png)
+For example, in a social media site, when a user updates their user name, it should immediately reflect that change to the user, otherwise they may think the change has not taken effect. This can happen when the update goes through the leader, but the user tries to read the changes immediately after form a follower replica which has not been updated. In this case, what we could do is to always read user profile information from the leader replica to ensure the user is always seeing the latest changes.
 
 Reading from the leader can be a good solution for cases like this one, but if we find ourselves reading from the leader too much, we could end up putting too much strain on that instance, losing the benefit of load balancing read operations across the followers.
 
-(diagram)
+![](./read_after_write_solution.png)
 
-In other situations, users seeing outdated data might not be a problem at all. In the same example as before, this user's friends will not care if for some time they see an outdated profile image of their friend.
+In other situations, users seeing outdated data might not be a problem at all. In the same example as before, this user's friends will not care if for some time they see an outdated user name of their friend.
 
 # Updating the replicas
 
