@@ -144,6 +144,14 @@ The other question is, _why is sharding not supprted natively?_ This would add h
 
 I wonder if these are tradeoffs the developers have made the to reduce the moving components of running Postgres, making it easier to run and operate in production.
 
+
+---
+
+Resources:
+- Designing data Intensive applications by Martin Kleppman (diagram ideas shamelessly stolen from the book)
+- Postgres Documentation
+
+
 ---
 ## My Newsletter
 
