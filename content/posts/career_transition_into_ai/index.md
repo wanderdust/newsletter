@@ -46,9 +46,3 @@ It’s now been over three years and I have worked on lots of interesting projec
 
 Thanks for reading!
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

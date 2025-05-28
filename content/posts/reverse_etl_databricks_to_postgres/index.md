@@ -253,7 +253,3 @@ Thank you for making it this far! I hope you’ve found the post interesting. Fe
 
 Thanks to Oleksandr for providing feedback on earlier versions of this post.
 
----
-## My Newsletter
-I send out an email every so often about cool stuff I'm building or working on.
-{{< subscribe >}}

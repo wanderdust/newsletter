@@ -103,9 +103,3 @@ My new workflow using NeoVim and tmux goes like this
 
 ![](./tmux-nvim.gif)
 
---
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

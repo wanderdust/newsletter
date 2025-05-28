@@ -42,9 +42,3 @@ Letâ€™s be realistic though, TDD takes discipline. Some real world projects donâ
 
 TDD provides a framework for writing code that is well designed, properly scoped, and easily testable. Even if you decide not to continue writing tests later on, having developed familiarity with TDD still offers a useful guide for creating code that remains straightforward to test. So, is it worth your time?
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

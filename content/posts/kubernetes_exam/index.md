@@ -108,9 +108,3 @@ That was the preparation I took to do prior to taking the Certified Kubernetes A
 
 Before the exam, my knowledge of Kubernetes was quite basic. However, I now feel confident in working with and troubleshooting Kubernetes applications. Preparing for the certification was the perfect motivation to up skill in Kubernetes.
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

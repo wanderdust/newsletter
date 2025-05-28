@@ -131,9 +131,3 @@ class PostgresUser(User):
 
 To start the locust UI run `locust -f locustfile.py`. Ignore the host field and add the number of users and ramp up for your test.
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

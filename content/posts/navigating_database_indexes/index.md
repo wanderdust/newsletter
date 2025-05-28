@@ -103,9 +103,3 @@ To update a value, you find the leaf node containing that key and update it.
 
 We can use indexes to speed up our database reads. We can use different types of indexes depending on our use case. Dealing with range data? Binary trees will be great. Looking for exact matches? Hash indexes will be best. We can also combine both if we query the same data in different ways. The thing to remember is that adding indexes will slow down your writes with the benefit of increasing your read speed.
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}

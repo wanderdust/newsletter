@@ -83,9 +83,3 @@ The moral of the story is not to try and fix bad query patterns, but to focus on
 
     - Your queries naturally filter on the partition column to reduce scanned data.
 
----
-## My Newsletter
-
-I send out an email every so often about cool stuff I'm building or working on.
-
-{{< subscribe >}}
