@@ -51,11 +51,10 @@ params:
   profileMode:
     enabled: true # needs to be explicitly set
     title: Pablo Lopez
-    subtitle: "Writing as a way of learning"
+    subtitle: "Writing to think"
     imageWidth: 120
     imageHeight: 120
     imageTitle: my image
-
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
