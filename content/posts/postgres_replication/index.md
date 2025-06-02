@@ -91,15 +91,24 @@ In other situations, users seeing outdated data might not be a problem at all. I
 
 So far, we've seen different strategies to work with a replicated Postgres database. But we still have no idea how the replication process happens.
 
-When the leader receives a write operation, the operation is first _logged_ into a log or file.
+When the leader recieves a _write_ operation, the operation is logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. If the database crashes, it can compare its state to what's written in the logs to recover any missing data. The log file is what actually gets shared with the follower replicas to keep them up to date.
 
-Only after the log has been created, the data is actually updated. This is known as Write Ahead Log (WAL) because the log is written before the data is actually updated. The reason for doing it this way, is that as long as the log is created, if the database goes down, when it comes back up it can simply look at the log to rebuild the data. The log is actually what gets sent to the followers to keep them up to date.
+But what happens if the database crashes mid operation before the log is written?
 
-There are different ways to write the logs. One way is to log the actual SQL statements, and then run those statements in order to recreate the data.
+In this case, when the database restarts it won't be able to check the logs to know the last operation it was running. The problem is that if the data was partially updated, it can't check with the logs to know if the transaction was completed or not, because the log was never written in the first place. In this case the only safe option is to undo any changes that are not recorded in the logs.
 
-The main advantage of this, is that the logs are very intuitive and easy to read. The problem is, when we have non-deterministic operations, we have no way of consistently replicating it across the replicas.
+The way to solve this problem is to write the log before the changes are written to the database. This is know as Write Ahead Logs (WAL). In this scenario, if the database crashes mid operation, when it restarts it can compare itself to the logs, to know if the operation it was performing succeded, partially succeded or failed. Based on this information it can take the corrective actions to get itself up to date.
 
-For example, have a look at the following log file:
+There are different strategies for writing the logs.
+
+### Logging the Statements
+
+One approach is to log the actual SQL statements, and then run those statements in order to recreate the data.
+
+The main advantage of this, is that the logs are very intuitive and easy to read. The problem is, when we have non-deterministic operations, we have no way of consistently replicating the outcomes each time the statement gets executed. This will be a problem when recovering after a crash or when replaying the transactions in the replicas.
+
+Take this example:
+
 ```sql
 -- Log 1
 INSERT INTO users (id, name, age)
@@ -118,7 +127,11 @@ WHERE id = 3;
 -- Log 4
 ...
 ```
-Log number 2 won't be replicable. Every time the statement gets executed, it will return a different result. To avoid this, Postgres actually logs the data changes rather than the SQL statements themselves.
+Log 2 won't be replicable. Every time the statement gets executed, it will return a different result.
+
+### Logging the Data Changes
+
+To avoid such situations, Postgres actually logs the data changes rather than the SQL statements themselves.
 
 For example, we run the SQL statement in memory first (without actually updating the data), we observe how the data will change, and we record it to the log. Using this method, we can replicate the data consistently even for non-deterministic operations because the statement is only run once, and then the data changes are applied equally across replicas. In this case, the log might look like this:
 
