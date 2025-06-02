@@ -133,7 +133,7 @@ Log 2 won't be replicable. Every time the statement gets executed, it will retur
 
 To avoid such situations, Postgres actually logs the data changes rather than the SQL statements themselves.
 
-For example, we run the SQL statement in memory first (without actually updating the data), we observe how the data will change, and we record it to the log. Using this method, we can replicate the data consistently even for non-deterministic operations because the statement is only run once, and then the data changes are applied equally across replicas. In this case, the log might look like this:
+For example, we run the SQL statement in memory first (without actually updating the data), we observe how the data will change, and we record it to the log. Using this method, we can replicate the data consistently even for non-deterministic operations because the statement is only run once. In this case, the log might look like this:
 
 ```bash
 -- Log 1
@@ -149,7 +149,7 @@ Row updated in "accounts" where id = 3: balance changed from 200 to 150
 ...
 ```
 
-In reality, these logs contain byte-level changes to disk rather than row level changes, as shown in the example.
+In reality, these logs contain byte-level changes to disk rather than row level changes as shown in the example.
 
 Thanks to the WAL, if any of the replicas goes down, as it restarts, it can look at the logs and replay all the changes from where it left off to become up to date with the leader.
 
