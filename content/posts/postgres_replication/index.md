@@ -170,4 +170,4 @@ Resources:
 - Designing data Intensive applications by Martin Kleppman (diagram ideas shamelessly stolen from the book)
 - Postgres Documentation
 
-Thanks to Gordon for providing feedback on an earlier draft of this post.
+Thanks to Gordon for providing feedback on an earlier version of this post.
