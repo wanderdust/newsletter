@@ -89,23 +89,23 @@ In other situations, users seeing outdated data might not be a problem at all. I
 
 ## Updating the replicas
 
-So far, we've seen different strategies to work with a replicated Postgres database. But we still have no idea how the replication process happens.
+So far, we've seen different strategies to work with a replicated Postgres database, but we still have no idea how the replication process happens.
 
-When the leader recieves a _write_ operation, the operation is logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. If the database crashes, it can compare its state to what's written in the logs to recover any missing data. The log file is what actually gets shared with the follower replicas to keep them up to date.
+When the leader receives a _write_ operation, it gets logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. The logs act as a source of truth, so when the database crashes, it can compare its current state to what's in the logs to get itself up to date. In a replicated system, the logs are what actually get sent to the follower replicas to get them up to date.
 
-But what happens if the database crashes mid operation before the log is written?
+But what happens if the database crashes mid-transaction before the log is written?
 
-In this case, when the database restarts it won't be able to check the logs to know the last operation it was running. The problem is that if the data was partially updated, it can't check with the logs to know if the transaction was completed or not, because the log was never written in the first place. In this case the only safe option is to undo any changes that are not recorded in the logs.
+When the database crashes, as it restarts, it will want to check the logs to find out what it is that it was meant to be doing before it crashed. If the log isn't there, it does not know if whatever operation it was running had started, completed, partially completed or failed. In this case, the only safe option is to undo any changes in the database that are not recorded in the logs, leading to potential data loss.
 
-The way to solve this problem is to write the log before the changes are written to the database. This is know as Write Ahead Logs (WAL). In this scenario, if the database crashes mid operation, when it restarts it can compare itself to the logs, to know if the operation it was performing succeded, partially succeded or failed. Based on this information it can take the corrective actions to get itself up to date.
+The way to solve this problem is to write the log before the changes are written to the database. This is known as Write Ahead Logs (WAL). In this scenario, if the database crashes mid-operation, when it restarts, it can compare itself to the logs to know if the operation it was performing succeeded, partially succeeded or failed. Based on this information, it can take the corrective actions to get itself up to date.
 
 There are different strategies for writing the logs.
 
 ### Logging the Statements
 
-One approach is to log the actual SQL statements, and then run those statements in order to recreate the data.
+One approach is to log the actual SQL statements. The statements can then be run in order to recreate the data.
 
-The main advantage of this, is that the logs are very intuitive and easy to read. The problem is, when we have non-deterministic operations, we have no way of consistently replicating the outcomes each time the statement gets executed. This will be a problem when recovering after a crash or when replaying the transactions in the replicas.
+The main advantage is that the logs are very intuitive and easy to read. The problem is, when we have non-deterministic operations, we have no way of consistently replicating the outcomes each time the statement gets executed. This will be a problem when recovering after a crash or when replaying the transactions in the replicas.
 
 Take this example:
 
@@ -127,7 +127,7 @@ WHERE id = 3;
 -- Log 4
 ...
 ```
-Log 2 won't be replicable. Every time the statement gets executed, it will return a different result.
+Log 2 won't be replicable. Every time the statement gets executed, it will return a different result (unless you are very lucky).
 
 ### Logging the Data Changes
 
