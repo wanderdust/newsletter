@@ -91,7 +91,9 @@ In other situations, users seeing outdated data might not be a problem at all. I
 
 So far, we've seen different strategies to work with a replicated Postgres database, but we still have no idea how the replication process happens.
 
-When the leader receives a _write_ operation, it gets logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. The logs act as a source of truth, so when the database crashes, it can compare its current state to what's in the logs to get itself up to date. In a replicated system, the logs are what actually get sent to the follower replicas to get them up to date.
+When the leader receives a _write_ operation, it gets logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. The logs act as a source of truth, so when the database crashes and restarts, it can compare its current state to what's in the logs to get itself up to date.
+
+In a replicated system, the logs are what actually get sent to the follower replicas to get them up to date.
 
 But what happens if the database crashes mid-transaction before the log is written?
 
@@ -157,7 +159,7 @@ Thanks to the WAL, if any of the replicas goes down, as it restarts, it can look
 
 Thanks for making it this far! Writing this has been an exercise for me to better understand replication in Postgres. During the writing of this post, I got to better understand the tradeoffs and limitations of Postgres as compared to other database systems.
 
-It has started some questions in my head, such as, _why is more advanced failover not supported by default?_ It seems like this would increase its availability in situations when the leader goes down.
+It has sparked some questions, such as, _why is more advanced failover not supported by default?_ It would increase availability in situations when the leader goes down.
 
 The other question is, _why is sharding not supported natively?_ This would add horizontal scalability to Postgres, rather than its current vertical scaling, which can be limited for larger scale applications.
 
