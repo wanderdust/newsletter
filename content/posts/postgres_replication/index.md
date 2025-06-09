@@ -1,7 +1,7 @@
 ---
 title: 'Postgres Replication'
 date: '2025-11-01T10:14:57+01:00'
-draft: true 
+draft: false 
 summary: ''
 tags: ['postgres', 'replication']
 categories: []
