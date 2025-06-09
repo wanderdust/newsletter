@@ -1,6 +1,6 @@
 ---
 title: 'Postgres Replication'
-date: '2025-06-01T13:14:57+01:00'
+date: '2025-11-01T10:14:57+01:00'
 draft: true 
 summary: ''
 tags: ['postgres', 'replication']
@@ -12,35 +12,37 @@ cover:
 images: []
 ---
 
-Replication refers to having copies of your data across different instances. Replication gives you redundancy when one of your instances goes down. This way, you can still serve data to your users from the remaining instances, avoiding downtime.
+Replication refers to having copies of your data across different instances. It gives you redundancy when one of your instances goes down so you can still serve data to users from the remaining instances.
 
-Another benefit of a replicated system is being able to load balance your requests across different instances when the load of serving all the requests from a single instance would be too much.
+Another benefit of a replicated system is being able to load balance your requests across different instances. This can be useful when the load of serving all the requests from a single instance would be too much.
 
 Finally, if you have users in different regions, replication gives you the option of deploying copies of your data closer to the users, reducing the latency of the requests.
 
-In this post, I give an overview of how Postgres handles replication. One thing to note is that a lot of the strategies mentioned in this blog are not only applicable to Postgres, but are common to many database systems.
+In this post, I give an overview of how Postgres handles replication. One thing to note is that a lot of the strategies mentioned in this post are not only applicable to Postgres, but are common to many database systems.
 
 ## Leader-Follower replication strategy
 
 This is the most common strategy for replication across databases, and the one used by Postgres as well. In the Leader-Follower strategy, there are two types of replicas: leaders and followers.
 
-The leader is in charge of the write operations to the database. All write operations can only go through the leader replica.
+The leader is in charge of the _write_ operations to the database. _Write_ operations can only go through the leader replica.
 
-The follower replicas keep an up-to-date copy of the data from the leader. Whenever any data is written to the leader, the updates are propagated to the followers so they can stay up to date. Follower replicas can only do read operations (because read operations don't change the data)
+The follower replicas keep an up-to-date copy of the data from the leader. Whenever any data is written to the leader, the updates are propagated to the followers so they can stay up to date. Follower replicas can only do _read_ operations (because _read_ operations don't change the data)
 
-In Postgres, there is one leader but there can be more than one follower. When a write operation comes through, it goes to the leader, which then updates the follower replicas. Read operations can go to any replica, including the leader.
+In Postgres, there is one leader but there can be more than one follower. When a write operation comes through, it goes to the leader, which then updates the follower replicas.
+
+Read operations can go to any replica, including the leader.
 
 ![](./replication.png)
 
 ## Handling Failover
 
-The main reason for having replication is that if one of our replicas goes down, we are still able to serve data to our users through the other replicas. This is also known as high availability.
+One of the main reasons for having replication is that if one of the replicas goes down, we are still able to serve data to our users through the other replicas. This is also known as high availability.
 
 If you remember from the previous section, all the _writes_ have to go through the leader, which creates a single point of failure for _write_ operations. If the leader goes down, we won't be able to serve _write_ requests and users will only be able to run _read_ operations from the follower replicas. This means _write_ operations won't be available until the leader comes back up, which could mean potential data loss if we are not able to process incoming requests.
 
 A possible approach to handle such situations is to promote a follower to become the leader when the current leader fails. This is how systems like DynamoDB or Kafka handle these situations, but it is not part of Postgres by default.
 
-There are third party tools that can be used to implement this functionality, but this adds a layer of complexity to your system. For example, if the leader fails and a follower becomes the new leader, and then the old leader comes back to life, we must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
+There are third party tools that can be used to implement this functionality, but this adds a layer of complexity to the system. For example, if the leader fails and a follower becomes the new leader, and then the old leader comes back to life, we must have a mechanism for informing the old leader that it is no longer in charge. This is necessary to avoid situations where both systems think they are the leader, which will lead to confusion and ultimately data loss.
 
 ## Sync vs Async replication
 
@@ -57,7 +59,7 @@ The downside is that _write_ operations will be slower since we need to wait unt
 
 From the diagram, keep in mind that steps 2 and 3 might take different amounts of time to execute on each replica. When working with a sync system, the transaction will be as slow as your slowest replica.
 
-Slow writes will block further writes, which can cause issues if we deal with a high volume of write operations.
+Slow _writes_ will block further _writes_, which can cause issues if we deal with a high volume of transactions.
 
 ### Asynchronous Replication
 Asynchronous replication does not wait for the replicas to acknowledge the updates. As soon as the update happens in the leader replica, the transaction is marked as successful. The replicas are then updated asynchronously.
@@ -79,7 +81,9 @@ What happens in the scenario where one user writes some data, and then immediate
 If we are using asynchronous replication, there could be a situation where the user reads data from the follower before it has had the chance to update. In this case, they would see outdated data. In some situations, this can lead to confusion.
 
 ![](./read_after_write_problem.png)
-For example, in a social media site, when a user updates their username it should immediately reflect that change to the user, otherwise they may think the change has not taken effect. This can happen when the update goes through the leader, but the user tries to read the changes immediately after from a follower replica which has not been updated. In this case, what we could do is to always read user profile information from the leader replica to ensure the user is always seeing the latest changes.
+For example, in a social media site, when a user updates their username it should immediately reflect that change to the user, otherwise they may think the change has not taken effect.
+
+This can happen when the update goes through the leader, but the user tries to read the changes immediately after from a follower replica which has not been updated. In this case, what we could do is to always read user profile information from the leader replica to ensure the user is always seeing the latest changes.
 
 Reading from the leader can be a good solution for cases like this one, but if we find ourselves reading from the leader too much, we could end up putting too much strain on that instance, losing the benefit of load balancing read operations across the followers.
 
@@ -93,15 +97,17 @@ So far, we've seen different strategies to work with a replicated Postgres datab
 
 When the leader receives a _write_ operation, it gets logged into a log file. This file keeps an ordered history of all the _write_ operations to the database. The logs act as a source of truth, so when the database crashes and restarts, it can compare its current state to what's in the logs to get itself up to date.
 
-In a replicated system, the logs are what actually get sent to the follower replicas to get them up to date.
+In a replicated system, the log file is what actually gets sent to the follower replicas to get them up to date.
 
-But what happens if the database crashes mid-transaction before the log is written?
+### Write Ahead Logs (aka Write the Logs First)
 
-When the database crashes, as it restarts, it will want to check the logs to find out what it is that it was meant to be doing before it crashed. If the log isn't there, it does not know if whatever operation it was running had started, completed, partially completed or failed. In this case, the only safe option is to undo any changes in the database that are not recorded in the logs, leading to potential data loss.
+But what happens if the database crashes mid-transaction before the log is written to the file?
+
+When the database crashes, as it restarts, it will want to check the log file to find out what it is that it was meant to be doing before it crashed. If the log isn't there, it does not know if whatever operation it was running had started, completed, partially completed or failed. In this case, the only safe option is to undo any changes in the database that are not recorded in the logs, leading to potential data loss.
 
 The way to solve this problem is to write the log before the changes are written to the database. This is known as Write Ahead Logs (WAL). In this scenario, if the database crashes mid-operation, when it restarts, it can compare itself to the logs to know if the operation it was performing succeeded, partially succeeded or failed. Based on this information, it can take the corrective actions to get itself up to date.
 
-There are different strategies for writing the logs.
+There are different strategies on what to log in the file.
 
 ### Logging the Statements
 
