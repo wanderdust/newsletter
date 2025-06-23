@@ -12,14 +12,29 @@ cover:
 images: []
 ---
 
+
+## What is connection Pooling?
+- Reuse connections - connecting to a database is a multi step process, when doing at scale in can cause cannections issues.
+- Pooling also helps to manage max number of connections - although you can do this directly in your DB as well via the `max_connections` param.
+- Choosing the number of connections depends on what your DB can handle. 
+    - Too many and you may overload your DB which can lead to latency issues or even errors
+    - Too few and you may introduce latency issues (connections having to wait for next available slot) if you are not utilising at an optimal level.
+    - Trial and error baby!
+
+- If too many connections it handles them rather than rejecting them (confirm this)
+
+
+<iframe width="100%" height="1300" name="iframe" src="pgbouncer_demo.html"></iframe>
+
 ## When do you need connection Pooling?
 
 - Many short lived connections, pooling lets you help you reuse them making it faster than starting and closing connections
+- When you need to scale! Handling a lot of connections/s
 - Other use cases?
 
 ## What is PG_BOUNCER
 
-PG bouncer is a service that sits in between your Postgres database and your client and it will manage the connections for you.
+PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your client and it will manage the connections for you.
 
 ## Setting up PG_BOUNCER locally
 
@@ -237,7 +252,8 @@ kubectl deploy -f *.yaml
 ```
 
 
-## Load testing PG BOUNCER
+## Load testing PG PG_BOUNCER
 
-- Results without 
-- Results with
+[ADD RESULTS]
+
+
