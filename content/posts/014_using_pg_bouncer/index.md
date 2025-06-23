@@ -1,5 +1,5 @@
 ---
-title: 'PG Bouncer in Kubernetes'
+title: 'Connection Pooling for Postgres using PG Bouncer: Now with examples!'
 date: '2025-06-12T13:01:19+01:00'
 draft: true 
 summary: ''
@@ -23,20 +23,23 @@ images: []
 
 - If too many connections it handles them rather than rejecting them (confirm this)
 
+## Interactive Example
+1. Click on `Send Request` to send a request
+2. Play with the `max connections` and `pool size` options to see what happens with new requests
+3. Click like a maniac!
 
 <iframe width="100%" height="1300" name="iframe" src="pgbouncer_demo.html"></iframe>
 
 ## When do you need connection Pooling?
 
 - Many short lived connections, pooling lets you help you reuse them making it faster than starting and closing connections
-- When you need to scale! Handling a lot of connections/s
-- Other use cases?
+- When you need to scale! Handling a lot of connections/s. Manage/queue connections rather than drop them.
 
-## What is PG_BOUNCER
+## What is pgbouncer
 
 PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your client and it will manage the connections for you.
 
-## Setting up PG_BOUNCER locally
+## Setting up locally
 
 Install using brew
 
@@ -103,9 +106,9 @@ If you get this error esure you have created the md5 hash properly. If you get a
 2025-06-12 11:56:44.176 UTC [1] WARNING C-0x7fe106331280: mydb/billy@127.0.0.1:50004 pooler error: password authentication failed
 ```
 
-## Setting up PG_BOUNCER in kubernetes
+## Setting it up in Kubernetes
 
-Now that we have set this up locally, here it is what it wold look like if you wanted to set it up in kubernetes. For this we will spin up a Deployment, Secret, Configmap and a Service
+Now that we have set this up locally, here it is what it wold look like if you wanted to set it up in kubernetes. For this we will spin up a Deployment, Secret, Configmap and a Service. Note that you need to have an existing cluster to before you can follow along!
 
 ADD KUBERNETES DIAGRAM
 
@@ -243,7 +246,7 @@ spec:
 
 ```
 
-## Deploy
+### Deploy!
 
 You can deploy all the files in one go using
 
@@ -252,8 +255,9 @@ kubectl deploy -f *.yaml
 ```
 
 
-## Load testing PG PG_BOUNCER
+## Conclusion
 
-[ADD RESULTS]
+You need to configurue it wisely. Too many connections and your DB will struggle. Too few and you will get queues and latency.
+
 
 
