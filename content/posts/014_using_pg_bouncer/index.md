@@ -37,7 +37,7 @@ Connection pooling lets you re-use connections to your database. Whether you hav
 
 PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your clients and it will manage the connections for you.
 
-[Diagram]
+![Diagram](./pgbouncer_diagram.png)
 
 ## Setting up locally
 
@@ -128,7 +128,7 @@ k8s/
 
 Note that you need to have an existing Kubernetes cluster and a Postgres database to follow along!
 
-[ADD KUBERNETES DIAGRAM]
+![pgbouncer in k8s](./pgbouncer_k8s.png)
 
 ### Deployment
 
