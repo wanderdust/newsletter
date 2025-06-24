@@ -14,14 +14,16 @@ images: []
 
 
 ## What is connection Pooling?
-- Reuse connections - connecting to a database is a multi step process, when doing at scale in can cause cannections issues.
-- Pooling also helps to manage max number of connections - although you can do this directly in your DB as well via the `max_connections` param.
-- Choosing the number of connections depends on what your DB can handle. 
-    - Too many and you may overload your DB which can lead to latency issues or even errors
-    - Too few and you may introduce latency issues (connections having to wait for next available slot) if you are not utilising at an optimal level.
-    - Trial and error baby!
+When a user wants to run a query in the database, a few things need to happen. First a connection is opened. Once the connection has been established they can run the query. When they are done they close the connection.
 
-- If too many connections it handles them rather than rejecting them (confirm this)
+As you can imagine, the process of opening and closing the connections takes some time and resources. This might not be a problem if we only handle a small number of connections, but it will add up if we handle thousands of connections constantly opening and closing.
+
+Think about having to open and close the door every time you go into the livingroom in your house. It doesn't take much time right? But what if your whole family comes over for Sunday lunch, and all 20 of those suckers have to open and close the door behind them, for this to be repeated by each family memeber wanting to come into the livingroom. The first person might as well leave the door open and let people come and go as they please.
+
+![door example](./door_pg_pooling.gif)
+
+Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them acrcoss requests.
+ 
 
 ## Interactive Example
 1. Click on `Send Request` to send a request
@@ -30,38 +32,24 @@ images: []
 
 <iframe width="100%" height="1400" name="iframe" src="/posts/014_using_pg_bouncer/pgbouncer_demo.html"></iframe>
 
-## When do you need connection Pooling?
-
-- Many short lived connections, pooling lets you help you reuse them making it faster than starting and closing connections
-- When you need to scale! Handling a lot of connections/s. Manage/queue connections rather than drop them.
-
-## Real life example
-- Need to test a Postgres DB with 2k requests/s. Each request takes about 50ms to execute
-- Database accepts 5k concurrent connections
-- When I load test the database opens up 4.5k connections. But the database starts to fail because even though it can take all the connections, it can't handle that many concurrent operations internally.
-
-- The first solution is to decrease the max number of connections to 800. I choose 800 because it is the sweet spot of number of connections that the database is able to handle without breaking.
-- THe problem is that with this new limit, when we hit our max concurrency, a lot of requests fail to connect because there are more requests than connections available.
-
-- I add PGBouncer in the mix.
-- With PG bouncer I can set the pool to 800, and any additional requests simply get queued until a connection is freed.
-- This add some latency (requests need to wait). But rather serve the request late than never.
-
-- Long term solutions: load balance across replicas to have more compute + available connections (only for READ operations); Increase compute if required.
-
 
 ## What is pgbouncer
 
-PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your client and it will manage the connections for you.
+PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your clients and it will manage the connections for you.
+
+[Diagram]
 
 ## Setting up locally
 
-Install using brew
+To setup pgbouncer locally you need to have Postgres database running, either locally (Docker) or with your favorite cloud provider.
+
+### Install using brew
 
 ```bash
 brew install pgbouncer
 ```
 
+### Setup Config files
 Create the `pgbouncer.ini` file. This file tells pgbouncer how to connect to the Postgres database. Here is also where you define your settings.
 
 ```toml
@@ -80,15 +68,20 @@ admin_users = billy
 
 ```
 
-Next thing is to create the `userlist.txt` file. This file contains the list of users allowed in. Create a new user/password (note that these users are pgbouncer specific and have nothing to do with your postgres users).
+### Credentials
+Next thing is to create the `userlist.txt` auth file. This file contains the list of users allowed in.
 
-For example let's create a user called billy.
+Create a new user/password. Note that this user is pgbouncer specific and has nothing to do with the postgres user.
+
+For example add this username and password to `userlist.txt`.
 
 ```yaml
 "billy" "12345"
 ```
 
-Actually, pgbouncer expects the password as an md5 hash. To do this, we need to provide the username password in this format `md5<passwordusername>`, in our case it looks like this `md5<12345billy>`. We can use the following bash command to get the hash
+Pgbouncer expects the password as an md5 hash. To do this, we need to provide the username password in this format `md5<passwordusername>`, which in our case looks like this `md5<12345billy>`.
+
+We can use the following bash command to get the hash (if you get a `%` sign at the end of the hash, ignore it)
 
 ```bash
 echo -n "md5$(echo -n "12345billy" | md5sum | cut -d' ' -f1)" 
@@ -116,16 +109,26 @@ psql -p 6432 -U billy mydb
 And bam! You are in!
 
 
-If you get this error esure you have created the md5 hash properly. If you get a specific error for your postgres user, ensure that the postgres connection is correct. 
+If you get this error esure you have created the md5 hash properly. If you get a specific error for your postgres user (defined in the `[database]` section of `pgbouncer.ini`), ensure that the postgres connection is correct. 
 ```
 2025-06-12 11:56:44.176 UTC [1] WARNING C-0x7fe106331280: mydb/billy@127.0.0.1:50004 pooler error: password authentication failed
 ```
 
 ## Setting it up in Kubernetes
 
-Now that we have set this up locally, here it is what it wold look like if you wanted to set it up in kubernetes. For this we will spin up a Deployment, Secret, Configmap and a Service. Note that you need to have an existing cluster to before you can follow along!
+Now that we have set this up locally, here it is what it wold look like if you wanted to set it up in kubernetes. For this we will spin up a Deployment, Secret, Configmap and a Service.
 
-ADD KUBERNETES DIAGRAM
+```shell
+k8s/
+├── pg_bouncer.deploy.yaml
+├── pg_bouncer.cm.yaml
+├── pg_bouncer.secret.yaml
+└── pg_bouncer.service.yaml
+```
+
+Note that you need to have an existing Kubernetes cluster and a Postgres database to follow along!
+
+[ADD KUBERNETES DIAGRAM]
 
 ### Deployment
 
@@ -221,9 +224,9 @@ data:
     auth_type = md5
     auth_file = /etc/pgbouncer/userlist.txt
     admin_users = myuser
-    pool_mode = session
-    max_client_conn = 100
-    default_pool_size = 20
+    pool_mode = transaction
+    max_client_conn = 1000
+    default_pool_size = 100
 ```
 
 ### Secret
