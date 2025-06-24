@@ -271,9 +271,14 @@ You can deploy all the files in one go using
 ```bash
 kubectl deploy -f *.yaml
 ```
-## Conclusion
 
-You need to configurue it wisely. Too many connections and your DB will struggle. Too few and you will get queues and latency.
+Connect your applications or clients to pgbouncer instead of postgres and you are good to go!
+
+## Final words
+
+Pgbouncer is a lightweight and easy to use connection pooling service for Postgres. You'll likely need connection pooling as your application starts to scale and you need to deal with many users and requests.
+
+Hope you've enjoyed the post. See you next time!
 
 
 
