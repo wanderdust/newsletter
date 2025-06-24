@@ -138,7 +138,7 @@
             } /* purple – new connection */
             .accept {
                 background: #4caf50;
-            } /* green  – re‑used connection */
+            } /* green  – re-used connection */
             .reject {
                 background: #e53935;
             } /* red    – dropped */
@@ -221,7 +221,7 @@
 
                 <div class="counter">
                     <div class="big">
-                        In‑flight: <span id="vActive">0</span>
+                        In-flight: <span id="vActive">0</span>
                     </div>
                     <div>
                         Total: <span id="vTotal">0</span> | Completed:
@@ -238,7 +238,7 @@
                 <div class="legend">
                     <span><span class="dot newConn"></span>new connection</span>
                     <span
-                        ><span class="dot accept"></span>re‑used
+                        ><span class="dot accept"></span>re-used
                         connection</span
                     >
                     <span><span class="dot reject"></span>dropped</span>
@@ -290,7 +290,7 @@
 
                 <div class="counter">
                     <div class="big">
-                        In‑flight DB: <span id="pDbAct">0</span> | Queued:
+                        In-flight DB: <span id="pDbAct">0</span> | Queued:
                         <span id="pQueued">0</span>
                     </div>
                     <div>
@@ -311,7 +311,7 @@
                 <div class="legend">
                     <span><span class="dot newConn"></span>new connection</span>
                     <span
-                        ><span class="dot accept"></span>re‑used
+                        ><span class="dot accept"></span>re-used
                         connection</span
                     >
                     <span><span class="dot reject"></span>dropped</span>
@@ -391,7 +391,8 @@
                     vAct++;
                     vOk++;
                     b.classList.add("newConn");
-                    moveTo(b, vArea.clientWidth * 0.84, 800, () =>
+                    /* slowed from 800ms to 1200ms */
+                    moveTo(b, vArea.clientWidth * 0.84, 1200, () =>
                         setTimeout(() => {
                             b.remove();
                             vAct--;
@@ -463,8 +464,10 @@
                     if (pDbAct > pConn) pConn = pDbAct;
                     b.classList.remove("queue");
                     b.classList.add(isNew ? "newConn" : "accept");
+                    /* first hop unchanged (300ms) */
                     moveTo(b, poolX, 300, () =>
-                        moveTo(b, dbX, isNew ? 700 : 400, () => {
+                        /* second hop slowed from 700ms to 900ms for new connections */
+                        moveTo(b, dbX, isNew ? 900 : 400, () => {
                             setTimeout(() => {
                                 pDbAct--;
                                 pPoolAct--;
