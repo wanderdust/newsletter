@@ -28,12 +28,27 @@ images: []
 2. Play with the `max connections` and `pool size` options to see what happens with new requests
 3. Click like a maniac!
 
-<iframe width="100%" height="1300" name="iframe" src="pgbouncer_demo.html"></iframe>
+<iframe width="100%" height="1400" name="iframe" src="/posts/014_using_pg_bouncer/pgbouncer_demo.html"></iframe>
 
 ## When do you need connection Pooling?
 
 - Many short lived connections, pooling lets you help you reuse them making it faster than starting and closing connections
 - When you need to scale! Handling a lot of connections/s. Manage/queue connections rather than drop them.
+
+## Real life example
+- Need to test a Postgres DB with 2k requests/s. Each request takes about 50ms to execute
+- Database accepts 5k concurrent connections
+- When I load test the database opens up 4.5k connections. But the database starts to fail because even though it can take all the connections, it can't handle that many concurrent operations internally.
+
+- The first solution is to decrease the max number of connections to 800. I choose 800 because it is the sweet spot of number of connections that the database is able to handle without breaking.
+- THe problem is that with this new limit, when we hit our max concurrency, a lot of requests fail to connect because there are more requests than connections available.
+
+- I add PGBouncer in the mix.
+- With PG bouncer I can set the pool to 800, and any additional requests simply get queued until a connection is freed.
+- This add some latency (requests need to wait). But rather serve the request late than never.
+
+- Long term solutions: load balance across replicas to have more compute + available connections (only for READ operations); Increase compute if required.
+
 
 ## What is pgbouncer
 
@@ -253,8 +268,6 @@ You can deploy all the files in one go using
 ```bash
 kubectl deploy -f *.yaml
 ```
-
-
 ## Conclusion
 
 You need to configurue it wisely. Too many connections and your DB will struggle. Too few and you will get queues and latency.
