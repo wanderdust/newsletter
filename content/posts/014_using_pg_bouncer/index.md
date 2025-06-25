@@ -14,19 +14,23 @@ images: []
 
 
 ## What is connection Pooling?
-When a user wants to run a query in the database, a few things need to happen. First a connection is opened. Then, they run the queries. When they are done they close the connection.
+When a user wants to run a query in the database, first, they open a connection. Then, they run the query(es). When they are done they close the connection.
 
-The process of opening and closing the connections takes some time and resources.
+Opening and closing the connections takes some time and resources. Keeping connections open that no-one is uses database resources and it is pointless and inefficient.
 
-Think about having to open and close the door every time you go into the livingroom in your house. It doesn't take much time right? But what if your whole family comes over for Sunday lunch, and all 20 of those suckers have to open and close the door behind them, for this to be repeated by each family memeber wanting to come into the livingroom. The first person might as well leave the door open and let people come and go as they please.
+Think about a restaurant that only uses plastic cups instead of glasses. Every time someone wants a drink a new plastic cup is taken out and then binned. There is no re-usability at all and a lot of unnecessary littering. The staff have to spend a lot of time making trips to the bin and restocking.
 
-![door example](./door_pg_pooling.gif)
+On the other hand, if they use glasses, when a person is done with their drink, the glass can washed and given to a new person that wants a drink. We can have a cupboard with 10 glasses to serve everyone all day.
 
-Think for example a use case where you have a lof of short lived requests to the database. Rather than opening and closing thousands of connections per second, you can keep the connections open and re-use them across requests.
 
-On the other hand, you can also have the case where you have clients with long lived connections to the database, where a client (e.g a webserver) always keeps hold of a connection to the database. This is fine if the client is constantly needing to run queries against the database, and for this use case you will probably not benefit from pg bouncer. THe thing is, it is very unlikely that they are running requests 100% of the time. There will be times where the client is quiet and isn't running any requests to the database, nontheless they keep that connection to themselves creating and "idle" connection. With connection pooling connections can be re-used so that idle connections moved back to the pool to be used by other clients that actially need it, thus creating a more efficient use of connections
+Now think of an office that only has 10 mugs in the cupboard. THe first 10 employees grab these mugs, pour their coffee and take them to their desks. Instead of returning them when they are done, they keep these mugs all day so they can re-fill them with new coffe througouth the day. Other employees that arrive later in the day use plastic cups instead, creating unnecessary litter. 
 
-Finally, connection pooling gives you the ability to queue requests when all the connections are busy, rather than refusing those requests. Rather late than never.
+A much better approach is if the employees with a mug could return them to the cupboard when they are done (after cleaning it of course!), so other people can use them in between. When they want to serve themselves another coffee, they go back to the cupboard and pick one of the available mugs.
+
+
+Coming back to postgres, think for example a use case where you have a lof of short lived requests to the database. Rather than opening and closing thousands of connections per second, you can keep a few hundred connections open and re-use them across requests. This will save some time by reducing the amount of times a connection is opened and closed.
+
+Like in the office example, you can also have the case where you have clients that keep long lived connections to the database, where a client (e.g a webserver) always keeps hold of a connection to the database. This is fine if the client is constantly needing to run queries against the database, and for this use case you will probably not benefit from pg bouncer. THe thing is, it is very unlikely that they are running requests 100% of the time. There will be times where the client is quiet and isn't running any requests to the database. With connection pooling connections can be re-used so that idle connections moved back to the pool to be used by other clients that actially need it, thus creating a more efficient use of connections
 
 Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them acrcoss requests.
 
