@@ -43,7 +43,7 @@ I use a small number of connections for illustrative purposes only. In productio
 
 Results
 
-```
+```bash
 ==================================================
 Comparison Results:
 ==================================================
@@ -68,7 +68,8 @@ PGBouncer is able to re-use connections across requests, making queries slightly
 Another benefit of PGBouncer is that it is capable of queuing requests when there are no connections available in the pool. In some cases you might prefer queuing rather than increasing the max connections parameter to avoid database overload. This might be helpful to handle unexpected spikes of requests.
 
 To illustrate the last example, we run 10 concurrent requests when the database only accepts a maximum of 3 connections. 
-```
+
+```bash
 ==================================================
 Comparison Results:
 ==================================================
