@@ -14,16 +14,81 @@ images: []
 
 
 ## What is connection Pooling?
-When a user wants to run a query in the database, a few things need to happen. First a connection is opened. Once the connection has been established they can run the query. When they are done they close the connection.
+When a user wants to run a query in the database, a few things need to happen. First a connection is opened. Then, they run the queries. When they are done they close the connection.
 
-As you can imagine, the process of opening and closing the connections takes some time and resources. This might not be a problem if we only handle a small number of connections, but it will add up if we handle thousands of connections constantly opening and closing.
+The process of opening and closing the connections takes some time and resources.
 
 Think about having to open and close the door every time you go into the livingroom in your house. It doesn't take much time right? But what if your whole family comes over for Sunday lunch, and all 20 of those suckers have to open and close the door behind them, for this to be repeated by each family memeber wanting to come into the livingroom. The first person might as well leave the door open and let people come and go as they please.
 
 ![door example](./door_pg_pooling.gif)
 
+Think for example a use case where you have a lof of short lived requests to the database. Rather than opening and closing thousands of connections per second, you can keep the connections open and re-use them across requests.
+
+On the other hand, you can also have the case where you have clients with long lived connections to the database, where a client (e.g a webserver) always keeps hold of a connection to the database. This is fine if the client is constantly needing to run queries against the database, and for this use case you will probably not benefit from pg bouncer. THe thing is, it is very unlikely that they are running requests 100% of the time. There will be times where the client is quiet and isn't running any requests to the database, nontheless they keep that connection to themselves creating and "idle" connection. With connection pooling connections can be re-used so that idle connections moved back to the pool to be used by other clients that actially need it, thus creating a more efficient use of connections
+
+Finally, connection pooling gives you the ability to queue requests when all the connections are busy, rather than refusing those requests. Rather late than never.
+
 Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them acrcoss requests.
- 
+
+## Does it take that much time to open and close a connection?
+You might be wondering, does it really take that much time to establish a connection? Is pgbouncer worth it?
+
+I run an example locally to compare both setups, and see if there's any improvement at all. The setup is as follows:
+- Postgres database with max number of Postgres connections 3 
+- PGBouncer with a default pool size of 3
+
+I use a simple SELECT query which executes within 2.8ms. I use a script to run this query 10000 times, within 3 concurrent threads (3 queries at the same time). I test both setups: with and without PGBouncer. When hitting postgres directly clients open and close a connection on each request.
+
+I use a small number of connections for illustrative purposes only. In production you'd be dealing with hundreds or thousands of concurrent connections.
+
+Results
+
+```
+==================================================
+Comparison Results:
+==================================================
+Connection Success Rate:
+  PostgreSQL: 99.9%
+  PGBouncer:  100.0%
+  PGBouncer improved connection success rate by 0.1%
+
+Query Success Rate:
+  PostgreSQL: 99.9%
+  PGBouncer:  100.0%
+  PGBouncer improved query success rate by 0.1%
+
+Average Execution Time:
+  PostgreSQL: 0.0061 seconds
+  PGBouncer:  0.0043 seconds
+  PGBouncer was 30.1% faster
+```
+
+PGBouncer is able to re-use connections across requests, making queries slightly faster (by 22ms). This is a very considerable of time saved considering the query only takes 2.8ms to execute. Of course, we are testing on a small sandbox environment, but still.
+
+Another benefit of PGBouncer is that it is capable of queuing requests when there are no connections available in the pool. In some cases you might prefer queuing rather than increasing the max connections parameter to avoid database overload. This might be helpful to handle unexpected spikes of requests.
+
+To illustrate the last example, we run 10 concurrent requests when the database only accepts a maximum of 3 connections. 
+```
+==================================================
+Comparison Results:
+==================================================
+Connection Success Rate:
+  PostgreSQL: 20.9%
+  PGBouncer:  100.0%
+  PGBouncer improved connection success rate by 379.2%
+
+Query Success Rate:
+  PostgreSQL: 20.9%
+  PGBouncer:  100.0%
+  PGBouncer improved query success rate by 379.2%
+
+Average Execution Time:
+  PostgreSQL: 0.0168 seconds
+  PGBouncer:  0.0136 seconds
+  PGBouncer was 18.9% faster
+```
+
+PG Bouncer is able to queue the connections and avoid dropping requests. In the real world, if this is a common occurrence, you might want to consider scaling your database vertically (CPU, MEM) or horizontally (Load Balance across replicas) instead of queing the requests.
 
 ## Interactive Example
 1. Click on `Send Request` to send a request
@@ -94,6 +159,7 @@ Then we take the output and update our `userlist.txt`
 "billy" "md54d45974e13472b5a0be3533de4666414"
 ```
 
+### Launch!
 Now we can launch pgbouncer locally
 
 ```bash
