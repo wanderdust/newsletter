@@ -18,15 +18,17 @@ When a user wants to run a query in the database, first, they open a connection.
 
 Opening and closing the connections takes some time and resources. Keeping connections open that no-one is uses database resources and it is pointless and inefficient.
 
-Think about a restaurant that only uses plastic cups instead of glasses. Every time someone wants a drink a new plastic cup is taken out and then binned. There is no re-usability at all and a lot of unnecessary littering. The staff have to spend a lot of time making trips to the bin and restocking.
+Think about a coffeshop that only uses plastic cups instead of mugs. Every time someone wants a drink a new plastic cup is used and then binned. There is no re-usability at all and a lot of unnecessary littering. The staff have to spend a lot of time making trips to the bin and restocking.
 
-On the other hand, if they use glasses, when a person is done with their drink, the glass can washed and given to a new person that wants a drink. We can have a cupboard with 10 glasses to serve everyone all day.
+On the other hand, if they use mugs, when a person is done with their drink, the mug can be washed and given to a new person that wants a drink. We can have a cupboard with 10 glasses to serve everyone all day.
 
+<iframe width="100%" height="500" name="iframe" src="/posts/014_using_pg_bouncer/cups_vs_mugs.html"></iframe>
 
-Now think of an office that only has 10 mugs in the cupboard. THe first 10 employees grab these mugs, pour their coffee and take them to their desks. Instead of returning them when they are done, they keep these mugs all day so they can re-fill them with new coffe througouth the day. Other employees that arrive later in the day use plastic cups instead, creating unnecessary litter. 
+Now think of an office that only has 10 mugs in the cupboard. THe first 10 employees to arrive grab these mugs, pour their coffee and take them to their desks. Instead of returning them when they are done, they keep these mugs all day so they can re-fill them with new coffe througouth the day. Other employees that arrive later in the day use plastic cups instead, creating unnecessary litter. 
 
-A much better approach is if the employees with a mug could return them to the cupboard when they are done (after cleaning it of course!), so other people can use them in between. When they want to serve themselves another coffee, they go back to the cupboard and pick one of the available mugs.
+A much better approach is if the employees with a mug could return them to the cupboard when they are done (after cleaning them of course!), so other people can use them in between. When they want to serve themselves another coffee, they go back to the cupboard and pick one of the available mugs.
 
+<iframe width="100%" height="700" name="iframe" src="/posts/014_using_pg_bouncer/mug_hoarder.html"></iframe>
 
 Coming back to postgres, think for example a use case where you have a lof of short lived requests to the database. Rather than opening and closing thousands of connections per second, you can keep a few hundred connections open and re-use them across requests. This will save some time by reducing the amount of times a connection is opened and closed.
 

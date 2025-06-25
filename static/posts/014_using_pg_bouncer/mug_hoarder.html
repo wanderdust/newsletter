@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mug Hoarding vs Returned – Configurable Rack Size</title>
+<style>
+  :root{--emoji-size:2.1rem;}
+  body{background:#f4f4f4;text-align:center;font-family:sans-serif;padding:20px 10px;}
+  button,input{font-size:1rem;border:none;border-radius:6px;cursor:pointer;}
+  #controls{margin-bottom:18px;display:flex;justify-content:center;gap:8px;flex-wrap:wrap;align-items:center;}
+  #play{padding:10px 26px;}
+  input[type=number]{padding:8px 10px;width:70px;text-align:center;border:1px solid #555;background:#fff;}
+  .wrap{display:flex;justify-content:center;gap:48px;flex-wrap:wrap;}
+  .panel{border:2px solid #333;background:#fff;padding:12px;width:280px;min-height:320px;box-shadow:2px 2px 4px rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;gap:12px;}
+  .title{font-size:1.1rem;font-weight:bold;}
+  .stream,.rack,.desk,.bin{min-height:48px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;font-size:var(--emoji-size);}  
+  .rack,.desk,.bin{border:1px solid #aaa;width:100%;padding:6px;min-height:78px;}
+  .label{font-size:0.78rem;font-weight:bold;margin-top:2px;}
+</style>
+</head>
+<body>
+  <div id="controls">
+    <label style="font-weight:bold;">Rack Size:</label>
+    <input type="number" id="mugCount" value="10" min="1" max="30" />
+    <button id="play">▶️ Play</button>
+  </div>
+  <div class="wrap">
+    <!-- Hoarding panel -->
+    <div class="panel">
+      <div class="title">No Return 🛑</div>
+      <div class="stream" id="hoardStream"></div>
+      <div class="label">Rack</div>
+      <div class="rack" id="hoardRack"></div>
+      <div class="label">Desks (hoarded)</div>
+      <div class="desk" id="hoardDesk"></div>
+      <div class="label">Cups Used</div>
+      <div class="bin" id="hoardBin"></div>
+    </div>
+    <!-- Returning panel -->
+    <div class="panel">
+      <div class="title">Return 👍</div>
+      <div class="stream" id="returnStream"></div>
+      <div class="label">Rack</div>
+      <div class="rack" id="returnRack"></div>
+      <div class="label">Cups Used</div>
+      <div class="bin" id="returnBin"></div>
+    </div>
+  </div>
+
+<script>
+const TOTAL_EMPLOYEES = 20;   // total coffee seekers
+const STEP_MS        = 1000;  // time per batch (ms)
+const PEOPLE = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😗','😙','😚','😋','😛'];
+
+// DOM refs
+const hoardStream = document.getElementById('hoardStream');
+const hoardRack   = document.getElementById('hoardRack');
+const hoardDesk   = document.getElementById('hoardDesk');
+const hoardBin    = document.getElementById('hoardBin');
+
+const retStream   = document.getElementById('returnStream');
+const retRack     = document.getElementById('returnRack');
+const retBin      = document.getElementById('returnBin');
+
+const mugInput    = document.getElementById('mugCount');
+
+function reset(rackSize){
+  [hoardStream,hoardRack,hoardDesk,hoardBin,retStream,retRack,retBin]
+    .forEach(el=>el.innerHTML='');
+  for(let i=0;i<rackSize;i++){
+    hoardRack.append('☕');
+    retRack.append('☕');
+  }
+}
+
+function randGroup(){ return Math.floor(Math.random()*3)+1; }
+
+function start(){
+  const mugPoolSize = Math.max(1, parseInt(mugInput.value)||10);
+  reset(mugPoolSize);
+  let served=0;
+  const timer=setInterval(()=>{
+    if(served>=TOTAL_EMPLOYEES){ clearInterval(timer); return; }
+
+    const batch=Math.min(randGroup(), TOTAL_EMPLOYEES-served);
+    served += batch;
+    const faces=Array.from({length:batch},()=>PEOPLE[Math.floor(Math.random()*PEOPLE.length)]);
+
+    // ----- Hoarding process -----
+    const hoardDisplay=[];
+    let rackCnt=hoardRack.childNodes.length;
+    faces.forEach(face=>{
+      if(rackCnt>0){
+        hoardRack.firstChild.remove();
+        rackCnt--;
+        hoardDesk.append('☕');
+        hoardDisplay.push(face+'☕');
+      }else{
+        hoardBin.append('🥤');
+        hoardDisplay.push(face+'🥤');
+      }
+    });
+    hoardStream.textContent=hoardDisplay.join(' ');
+    setTimeout(()=>{ hoardStream.textContent=''; }, STEP_MS/2);
+
+    // ----- Returning process -----
+    const retDisplay=[];
+    let retRackCnt=retRack.childNodes.length;
+    faces.forEach(face=>{
+      if(retRackCnt>0){
+        retRack.firstChild.remove();
+        retRackCnt--;
+        retDisplay.push(face+'☕');
+        // return after sip
+        setTimeout(()=>{ retRack.append('☕'); }, STEP_MS/2);
+      }else{
+        retBin.append('🥤');
+        retDisplay.push(face+'🥤');
+      }
+    });
+    retStream.textContent=retDisplay.join(' ');
+    setTimeout(()=>{ retStream.textContent=''; }, STEP_MS/2);
+
+  }, STEP_MS);
+}
+
+document.getElementById('play').addEventListener('click', start);
+</script>
+</body>
+</html>
