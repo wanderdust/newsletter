@@ -36,7 +36,7 @@ Like in the office example, you can also have the case where you have clients th
 
 Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them acrcoss requests.
 
-## Does it take that much time to open and close a connection?
+## Does PGBouncer really save you that much time?
 You might be wondering, does it really take that much time to establish a connection? Is pgbouncer worth it?
 
 I run an example locally to compare both setups, and see if there's any improvement at all. The setup is as follows:
