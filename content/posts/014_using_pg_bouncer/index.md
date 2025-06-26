@@ -24,7 +24,7 @@ On the other hand, if they use mugs, when a person is done with their drink, the
 
 <iframe width="100%" height="500" name="iframe" src="/posts/014_using_pg_bouncer/cups_vs_mugs.html"></iframe>
 
-Now think of an office that only has 10 mugs in the cupboard. THe first 10 employees to arrive grab these mugs, pour their coffee and take them to their desks. Instead of returning them when they are done, they keep these mugs all day so they can re-fill them with new coffe througouth the day. Other employees that arrive later in the day use plastic cups instead, creating unnecessary litter. 
+Now think of an office that only has 10 mugs in the cupboard. THe first 10 employees to arrive grab these mugs, pour their coffee and take them to their desks. Instead of returning them when they are done, they keep these mugs all day so they can re-fill them with new coffe througouth the day. Other employees that arrive later in the day use plastic cups instead, creating unnecessary litter. Or even worse, if there are no plastic cups left, they may not get to drink coffe at all!
 
 A much better approach is if the employees with a mug could return them to the cupboard when they are done (after cleaning them of course!), so other people can use them in between. When they want to serve themselves another coffee, they go back to the cupboard and pick one of the available mugs.
 
@@ -69,7 +69,7 @@ Average Execution Time:
   PGBouncer was 30.1% faster
 ```
 
-PGBouncer is able to re-use connections across requests, making queries slightly faster (by 22ms). This is a very considerable of time saved considering the query only takes 2.8ms to execute. Of course, we are testing on a small sandbox environment, but still.
+PGBouncer is able to re-use connections across requests, making queries slightly faster (by 2,2ms). This is a very considerable of time saved considering the query only takes 2.8ms to execute. Of course, we are testing on a small sandbox environment, but still.
 
 Another benefit of PGBouncer is that it is capable of queuing requests when there are no connections available in the pool. In some cases you might prefer queuing rather than increasing the max connections parameter to avoid database overload. This might be helpful to handle unexpected spikes of requests.
 
