@@ -1,502 +1,294 @@
-<!doctype html>
+
+<!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="utf-8" />
-        <title>pgBouncer Pooling Visual Demo</title>
-        <style>
-            /* ---------- base styling ---------- */
-            body {
-                font-family: Arial, Helvetica, sans-serif;
-                margin: 0;
-                background: #f0f4f8;
-                padding: 1rem;
-            }
-            h1 {
-                text-align: center;
-                margin: 0 0 1rem;
-            }
-            .grid {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 2rem;
-                justify-content: center;
-            }
-            .panel {
-                background: #fff;
-                border-radius: 12px;
-                box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
-                padding: 1.2rem;
-                flex: 1 1 480px;
-                max-width: 520px;
-            }
-            .panel h2 {
-                margin: 0 0 0.4rem;
-                text-align: center;
-                font-size: 1.3rem;
-            }
-            label {
-                display: block;
-                margin-top: 0.4rem;
-                font-size: 0.9rem;
-            }
-            input[type="range"],
-            input[type="number"] {
-                width: 100%;
-            }
-            button {
-                position: relative;
-                overflow: hidden;
-                margin-top: 0.6rem;
-                padding: 0.55rem 1.1rem;
-                font-size: 1rem;
-                color: #fff;
-                background: #1976d2;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-                transition: transform 0.1s;
-            }
-            button:active {
-                transform: scale(0.94);
-            }
-            button:after {
-                content: "";
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                width: 0;
-                height: 0;
-                background: rgba(255, 255, 255, 0.4);
-                border-radius: 50%;
-                transform: translate(-50%, -50%);
-                transition:
-                    width 0.4s ease-out,
-                    height 0.4s ease-out;
-            }
-            button:active:after {
-                width: 200%;
-                height: 200%;
-            }
+<head>
+<meta charset="utf-8">
+<title>Postgres Connection Pooling Simulator</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  /* ===== colour palette ===== */
+  :root{
+    --c-new:#9c27b0;   /* brand‑new physical connection */
+    --c-busy:#4caf50;  /* reused / busy physical connection */
+    --c-idle:#cfd8dc;  /* idle connection waiting in pool */
+    --c-drop:#e53935;  /* dropped request */
+    --c-queue:#ffb300; /* queued request (emoji‑only) */
+  }
 
-            .sim {
-                position: relative;
-                height: 260px;
-                margin-top: 0.8rem;
-                background: #fafafa;
-                border: 2px dashed #c1c6cc;
-                border-radius: 8px;
-                overflow: hidden;
-            }
-            .path {
-                position: absolute;
-                top: 50%;
-                height: 2px;
-                background: #90a4ae;
-                transform: translateY(-50%);
-            }
-            #vanillaArea .path {
-                left: 8%;
-                right: 8%;
-            }
-            #poolArea .path.clientPool {
-                left: 8%;
-                width: 38%;
-            }
-            #poolArea .path.poolDb {
-                left: 50%;
-                width: 42%;
-            }
+  /* ===== reset & layout helpers ===== */
+  *{box-sizing:border-box}
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f0f4f8;padding:1rem}
+  h1{text-align:center;margin:0 0 1.2rem}
 
-            .label {
-                position: absolute;
-                top: 6px;
-                font-size: 0.75rem;
-                color: #455a64;
-            }
-            #vanillaArea .label.db {
-                right: 8%;
-            }
-            #poolArea .label.client {
-                left: 8%;
-            }
-            #poolArea .label.pool {
-                left: 46%;
-            }
-            #poolArea .label.db {
-                right: 8%;
-            }
+  /* ===== tidy top controls ===== */
+  .controls{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-bottom:1.4rem;background:#fff;padding:.8rem 1rem;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .controls .group{display:flex;align-items:center;gap:.4rem;font-size:.9rem}
+  .controls input[type=number]{width:70px;padding:.2rem .3rem}
+  .controls input[type=range]{width:120px}
+  .controls button{padding:.45rem 1rem;font-size:.9rem;border:none;border-radius:6px;background:#1976d2;color:#fff;cursor:pointer}
+  .controls button:active{transform:scale(.96)}
 
-            /* ---------- ball colours ---------- */
-            .ball {
-                position: absolute;
-                width: 18px;
-                height: 18px;
-                border-radius: 50%;
-            }
-            .newConn {
-                background: #9c27b0;
-            } /* purple – new connection */
-            .accept {
-                background: #4caf50;
-            } /* green  – re-used connection */
-            .reject {
-                background: #e53935;
-            } /* red    – dropped */
-            .queue {
-                background: #ffb300;
-            }
+  /* ===== panels ===== */
+  .grid{display:flex;flex-wrap:wrap;gap:2rem;justify-content:center}
+  .panel{background:#fff;border-radius:12px;box-shadow:0 3px 8px rgba(0,0,0,.12);padding:1.2rem;flex:1 1 520px;max-width:560px}
+  .panel h2{text-align:center;margin:0 0 .6rem;font-size:1.3rem}
+  label{display:block;margin-top:.4rem;font-size:.9rem}
+  input[type=range],input[type=number]{width:100%}
+  button.panelBtn{margin-top:.5rem;padding:.5rem 1rem;font-size:.9rem;border:none;border-radius:6px;background:#1976d2;color:#fff;cursor:pointer}
+  button.panelBtn:active{transform:scale(.95)}
 
-            /* ---------- counters & legend ---------- */
-            .counter {
-                font-size: 0.95rem;
-                margin-top: 0.6rem;
-                text-align: center;
-            }
-            .big {
-                font-weight: 600;
-                font-size: 1.05rem;
-            }
+  /* ===== simulation canvas ===== */
+  .sim{position:relative;height:300px;margin-top:.8rem;background:#fafafa;border:2px dashed #c1c6cc;border-radius:8px;overflow:hidden}
+  .path{position:absolute;top:50%;height:2px;background:#90a4ae;transform:translateY(-50%)}
+  #vanillaArea .path{left:8%;right:8%}
+  #poolArea .path.clientPool{left:8%;width:38%}
+  #poolArea .path.poolDb{left:50%;width:42%}
 
-            .legend {
-                display: flex;
-                gap: 0.8rem;
-                justify-content: center;
-                margin-top: 0.6rem;
-                font-size: 0.8rem;
-            }
-            .legend span {
-                display: inline-flex;
-                align-items: center;
-                gap: 0.25rem;
-            }
-            .dot {
-                width: 14px;
-                height: 14px;
-                border-radius: 50%;
-            }
+  .label{position:absolute;top:6px;font-size:.75rem;color:#455a64}
+  #vanillaArea .label.db{right:8%}
+  #poolArea .label.client{left:8%}
+  #poolArea .label.pool{left:46%}
+  #poolArea .label.db{right:8%}
 
-            /* apply same colour rules to legend dots */
-            .dot.newConn {
-                background: #9c27b0;
-            }
-            .dot.accept {
-                background: #4caf50;
-            }
-            .dot.reject {
-                background: #e53935;
-            }
-            .dot.queue {
-                background: #ffb300;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Postgres vs pgBouncer Pooling</h1>
-        <button id="restartBtn">Restart demo</button>
+  /* ===== client visuals ===== */
+  .ball{position:absolute;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;user-select:none}
+  .ball.new{background:var(--c-new)}
+  .ball.reuse{background:var(--c-busy)}
+  .ball.reject{background:var(--c-drop)}
+  .waiting{position:absolute;font-size:20px;user-select:none}
 
-        <div class="grid">
-            <!-- ------- Vanilla PG panel ------- -->
-            <div class="panel">
-                <h2>Without Pooling</h2>
-                <label>
-                    Postgres max connections
-                    <input
-                        id="vMax"
-                        type="range"
-                        min="1"
-                        max="40"
-                        value="15"
-                        oninput="vMaxNum.value=this.value"
-                    />
-                    <input
-                        id="vMaxNum"
-                        type="number"
-                        min="1"
-                        max="40"
-                        value="15"
-                        oninput="vMax.value=this.value"
-                    />
-                </label>
-                <button id="vBtn">Send request</button>
+  /* ===== pool slots ===== */
+  .poolBox{position:absolute;bottom:6px;left:8%;right:8%;height:28px;display:flex;gap:6px;justify-content:center;align-items:center}
+  .slot{width:24px;height:24px;border-radius:4px;background:var(--c-idle);transition:background .2s}
+  .slot.new{background:var(--c-new)}
+  .slot.busy{background:var(--c-busy)}
 
-                <div class="counter">
-                    <div class="big">
-                        In-flight: <span id="vActive">0</span>
-                    </div>
-                    <div>
-                        Total: <span id="vTotal">0</span> | Completed:
-                        <span id="vOk">0</span> | Dropped:
-                        <span id="vFail">0</span>
-                    </div>
-                </div>
+  /* pool label */
+  .poolCaption{position:absolute;bottom:38px;left:0;width:100%;text-align:center;font-size:.75rem;color:#455a64}
 
-                <div class="sim" id="vanillaArea">
-                    <div class="path"></div>
-                    <span class="label db">DB</span>
-                </div>
+  /* ===== counters & legend ===== */
+  .counter{font-size:.95rem;margin-top:.6rem;text-align:center}
+  .big{font-weight:600;font-size:1.05rem}
+  .legend{display:flex;gap:.8rem;justify-content:center;margin-top:.6rem;font-size:.8rem;flex-wrap:wrap}
+  .legend span{display:inline-flex;align-items:center;gap:.25rem}
+  .dot{width:14px;height:14px;border-radius:50%}
+  .dot.new{background:var(--c-new)}
+  .dot.busy{background:var(--c-busy)}
+  .dot.drop{background:var(--c-drop)}
+  .dot.idle{background:var(--c-idle);border:1px solid #90a4ae}
+</style>
+</head>
+<body>
+<h1>Connection‑Pooling Simulator</h1>
 
-                <div class="legend">
-                    <span><span class="dot newConn"></span>new connection</span>
-                    <span
-                        ><span class="dot accept"></span>re-used
-                        connection</span
-                    >
-                    <span><span class="dot reject"></span>dropped</span>
-                </div>
-            </div>
+<!-- ===== Top controls ===== -->
+<div class="controls">
+  <div class="group">
+    <label title="Random query duration range in ms">Query (ms)</label>
+    <input id="qMin" type="number" min="10" max="10000" value="80">
+    <span>–</span>
+    <input id="qMax" type="number" min="10" max="10000" value="800">
+  </div>
+  <div class="group">
+    <label title="Time to establish a brand‑new physical connection (ms)">Conn setup (ms)</label>
+    <input id="connTime" type="range" min="50" max="2000" value="400" oninput="connTimeNum.value=this.value">
+    <input id="connTimeNum" type="number" min="50" max="2000" value="400" oninput="connTime.value=this.value">
+  </div>
+  <button id="restartBtn">Restart</button>
+</div>
 
-            <!-- ------- pgBouncer panel ------- -->
-            <div class="panel">
-                <h2>With pgBouncer</h2>
-                <label>
-                    pgBouncer pool size
-                    <input
-                        id="poolSize"
-                        type="range"
-                        min="1"
-                        max="20"
-                        value="8"
-                        oninput="poolSizeNum.value=this.value"
-                    />
-                    <input
-                        id="poolSizeNum"
-                        type="number"
-                        min="1"
-                        max="20"
-                        value="8"
-                        oninput="poolSize.value=this.value"
-                    />
-                </label>
-                <label>
-                    Postgres max connections
-                    <input
-                        id="pMax"
-                        type="range"
-                        min="1"
-                        max="40"
-                        value="15"
-                        oninput="pMaxNum.value=this.value"
-                    />
-                    <input
-                        id="pMaxNum"
-                        type="number"
-                        min="1"
-                        max="40"
-                        value="15"
-                        oninput="pMax.value=this.value"
-                    />
-                </label>
-                <button id="pBtn">Send request</button>
+<div class="grid">
+  <!-- ===== Vanilla panel ===== -->
+  <div class="panel">
+    <h2>Without Pooling</h2>
+    <label>Postgres max connections
+      <input id="vMax" type="range" min="1" max="40" value="15" oninput="vMaxNum.value=this.value">
+      <input id="vMaxNum" type="number" min="1" max="40" value="15" oninput="vMax.value=this.value">
+    </label>
+    <button id="vBtn" class="panelBtn">Send request</button>
 
-                <div class="counter">
-                    <div class="big">
-                        In-flight DB: <span id="pDbAct">0</span> | Queued:
-                        <span id="pQueued">0</span>
-                    </div>
-                    <div>
-                        Total: <span id="pTot">0</span> | Completed:
-                        <span id="pDone">0</span> | Open connections:
-                        <span id="pConn">0</span>
-                    </div>
-                </div>
+    <div class="counter">
+      <div class="big">In‑flight: <span id="vActive">0</span></div>
+      <div>
+        Total: <span id="vTotal">0</span> |
+        Completed: <span id="vDone">0</span> |
+        Dropped: <span id="vFail">0</span> |
+        Open conns: <span id="vConn">0</span>
+      </div>
+    </div>
 
-                <div class="sim" id="poolArea">
-                    <div class="path clientPool"></div>
-                    <div class="path poolDb"></div>
-                    <span class="label client">Client</span>
-                    <span class="label pool">Pool</span>
-                    <span class="label db">DB</span>
-                </div>
+    <div class="sim" id="vanillaArea">
+      <div class="path"></div>
+      <span class="label db">DB</span>
+    </div>
 
-                <div class="legend">
-                    <span><span class="dot newConn"></span>new connection</span>
-                    <span
-                        ><span class="dot accept"></span>re-used
-                        connection</span
-                    >
-                    <span><span class="dot reject"></span>dropped</span>
-                    <span><span class="dot queue"></span>queued</span>
-                </div>
-            </div>
-        </div>
+    <div class="legend">
+      <span><span class="dot new"></span>new connection</span>
+      <span><span class="dot busy"></span>re‑used connection</span>
+      <span><span class="dot drop"></span>dropped</span>
+    </div>
+  </div>
 
-        <script>
-            /* ---------- generic helpers ---------- */
-            function makeBall(area, x, y) {
-                const b = document.createElement("div");
-                b.className = "ball";
-                b.style.left = x + "px";
-                b.style.top = y + "px";
-                area.appendChild(b);
-                return b;
-            }
+  <!-- ===== Connection Pooling panel ===== -->
+  <div class="panel">
+    <h2>With Connection Pooling</h2>
+    <label>Connection Pooling pool size
+      <input id="poolSize" type="range" min="1" max="20" value="8" oninput="poolSizeNum.value=this.value">
+      <input id="poolSizeNum" type="number" min="1" max="20" value="8" oninput="poolSize.value=this.value">
+    </label>
+    <label>Postgres max connections
+      <input id="pMax" type="range" min="1" max="40" value="15" oninput="pMaxNum.value=this.value">
+      <input id="pMaxNum" type="number" min="1" max="40" value="15" oninput="pMax.value=this.value">
+    </label>
+    <button id="pBtn" class="panelBtn">Send request</button>
 
-            function moveTo(b, target, dur, cb) {
-                const start = parseFloat(b.style.left);
-                b.animate([{ left: start + "px" }, { left: target + "px" }], {
-                    duration: dur,
-                    easing: "linear",
-                    fill: "forwards",
-                });
-                setTimeout(() => {
-                    b.style.left = target + "px";
-                    cb && cb();
-                }, dur);
-            }
+    <div class="counter">
+      <div class="big">In‑flight: <span id="pDbAct">0</span> | Queued: <span id="pQueued">0</span></div>
+      <div>
+        Total: <span id="pTot">0</span> |
+        Completed: <span id="pDone">0</span> |
+        Open conns: <span id="pConn">0</span>
+      </div>
+    </div>
 
-            function drop(b, area) {
-                const final = area.clientHeight - 18,
-                    cur = parseFloat(b.style.top);
-                b.animate([{ top: cur + "px" }, { top: final + "px" }], {
-                    duration: 800,
-                    easing: "ease-in",
-                    fill: "forwards",
-                });
-                b.style.top = final + "px";
-            }
+    <div class="sim" id="poolArea">
+      <div class="path clientPool"></div>
+      <div class="path poolDb"></div>
+      <span class="label client">Client</span>
+      <span class="label pool">Pool</span>
+      <span class="label db">DB</span>
+      <div class="poolBox" id="poolBox"></div>
+      <span class="poolCaption">Pool slots</span>
+    </div>
 
-            function clearSim(area) {
-                [...area.querySelectorAll(".ball")].forEach((el) =>
-                    el.remove(),
-                );
-            }
+    <div class="legend">
+      <span><span class="dot new"></span>new connection</span>
+      <span><span class="dot busy"></span>busy connection</span>
+      <span><span class="dot idle"></span>idle in pool</span>
+      <span>🙂 waiting </span>
+    </div>
+  </div>
+</div>
 
-            /* ---------- Vanilla side ---------- */
-            const vArea = document.getElementById("vanillaArea");
-            let vTot = 0,
-                vOk = 0,
-                vFail = 0,
-                vAct = 0;
-            const vTotal = document.getElementById("vTotal"),
-                vOkEl = document.getElementById("vOk"),
-                vFailEl = document.getElementById("vFail"),
-                vActEl = document.getElementById("vActive");
+<script>
+'use strict';
 
-            function updateV() {
-                vTotal.textContent = vTot;
-                vOkEl.textContent = vOk;
-                vFailEl.textContent = vFail;
-                vActEl.textContent = vAct;
-            }
+/* ===== helpers ===== */
+const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
+function move(el,toX,dur,cb){const start=parseFloat(el.style.left);el.animate([{left:start+"px"},{left:toX+"px"}],{duration:dur,easing:"linear",fill:"forwards"});setTimeout(()=>{el.style.left=toX+"px";cb&&cb();},dur);}
+function drop(el,area){const end=area.clientHeight-24,cur=parseFloat(el.style.top);el.animate([{top:cur+"px"},{top:end+"px"}],{duration:500,easing:"ease-in",fill:"forwards"});el.style.top=end+"px";}
+function clearArea(ar){[...ar.querySelectorAll('.ball,.waiting')].forEach(n=>n.remove());}
 
-            document.getElementById("vBtn").onclick = () => {
-                const max = parseInt(document.getElementById("vMax").value, 10);
-                vTot++;
-                const b = makeBall(
-                    vArea,
-                    0,
-                    Math.random() * (vArea.clientHeight - 18),
-                );
-                if (vAct < max) {
-                    vAct++;
-                    vOk++;
-                    b.classList.add("newConn");
-                    /* slowed from 800ms to 1200ms */
-                    moveTo(b, vArea.clientWidth * 0.84, 1200, () =>
-                        setTimeout(() => {
-                            b.remove();
-                            vAct--;
-                            updateV();
-                        }, 1000),
-                    );
-                } else {
-                    vFail++;
-                    b.classList.add("reject");
-                    moveTo(b, 60, 350, () =>
-                        moveTo(b, 0, 350, () => drop(b, vArea)),
-                    );
-                }
-                updateV();
-            };
-            updateV();
+/* ===== cache top‑level inputs ===== */
+const qMinEl=document.getElementById('qMin');
+const qMaxEl=document.getElementById('qMax');
+const connTimeEl=document.getElementById('connTime');
+const connTimeNumEl=document.getElementById('connTimeNum');
+qMinEl.oninput=qMaxEl.oninput=()=>{if(parseInt(qMinEl.value,10)>parseInt(qMaxEl.value,10)){[qMinEl.value,qMaxEl.value]=[qMaxEl.value,qMinEl.value];}}
+connTimeEl.oninput=()=>connTimeNumEl.value=connTimeEl.value;
+connTimeNumEl.oninput=()=>connTimeEl.value=connTimeNumEl.value;
 
-            /* ---------- pgBouncer side ---------- */
-            const pArea = document.getElementById("poolArea");
-            let pTot = 0,
-                pDone = 0,
-                pQueued = 0,
-                pPoolAct = 0,
-                pDbAct = 0,
-                pConn = 0;
-            const queue = [];
-            const pTotEl = document.getElementById("pTot"),
-                pDoneEl = document.getElementById("pDone"),
-                pQueuedEl = document.getElementById("pQueued"),
-                pDbActEl = document.getElementById("pDbAct"),
-                pConnEl = document.getElementById("pConn");
+const getQDur=()=>rand(parseInt(qMinEl.value,10),parseInt(qMaxEl.value,10));
+const getConnDur=()=>parseInt(connTimeEl.value,10);
 
-            function updateP() {
-                pTotEl.textContent = pTot;
-                pDoneEl.textContent = pDone;
-                pQueuedEl.textContent = pQueued;
-                pDbActEl.textContent = pDbAct;
-                pConnEl.textContent = pConn;
-            }
+/* ===== VANILLA ===== */
+const vArea=document.getElementById('vanillaArea');
+const vMaxEl=document.getElementById('vMax');
+const vActiveEl=document.getElementById('vActive');
+const vTotalEl=document.getElementById('vTotal');
+const vDoneEl=document.getElementById('vDone');
+const vFailEl=document.getElementById('vFail');
+const vConnEl=document.getElementById('vConn');
+let vTot=0,vDone=0,vFail=0,vAct=0,vConn=0;
+function updV(){vTotalEl.textContent=vTot;vDoneEl.textContent=vDone;vFailEl.textContent=vFail;vActiveEl.textContent=vAct;vConnEl.textContent=vConn;}
+function sendVanilla(){
+  const max=parseInt(vMaxEl.value,10);
+  vTot++;
+  const y=Math.random()*(vArea.clientHeight-24);
+  if(vConn<max){
+    vConn++;
+    vAct++;
+    updV();
+    const ball=document.createElement('div');
+    ball.className='ball new';
+    ball.textContent='🙂';
+    ball.style.left='0px';
+    ball.style.top=y+'px';
+    vArea.appendChild(ball);
 
-            function enqueue() {
-                pTot++;
-                const b = makeBall(
-                    pArea,
-                    0,
-                    Math.random() * (pArea.clientHeight - 18),
-                );
-                b.classList.add("queue");
-                queue.push(b);
-                pQueued++;
-                process();
-                updateP();
-            }
+    const connDur=getConnDur();
+    const qryDur=getQDur();
 
-            function process() {
-                const size = parseInt(
-                        document.getElementById("poolSize").value,
-                        10,
-                    ),
-                    max = parseInt(document.getElementById("pMax").value, 10),
-                    poolX = pArea.clientWidth * 0.38,
-                    dbX = pArea.clientWidth * 0.76;
-                while (queue.length && pPoolAct < size && pDbAct < max) {
-                    const b = queue.shift();
-                    pQueued--;
-                    const isNew = pDbAct >= pConn; // if after increment we'll exceed used conn, it's new
-                    pPoolAct++;
-                    pDbAct++;
-                    if (pDbAct > pConn) pConn = pDbAct;
-                    b.classList.remove("queue");
-                    b.classList.add(isNew ? "newConn" : "accept");
-                    /* first hop unchanged (300ms) */
-                    moveTo(b, poolX, 300, () =>
-                        /* second hop slowed from 700ms to 900ms for new connections */
-                        moveTo(b, dbX, isNew ? 900 : 400, () => {
-                            setTimeout(() => {
-                                pDbAct--;
-                                pPoolAct--;
-                                pDone++;
-                                b.remove();
-                                process();
-                                updateP();
-                            }, 1000);
-                        }),
-                    );
-                }
-            }
+    move(ball,vArea.clientWidth*0.84,connDur,()=>{
+      setTimeout(()=>{
+        ball.remove();
+        vAct--; 
+        vConn--; 
+        vDone++; 
+        updV();
+      },qryDur);
+    });
+  }else{
+    const rej=document.createElement('div');
+    rej.className='ball reject';
+    rej.textContent='🙁';
+    rej.style.left='0px';
+    rej.style.top=y+'px';
+    vArea.appendChild(rej);
+    vFail++;
+    updV();
+    move(rej,60,350,()=>move(rej,0,350,()=>drop(rej,vArea)));
+  }
+}
 
-            document.getElementById("pBtn").onclick = enqueue;
-            updateP();
+document.getElementById('vBtn').onclick=sendVanilla;
+updV();
 
-            /* ---------- restart ---------- */
-            document.getElementById("restartBtn").onclick = () => {
-                // clear visuals
-                clearSim(vArea);
-                clearSim(pArea);
-                // reset vanilla values
-                vTot = vOk = vFail = vAct = 0;
-                updateV();
-                // reset pool values
-                pTot = pDone = pQueued = pPoolAct = pDbAct = pConn = 0;
-                queue.length = 0;
-                updateP();
-            };
-        </script>
-    </body>
+/* ===== POOL / Connection Pooling ===== */
+const pArea=document.getElementById('poolArea');
+const poolBox=document.getElementById('poolBox');
+const poolSizeEl=document.getElementById('poolSize');
+const pMaxEl=document.getElementById('pMax');
+const pDbActEl=document.getElementById('pDbAct');
+const pQueuedEl=document.getElementById('pQueued');
+const pTotEl=document.getElementById('pTot');
+const pDoneEl=document.getElementById('pDone');
+const pConnEl=document.getElementById('pConn');
+let pTot=0,pDone=0,pQueued=0,pDbAct=0,pConn=0;
+const queue=[];const slots=[];
+function updP(){pTotEl.textContent=pTot;pDoneEl.textContent=pDone;pQueuedEl.textContent=pQueued;pDbActEl.textContent=pDbAct;pConnEl.textContent=pConn;}
+function makeSlot(){const s=document.createElement('div');s.className='slot';poolBox.appendChild(s);slots.push(s);return s;}
+function enqueueP(){pTot++;const y=Math.random()*(pArea.clientHeight-24);const wait=document.createElement('span');wait.className='waiting';wait.textContent='🙂';wait.style.left='0px';wait.style.top=y+'px';pArea.appendChild(wait);queue.push({y,wait});pQueued++;updP();process();}
+function process(){const size=parseInt(poolSizeEl.value,10);const dbMax=parseInt(pMaxEl.value,10);const poolX=pArea.clientWidth*0.38;const dbX=pArea.clientWidth*0.76;
+  while(queue.length && pDbAct<dbMax){let slot=slots.find(s=>!s.classList.contains('busy'));
+    const needNew=!slot && slots.length<size && pConn<dbMax;
+    if(!slot && !needNew) break; // queue must wait
+    const {y,wait}=queue.shift();pQueued--;wait.remove();
+    slot=slot || makeSlot();
+    const isNewConn=needNew && !slot.classList.contains('busy');
+    if(isNewConn){slot.classList.add('new');pConn++;setTimeout(()=>slot.classList.remove('new'),600);} // flash purple
+    slot.classList.add('busy');
+
+    const ball=document.createElement('div');ball.className='ball '+(isNewConn?'new':'reuse');ball.textContent='🙂';ball.style.left='0px';ball.style.top=y+'px';pArea.appendChild(ball);
+
+    const connDur=isNewConn?getConnDur():300;const qryDur=getQDur();
+    pDbAct++;updP();
+    move(ball,poolX,300,()=>move(ball,dbX,connDur,()=>{setTimeout(()=>{
+      pDbAct--;slot.classList.remove('busy');slot.classList.add('idle');pDone++;ball.remove();updP();process();
+    },qryDur);}));
+  }
+}
+
+document.getElementById('pBtn').onclick=enqueueP;updP();
+
+/* ===== restart ===== */
+document.getElementById('restartBtn').onclick=()=>{
+  clearArea(vArea);clearArea(pArea);
+  vTot=vDone=vFail=vAct=vConn=0;updV();
+  pTot=pDone=pQueued=pDbAct=pConn=0;updP();
+  queue.length=0;slots.forEach(s=>s.remove());slots.length=0;
+};
+</script>
+</body>
 </html>
+
