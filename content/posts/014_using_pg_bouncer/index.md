@@ -81,7 +81,9 @@ I run an example locally to find out if there really are performance gains. The 
 
 I use a simple SELECT query which I benchmark and it runs within ~2.8ms.
 
-I use a python script to run this query 80,000 times with a maximum of 3 queries executing concurrently and I test both setups: with and without PGBouncer. When hitting postgres directly clients open and close a connection on each request.
+I use a python script to run this query 80,000 times with a maximum of 3 concurrent queries.
+
+I test both setups: with and without PGBouncer. When hitting postgres directly clients open and close a connection on each request.
 
 I use 10 postgres connections and a pool size of 3 for simplicity. In production you'd be dealing with hundreds or thousands of concurrent connections.
 
@@ -137,7 +139,7 @@ admin_users = billy
 ### Credentials
 Next thing is to create the `userlist.txt` auth file. This file contains the list of users allowed in.
 
-Create a new user/password. Note that this user is pgbouncer specific and has nothing to do with the postgres user.
+Create a new user/password. Note that this user is pgbouncer specific and has nothing to do with the postgres database user.
 
 For example add this username and password to `userlist.txt`.
 
@@ -176,7 +178,7 @@ psql -p 6432 -U billy mydb
 And bam! You are in!
 
 
-If you get this error esure you have created the md5 hash properly. If you get a specific error for your postgres user (defined in the `[database]` section of `pgbouncer.ini`), ensure that the postgres connection is correct. 
+If you get below error ensure you have created the md5 hash properly. If you get a specific error for your postgres user (defined in the `[database]` section of `pgbouncer.ini`), ensure that the postgres connection is correct. 
 ```
 2025-06-12 11:56:44.176 UTC [1] WARNING C-0x7fe106331280: mydb/billy@127.0.0.1:50004 pooler error: password authentication failed
 ```
@@ -348,4 +350,6 @@ Pgbouncer is a lightweight and easy to use connection pooling service for Postgr
 Hope you've enjoyed the post. See you next time!
 
 
-
+resources
+- https://www.depesz.com/2012/12/02/what-is-the-point-of-bouncing/
+- https://www.pgbouncer.org/config.html
