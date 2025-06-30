@@ -43,13 +43,33 @@ Step 3: Learn!
 
 PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your clients.
 
-You can use PG Pooling in the following modes
+You can use PGBouncer in the following modes
 
 ### Session Pooling
 
+When a user connects, pgBouncer finds a connection from the pool and assigns it to the user. The connection is released back to pool after client disconnects. This is the default mode.
+
 ### Transaction Pooling
+Transaction pooling is a bit more aggresive and efficient in re-using the connections.
+
+In this mode, connections are released once the transactions are finished, which after `commit` or `rollback`.
+
+```SQL
+-- Get new connection
+BEGIN;
+INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john.doe@example.com');
+UPDATE users SET email = 'john.updated@example.com' WHERE id = 1;
+DELETE FROM users WHERE id = 1;
+COMMIT;
+-- Release connection
+```
 
 ### Statement Pooling
+
+Statement pooling tries to be even more aggresive than transaction pooling: the connection is released back to pool after query finishes.
+
+For this mode to work you need to have autocommit enabled. In statement mode, the previous example would not be allowed, each query needs to be run separately. This means you cannot run operations atomically.
+
 
 ## Does PGBouncer really save you that much time?
 
