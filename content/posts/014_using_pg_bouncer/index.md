@@ -14,9 +14,9 @@ images: []
 
 
 ## What is connection Pooling?
-When a user wants to run a query in the database, first, they open a connection. Then, they run the query(es). When they are done they close the connection.
+To run a query you need to: open a connection, run the query, close the connection.
 
-This process has to happen every time a user wants to run a query or transaction in the database.
+This is repeated every time a new client wants to run a query in the database.
 
 Imagine you have a use case where you have a lot of short lived queries hitting your database from different thousands of clients. Instead of opening and closing hundreds or thousands of connections per second, you can keep a *pool* of connections open and re-use them across clients. By re-assigning the same connections you can efficiently keep a small number of connections to serve a much larger number of clients.
 
@@ -24,7 +24,7 @@ You can also have the case where you have clients that keep long lived connectio
 
 From this point of view, clients rarely need to open and close connections. So where does pooling help?
 
-It is very unlikely that clients need to be running transactions 100% of the time. Think of a webserver client. When it hits the database to get some data, it spends some time processing the data, rendering it back to the user etc. In those "idle" times, connectionn pooling can efficiently re-assign the connection to a different client, and give this client a new connection when it actually needs it again.
+It is very unlikely that clients need to be running transactions 100% of the time. Think of a website that fetches data from a database. When it hits the database to get some data, it spends some time processing the data, rendering it back to the user etc. In those "idle" times, connectionn pooling can efficiently re-assign the connection to a different client, and give this client a new connection when it actually needs it again.
 
 Even if some clients do use the connection a 100% of the time, why not let a connection pooling service efficiently re-use those other connections that are not being used 100% of the time?
 
@@ -53,9 +53,9 @@ You can use PG Pooling in the following modes
 
 ## Does PGBouncer really save you that much time?
 
-Okay, this may sound great on paper, but does it really take that much time to establish a connection? Is pgbouncer worth it?
+PGBouncer may sound great on paper, but does it really take that much time to establish a connection? Is it worth it?
 
-I run an example locally to compare both setups, and see if there's any improvement at all. The setup is as follows:
+I run an example locally to find out if there really are performance gains. The setup is as follows:
 - Postgres database running locally (Docker) with max number of Postgres connections set to 10
 - PGBouncer running locally (Docker) with a default pool size of 3
 
