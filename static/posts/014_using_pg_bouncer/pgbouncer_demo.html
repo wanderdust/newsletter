@@ -175,8 +175,8 @@
 
 /* ===== helpers ===== */
 const rand=(min,max)=>Math.floor(Math.random()*(max-min+1))+min;
-function move(el,toX,dur,cb){const start=parseFloat(el.style.left);el.animate([{left:start+"px"},{left:toX+"px"}],{duration:dur,easing:"linear",fill:"forwards"});setTimeout(()=>{el.style.left=toX+"px";cb&&cb();},dur);}
-function drop(el,area){const end=area.clientHeight-24,cur=parseFloat(el.style.top);el.animate([{top:cur+"px"},{top:end+"px"}],{duration:500,easing:"ease-in",fill:"forwards"});el.style.top=end+"px";}
+function move(el,toX,dur,cb){const start=parseFloat(el.style.left);el.animate([{left:start+"px"},{left:toX+"px"}],{duration:dur,easing:"linear",fill:"forwards"});setTimeout(()=>{el.style.left=toX+"px";cb&&cb();},dur);} 
+function drop(el,area){const end=area.clientHeight-24,cur=parseFloat(el.style.top);el.animate([{top:cur+"px"},{top:end+"px"}],{duration:500,easing:"ease-in",fill:"forwards"});el.style.top=end+"px";} 
 function clearArea(ar){[...ar.querySelectorAll('.ball,.waiting')].forEach(n=>n.remove());}
 
 /* ===== cache top‑level inputs ===== */
@@ -218,8 +218,9 @@ function sendVanilla(){
 
     const connDur=getConnDur();
     const qryDur=getQDur();
+    const totalConnDur=connDur+300; // match pool new conn time (300ms to pool + connDur)
 
-    move(ball,vArea.clientWidth*0.84,connDur,()=>{
+    move(ball,vArea.clientWidth*0.84,totalConnDur,()=>{
       setTimeout(()=>{
         ball.remove();
         vAct--; 
@@ -259,23 +260,46 @@ const queue=[];const slots=[];
 function updP(){pTotEl.textContent=pTot;pDoneEl.textContent=pDone;pQueuedEl.textContent=pQueued;pDbActEl.textContent=pDbAct;pConnEl.textContent=pConn;}
 function makeSlot(){const s=document.createElement('div');s.className='slot';poolBox.appendChild(s);slots.push(s);return s;}
 function enqueueP(){pTot++;const y=Math.random()*(pArea.clientHeight-24);const wait=document.createElement('span');wait.className='waiting';wait.textContent='🙂';wait.style.left='0px';wait.style.top=y+'px';pArea.appendChild(wait);queue.push({y,wait});pQueued++;updP();process();}
-function process(){const size=parseInt(poolSizeEl.value,10);const dbMax=parseInt(pMaxEl.value,10);const poolX=pArea.clientWidth*0.38;const dbX=pArea.clientWidth*0.76;
-  while(queue.length && pDbAct<dbMax){let slot=slots.find(s=>!s.classList.contains('busy'));
+function process(){
+  const size=parseInt(poolSizeEl.value,10);
+  const dbMax=parseInt(pMaxEl.value,10);
+  const poolX=pArea.clientWidth*0.38;
+  const dbX=pArea.clientWidth*0.76;
+
+  while(queue.length && pDbAct<dbMax){
+    let slot=slots.find(s=>!s.classList.contains('busy'));
     const needNew=!slot && slots.length<size && pConn<dbMax;
-    if(!slot && !needNew) break; // queue must wait
-    const {y,wait}=queue.shift();pQueued--;wait.remove();
+    if(!slot && !needNew) break; // must wait
+
+    const {y,wait}=queue.shift();
+    pQueued--;wait.remove();
     slot=slot || makeSlot();
+
     const isNewConn=needNew && !slot.classList.contains('busy');
-    if(isNewConn){slot.classList.add('new');pConn++;setTimeout(()=>slot.classList.remove('new'),600);} // flash purple
+    if(isNewConn){
+      slot.classList.add('new');
+      pConn++;
+      setTimeout(()=>slot.classList.remove('new'),600); // flash purple
+    }
     slot.classList.add('busy');
 
     const ball=document.createElement('div');ball.className='ball '+(isNewConn?'new':'reuse');ball.textContent='🙂';ball.style.left='0px';ball.style.top=y+'px';pArea.appendChild(ball);
 
-    const connDur=isNewConn?getConnDur():300;const qryDur=getQDur();
+    const baseConnDur=getConnDur();
+    const reuseDur=Math.max(100,Math.floor(baseConnDur*0.6)); // reused conns faster
+    const connDur=isNewConn?baseConnDur:reuseDur;
+    const qryDur=getQDur();
+
     pDbAct++;updP();
-    move(ball,poolX,300,()=>move(ball,dbX,connDur,()=>{setTimeout(()=>{
-      pDbAct--;slot.classList.remove('busy');slot.classList.add('idle');pDone++;ball.remove();updP();process();
-    },qryDur);}));
+    // step 1: client to pool
+    move(ball,poolX,300,()=>
+      // step 2: pool to DB
+      move(ball,dbX,connDur,()=>{
+        setTimeout(()=>{
+          pDbAct--;slot.classList.remove('busy');slot.classList.add('idle');pDone++;ball.remove();updP();process();
+        },qryDur);
+      })
+    );
   }
 }
 
