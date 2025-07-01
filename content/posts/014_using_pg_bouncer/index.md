@@ -110,6 +110,53 @@ If the queries were going directly to postgres without PGBouncer in between, tho
 This can come in handy if your database is not prepared to handle a large number of concurrent requests, so you limit your max connections to a reasonable number you know it can handle, and handle the excess requests gracefully by adding them to the queue.
 
 
+## Client vs Database side Pooling
+
+If you've ever had to connect to Postgres from an API service or server, you will be aware that libraries like psycopg (postgres client for python) give you pooling functionality. You might be wondering, when would you want to implement pooling on the client side, vs having a database pooling service like PGbouncer?
+
+### Database side Pooling
+
+[Diagram]
+
+With database side pooling, the pooling service sits right in front of the database. All connections from different clients are centrally managed at the database end.
+
+If you have incoming connections from multiple clients that you have no control of, e.g webservers, APIs, desktop clients, third party applications, analytics, etc, you can centrally control connection pooling on the database side.
+
+Database side pooling gives you the best control of pooling when you have clients from different sources. You can easily manage the pool regardless of what happens on the client side.
+
+The downside is the latency from the extra "hop" of pgbouncer, although this should be faster as compared to connecting directly to Postgres.
+
+### Client Side Pooling
+
+[Diagram]
+
+Client side pooling is when you manage the pool on the client side. For example, if you are building an API that connects to your Postgres database to get some data, you manage the pool logic within the API code.
+
+In this case, you would open a pool at the startup of the service, and use a connection from the pool every time a new request comes through. This is pseudocode for an API implementation illustrating this example.
+
+```python
+# Start the pool globally when the application starts
+pool = pooling.new(database_connection="user=billy password=1234 host=myhost dbname=mydata")
+
+# When a request to the server comes through, grab a connection from the global pool
+app("/user", method=GET)
+    pool.request("SELECT * FROM users")
+
+app("/users", method=GET)
+    pool.request("SELECT * FROM users")
+# ...
+```
+
+If you prefer, you can also deploy a pgbouncer instance next to each to your API service instead of using a library client.
+
+The client side pooling approach is great when you have full control of the clients that connect to the database. In real life, most times databases will be accessed from many different clients that you cannot control and these clients may have inefficient connection management (e.g Data Scientists connecting via notebooks and forgetting to close connections in their code).
+
+If your API client has horizontal scaling, it can be harder to control client side pooling. The number of connections will increase and decrease as the clients scale up and down. This can make the number of connections unpredictable if the application has very dynamic autoscaling.
+
+Client side pooling gives you control at the individual instance level where the application is deployed. It has the benefit that you can create a pool at the startup of the app and re-use that pool during the lifetime of the instance. Authentication only needs to happen once at the startup of the service. 
+
+On the other hand, it leaves your database vulnerable to anything outside the control of the individual client implementation.
+
 ## Setting up locally
 
 To setup pgbouncer locally you need to have Postgres database running, either locally (Docker) or with your favorite cloud provider.
