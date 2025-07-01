@@ -12,23 +12,26 @@ cover:
 images: []
 ---
 
+[Write a decent intro]
 
 ## What is connection Pooling?
-To run a query you need to: open a connection, run the query, close the connection.
+Open a connection. Run the queries. Close the connection. Repeat. This is the process a client goes through to run a query in a database.
 
-This is repeated every time a new client wants to run a query in the database.
+Rather than opening and closing a connection every time a new client connects, connection pooling helps by keeping a number of connections always open (a pool of connections) and re-assigning them acrcoss clients.
 
-Imagine you have a use case where you have a lot of short lived queries hitting your database from different thousands of clients. Instead of opening and closing hundreds or thousands of connections per second, you can keep a *pool* of connections open and re-use them across clients. By re-assigning the same connections you can efficiently keep a small number of connections to serve a much larger number of clients.
+Imagine you have a use case where you have a lot of short lived queries hitting your database from different thousands of clients.
 
-You can also have the case where you have clients that keep long lived connections to the database because they need to constantly run transactions.
+Instead of opening and closing hundreds or thousands of connections per second, you can keep a smaller *pool* of connections open and re-use them across clients. 
+
+You may also have the case where you have clients that keep long lived connections to the database and never disconnect because they need to constantly run transactions.
 
 From this point of view, clients rarely need to open and close connections. So where does pooling help?
 
-It is very unlikely that clients need to be running transactions 100% of the time. Think of a website that fetches data from a database. When it hits the database to get some data, it spends some time processing the data, rendering it back to the user etc. In those "idle" times, connectionn pooling can efficiently re-assign the connection to a different client, and give this client a new connection when it actually needs it again.
+It is very unlikely that clients need to be running transactions 100% of the time. Think of a website (the client) that fetches data from a database. When it hits the database to get some data, it spends some time processing the data, rendering it back to the user etc. In those "idle" times, connection pooling can efficiently re-assign the connection to a different client, and give this client a new connection when it actually needs it again.
 
-Even if some clients do use the connection a 100% of the time, why not let a connection pooling service efficiently re-use those other connections that are not being used 100% of the time?
+By re-assigning the same connections you can efficiently keep a smaller number of connections open to serve a much larger number of clients.
 
-Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them acrcoss requests.
+Connection pooling lets you re-use connections to your database. Whether you have a few users making a lot of consecutive requests or many different users making fewer sporadic requests, connection pooling helps by keeping connections alive and re-using them across clients.
 
 
 ## The Pooling Simulator
@@ -57,18 +60,18 @@ In this mode, connections are released once the transactions are finished, which
 ```SQL
 -- Get new connection
 BEGIN;
-INSERT INTO users (id, name, email) VALUES (1, 'John Doe', 'john.doe@example.com');
-UPDATE users SET email = 'john.updated@example.com' WHERE id = 1;
-DELETE FROM users WHERE id = 1;
+DROP TABLE IF EXISTS backup_table_name;
+ALTER TABLE old_table_name RENAME TO backup_table_name;
+ALTER TABLE new_table_name RENAME TO old_table_name;
 COMMIT;
 -- Release connection
 ```
 
 ### Statement Pooling
 
-Statement pooling tries to be even more aggresive than transaction pooling: the connection is released back to pool after query finishes.
+Statement pooling tries to be even more aggresive than transaction pooling: the connection is released back to pool after each query finishes.
 
-For this mode to work you need to have autocommit enabled. In statement mode, the previous example would not be allowed, each query needs to be run separately. This means you cannot run operations atomically.
+For this mode to work you need to have autocommit enabled. In statement mode, the previous example would not be allowed, each query needs to be run separately.
 
 
 ## Does PGBouncer really save you that much time?
@@ -77,7 +80,7 @@ PGBouncer may sound great on paper, but does it really take that much time to es
 
 I run an example locally to find out if there really are performance gains. The setup is as follows:
 - Postgres database running locally (Docker) with max number of Postgres connections set to 10
-- PGBouncer running locally (Docker) with a default pool size of 3
+- PGBouncer running locally (Docker) in *transaction* mode with a default pool size of 3
 
 I use a simple SELECT query which I benchmark and it runs within ~2.8ms.
 
@@ -96,13 +99,13 @@ Average Execution Time:
   PGBouncer was 18.2% faster
 ```
 
-PGBouncer is 3.3ms faster than hitting postgres directly, which is quite good considering the query takes 2.8ms to execute.
+PGBouncer is 3.3ms faster on average than hitting postgres directly, which is quite good considering the query takes 2.8ms to execute.
 
-Of course, is only a small scale experiment, so take it with a grain of salt. Test on your production systems and decide for yourself.
+Of course, this is only a small scale experiment, so take it with a grain of salt. Test on your production systems and decide for yourself.
 
 A nice bonus of PGBouncer is that it will handle spikes of requests where `number of concurrent requests > number of connections available` by queing the requests until connections are available.
 
-If the queries are going directly to postgres without PGBouncer in between, those additional requests would be refused.
+If the queries were going directly to postgres without PGBouncer in between, those additional requests would be refused.
 
 This can come in handy if your database is not prepared to handle a large number of concurrent requests, so you limit your max connections to a reasonable number you know it can handle, and handle the excess requests gracefully by adding them to the queue.
 
