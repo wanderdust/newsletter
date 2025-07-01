@@ -44,9 +44,9 @@ Step 3: Learn!
 
 ## What is pgbouncer
 
-PG bouncer is a lightweight connection pooling service that sits in between your Postgres database and your clients.
+Pgbouncer is a lightweight connection pooling service for Postgres.
 
-You can use pgbouncer with the following pooling modes: session, transaction or statement.
+Pgbouncer has the following pooling modes: session, transaction or statement.
 
 ### Session Pooling
 
