@@ -12,10 +12,24 @@ cover:
 images: []
 ---
 
-[Write a decent intro]
+I recently had to run load testing for an API that fetches data from postgres. I was monitoring Postgres when running the first test, and I noticed that thousands of connections were being opened, which caused some errors in postgres such as "no more connections allowed" or "out of shared memory".
+
+Clearly the database was not prepared for the load.
+
+So I started looking for some ways to better control the load. I knew that I could increase the number of connections as well as vertically scale the database, but this solution was only good if you have a predictable load that you can adjust your database for. It doesn't solve the problem in situations like my load test test, where the database is hit unexpectedly with a high load of requests.
+
+I needed something to efficiently handle connections to the database as well as graceful handling of unexpected load to avoid runtime errors.
+
+I came across connection pooling: a method for efficiently re-using database connections. 
+
+Although connection pooling didn't originally answer my question into controlling concurrent database load, I quickly realised I could leverage its efficient connection management system to better control access to the database. As soon as I started using it my runtime errors started going away.
+
+In this blog post I go into detail of connection pooling. More specifically I look at pgbouncer, a connection pooling service for Postgres.
+
+This post is packed with examples and step by step guides. Enjoy!
 
 ## What is connection Pooling?
-Open a connection. Run the queries. Close the connection. Repeat. This is the process a client goes through to run a query in a database.
+Open a connection. Run the queries. Close the connection. Repeat. This is the process a client goes through to run a queries in a database.
 
 Rather than opening and closing a connection every time a new client connects, connection pooling helps by keeping a number of connections always open (a pool of connections) and re-assigning them acrcoss clients.
 
@@ -42,7 +56,7 @@ Step 3: Learn!
 <iframe width="100%" height="1500" name="iframe" src="/posts/014_using_pg_bouncer/pgbouncer_demo.html"></iframe>
 
 
-## What is pgbouncer
+## What is pgbouncer?
 
 Pgbouncer is a lightweight connection pooling service for Postgres.
 
@@ -112,7 +126,7 @@ This can come in handy if your database is not prepared to handle a large number
 
 ## Client vs Database side Pooling
 
-If you've ever had to connect to Postgres from an API service or server, you will be aware that libraries like psycopg (postgres client for python) give you pooling functionality. You might be wondering, when would you want to implement pooling on the client side, vs having a database pooling service like PGbouncer?
+If you've ever had to connect to Postgres via code, you will be aware that libraries like psycopg (postgres client for python) give you pooling functionality. You might be wondering, when would you want to implement pooling on the client side, vs having a database pooling service like PGbouncer?
 
 ### Database side Pooling
 
