@@ -1,10 +1,10 @@
 ---
-title: 'Connection Pooling for Postgres using PG Bouncer: Now with examples!'
+title: 'Connection Pooling for Postgres using PG Bouncer'
 date: '2025-06-12T13:01:19+01:00'
 draft: true 
 summary: ''
-tags: []
-categories: [postgres, pgbouncer, eks]
+tags: ['postgres', 'connection pooling', 'pgbouncer', 'kubernetes']
+categories: []
 cover:
   image: ''
   alt: ''
@@ -12,11 +12,11 @@ cover:
 images: []
 ---
 
-I recently had to run load testing for an API that fetches data from postgres. I was monitoring Postgres when running the first test, and I noticed that thousands of connections were being opened, which caused some errors in postgres such as "no more connections allowed" or "out of shared memory".
+I recently had to run load testing for an API that fetches data from postgres. I was monitoring Postgres when running the first test, and I noticed that hundreds of connections were being opened, which caused some errors in postgres such as "no more connections allowed" or "out of shared memory".
 
 Clearly the database was not prepared for the load.
 
-So I started looking for some ways to better control the load. I knew that I could increase the number of connections as well as vertically scale the database, but this solution was only good if you have a predictable load that you can adjust your database for. It doesn't solve the problem in situations like my load test test, where the database is hit unexpectedly with a high load of requests.
+I started looking for some ways to better control the load. I knew that I could increase the number of connections as well as vertically scale the database, but this solution was only good if you have a predictable load that you can adjust your database for. It doesn't solve the problem in situations like my load test test, where the database is hit unexpectedly with a high load of requests.
 
 I needed something to efficiently handle connections to the database as well as graceful handling of unexpected load to avoid runtime errors.
 
@@ -24,9 +24,9 @@ I came across connection pooling: a method for efficiently re-using database con
 
 Although connection pooling didn't originally answer my question into controlling concurrent database load, I quickly realised I could leverage its efficient connection management system to better control access to the database. As soon as I started using it my runtime errors started going away.
 
-In this blog post I go into detail of connection pooling. More specifically I look at pgbouncer, a connection pooling service for Postgres.
+In this blog I get into the nitty gritty of connection pooling. More specifically I look at pgbouncer, a connection pooling service for Postgres.
 
-This post is packed with examples and step by step guides. Enjoy!
+On the second half of the post I include step by step guides on how to setup pgbouncer locally and in kubernetes.
 
 ## What is connection Pooling?
 Open a connection. Run the queries. Close the connection. Repeat. This is the process a client goes through to run a queries in a database.
@@ -126,27 +126,28 @@ This can come in handy if your database is not prepared to handle a large number
 
 ## Client vs Database side Pooling
 
-If you've ever had to connect to Postgres via code, you will be aware that libraries like psycopg (postgres client for python) give you pooling functionality. You might be wondering, when would you want to implement pooling on the client side, vs having a database pooling service like PGbouncer?
+You can implement connection pooling at the client level or at the database level. Where you decide to implement it makes a difference, each approach with its advantages and tradeoffs.
 
 ### Database side Pooling
 
-[Diagram]
+![database side pooling](./database-side-pool.png)
 
-With database side pooling, the pooling service sits right in front of the database. All connections from different clients are centrally managed at the database end.
+With database side pooling, the pooling service sits right in front of the database. All connections from different clients are centrally managed in one place.
 
-If you have incoming connections from multiple clients that you have no control of, e.g webservers, APIs, desktop clients, third party applications, analytics, etc, you can centrally control connection pooling on the database side.
+Database side pooling is best when you have incoming connections from multiple clients that you have no control of, e.g webservers, APIs, desktop clients, third party applications, analytics, etc, so you can centrally control connection pooling on the database side.
 
-Database side pooling gives you the best control of pooling when you have clients from different sources. You can easily manage the pool regardless of what happens on the client side.
-
-The downside is the latency from the extra "hop" of pgbouncer, although this should be faster as compared to connecting directly to Postgres.
+The main downside is that clients still need to establish a connection to pgbouncer. Although this should be very minimal and faster than establishing a connection to postgres directly.
 
 ### Client Side Pooling
 
-[Diagram]
 
-Client side pooling is when you manage the pool on the client side. For example, if you are building an API that connects to your Postgres database to get some data, you manage the pool logic within the API code.
+![client side pooling](./client-side-pool.png)
 
-In this case, you would open a pool at the startup of the service, and use a connection from the pool every time a new request comes through. This is pseudocode for an API implementation illustrating this example.
+Client side pooling is when you manage the pool on the client side. Each client manages their own pooling service.
+
+For this approach you can either place pgbouncer in front of each of your services, or you can use the pooling implementations from client side libraries (e.g. psycopg for python).
+
+Take the following pseudocode for an API service. We start a pool of connections when the service starts. Every time a request comes through, it grabs a connection from the pool. When the request is done it releases it back to the pool.
 
 ```python
 # Start the pool globally when the application starts
@@ -161,17 +162,15 @@ app("/users", method=GET)
 # ...
 ```
 
-If you prefer, you can also deploy a pgbouncer instance next to each to your API service instead of using a library client.
+This approach is best when you have a lot of short lived requests coming from your service. You establish the connections once at the beggining, and re-use them across the lifetime of the service.
 
-The client side pooling approach is great when you have full control of the clients that connect to the database. In real life, most times databases will be accessed from many different clients that you cannot control and these clients may have inefficient connection management (e.g Data Scientists connecting via notebooks and forgetting to close connections in their code).
+If we compare this to connection pooling sitting on the database side, pgbouncer manages the connection pool in the same way, but clients still need to connect to pgbouncer each time they make a request (unless you also decide to establish long lived connections to pgbouncer on the client side). So client side pooling can shave that extra time that it takes to establish the connection to pgbouncer.
 
-If your API client has horizontal scaling, it can be harder to control client side pooling. The number of connections will increase and decrease as the clients scale up and down. This can make the number of connections unpredictable if the application has very dynamic autoscaling.
+The biggest problem with this approach, is that it is very unlikely that you will have control of the clients that access your database. In real life, you will have clients connecting to your database from different applications and sources. These clients may or may not have efficient connection management (e.g. Data scientists connecting via notebooks and forgetting to close the connection).
 
-Client side pooling gives you control at the individual instance level where the application is deployed. It has the benefit that you can create a pool at the startup of the app and re-use that pool during the lifetime of the instance. Authentication only needs to happen once at the startup of the service. 
+The other issue with this approach is that the pooling is managed at the service end, which means that the pool size is calculated via *pool size* x *number of services*. If you have very dynamic horizontal autoscaling, it can make the number of connections to the database unpredictable and hard to control. 
 
-On the other hand, it leaves your database vulnerable to anything outside the control of the individual client implementation.
-
-## Setting up locally
+## Setting up pgbouncer locally
 
 To setup pgbouncer locally you need to have Postgres database running, either locally (Docker) or with your favorite cloud provider.
 
@@ -186,14 +185,13 @@ Create the `pgbouncer.ini` file. This file tells pgbouncer how to connect to the
 
 ```toml
 [databases]
-mydb = host=my-database-host port=5432 dbname=postgres user=postgresuser password=mypassword
+mydb = host=my-database-host port=5432 dbname=postgres user=postgresuser password=postgrespassword
 
 [pgbouncer]
 listen_addr = localhost
 listen_port = 6432
 auth_type = md5
 auth_file = userlist.txt
-admin_users = myuser
 logfile = pgbouncer.log
 pidfile = pgbouncer.pid
 admin_users = billy
@@ -247,7 +245,7 @@ If you get below error ensure you have created the md5 hash properly. If you get
 2025-06-12 11:56:44.176 UTC [1] WARNING C-0x7fe106331280: mydb/billy@127.0.0.1:50004 pooler error: password authentication failed
 ```
 
-## Setting it up in Kubernetes
+## Setting up pgbouncer in Kubernetes
 
 Now that we have set this up locally, here it is what it wold look like if you wanted to set it up in kubernetes. For this we will spin up a Deployment, Secret, Configmap and a Service.
 
@@ -409,10 +407,9 @@ Connect your applications or clients to pgbouncer instead of postgres and you ar
 
 ## Final words
 
-Pgbouncer is a lightweight and easy to use connection pooling service for Postgres. You'll likely need connection pooling as your application starts to scale and you need to deal with many users and requests.
+This blog post started as a simple guide step by step guide to setup pgbouncer. However, each time I thought I understood the nuances of connection pooling, something new that didn't really make sense popped up.
 
-Hope you've enjoyed the post. See you next time!
-
+This blog post is the product of my brain being forced to answer all of these questions in a clear and unambiguous way. I hope you've enjoyed reading it as much I've enjoyed learning about the topic.
 
 resources
 - https://www.depesz.com/2012/12/02/what-is-the-point-of-bouncing/
