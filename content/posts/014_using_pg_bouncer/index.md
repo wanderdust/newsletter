@@ -1,6 +1,6 @@
 ---
 title: 'Connection Pooling for Postgres using PG Bouncer'
-date: '2025-06-12T13:01:19+01:00'
+date: '2025-07-01T13:01:19+01:00'
 draft: true 
 summary: ''
 tags: ['postgres', 'connection pooling', 'pgbouncer', 'kubernetes']
@@ -12,7 +12,7 @@ cover:
 images: []
 ---
 
-I recently had to run load testing for an API that fetches data from postgres. I was monitoring Postgres when running the first test, and I noticed that hundreds of connections were being opened, which caused some errors in postgres such as "no more connections allowed" or "out of shared memory".
+I recently had to run load testing for an API that fetches data from postgres. I was monitoring Postgres when running the first test, and I noticed that hundreds of connections were being opened. I was also seeing runtime errors in postgres such as "no more connections allowed" or "out of shared memory".
 
 Clearly the database was not prepared for the load.
 
@@ -22,9 +22,13 @@ I needed something to efficiently handle connections to the database as well as 
 
 I came across connection pooling: a method for efficiently re-using database connections. 
 
-Although connection pooling didn't originally answer my question into controlling concurrent database load, I quickly realised I could leverage its efficient connection management system to better control access to the database. As soon as I started using it my runtime errors started going away.
+Although connection pooling didn't originally answer my question into controlling concurrent database load, it still seemed like a good idea.
 
-In this blog I get into the nitty gritty of connection pooling. More specifically I look at pgbouncer, a connection pooling service for Postgres.
+So I implemented it.
+
+Surprisingly (or not) a nice side-effect of better connection management is that you get more control on how your dabase is accessed, which indirectly helps you manage the load. As soon as I started using connection pooling my runtime errors started going away.
+
+In this blog I get into the nitty gritty of connection pooling: what it is, how it works, and the different approaches you can take.
 
 On the second half of the post I include step by step guides on how to setup pgbouncer locally and in kubernetes.
 
@@ -231,7 +235,7 @@ Now we can launch pgbouncer locally
 pgbouncer pgbouncer.ini
 ```
 
-And we can use psql to test the connection. For the password use `12345` as specified in `userlist.txt`
+And we can use psql to test the connection. When prompted for the password, use `12345` or whatever you specified in `userlist.txt`
 
 ```bash
 psql -p 6432 -U billy mydb
@@ -407,10 +411,10 @@ Connect your applications or clients to pgbouncer instead of postgres and you ar
 
 ## Final words
 
-This blog post started as a simple guide step by step guide to setup pgbouncer. However, each time I thought I understood the nuances of connection pooling, something new that didn't really make sense popped up.
+This blog post started as a simple guide step by step guide to setup pgbouncer. However, each time I thought I understood the nuances of connection pooling, something new popped up that didn't make sense.
 
-This blog post is the product of my brain being forced to answer all of these questions in a clear and unambiguous way. I hope you've enjoyed reading it as much I've enjoyed learning about the topic.
+This blog post is the product of my brain being forced to answer all of these questions in a clear and unambiguous way. I hope you've enjoyed reading it as much I've enjoyed learning and writing about the topic.
 
-resources
+Resources:
 - https://www.depesz.com/2012/12/02/what-is-the-point-of-bouncing/
 - https://www.pgbouncer.org/config.html
