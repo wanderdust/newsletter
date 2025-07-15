@@ -12,10 +12,9 @@ cover:
 images: []
 ---
 
-This is an interview to Pablo, who started learning DVORAK in january 2025. This is an interview about his learning experience.
+In this post, guest writter Billy interviews Pablo on learning Dvorak. Pablo started to switch from Qwerty to Dvorak 7 months ago. This is an interview about his experience.
 
-
-**What is Dvorak?**
+**First of all, can you explain what Dvorak is?**
 
 DVORAK is a keyboard layout created in the 30s proposed as a more efficient alternative to qwerty. Dvorak groups letters on the keyboard based on how often they are used (in the english language), so the most used ones are located in the "home row" and less used ones are located in locations that require further finger reach.
 
@@ -126,18 +125,18 @@ Have fun and keep learning.
 
 ### Progression Charts
 
-Progression charts from monkeytype.com. I started using it after week 3 of learning.
+Progression charts from monkeytype.com. Pablo started using it after week 3 of learning.
 
 ![](./typing_speed.png)
 
 ![](./typing_accuracy.png)
 
-Fun fact, if you pay close attention at the accuracy chart (bottom chart), there was a week where I was practicing 100% accuracy. Not surprising that the speed (top chart) suddenly increased during that time.
+Fun fact, if you pay close attention at the accuracy chart (bottom chart), there was a week where he was practicing 100% accuracy. Not surprising that the speed (top chart) suddenly increased during that time.
 
 ---
 ### 📅 Extra: Dvorak Learning Diary
 
-Raw notes of my learning journey. Read at you own will.
+Raw notes from his learning journey (if you are that keen)
 
 **Week 1**
 
