@@ -1,7 +1,7 @@
 ---
 title: 'My experience learning the Dvorak keyboard layout'
 date: '2025-07-15T12:42:43+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: ['typing', 'Dvorak', 'Qwerty']
 categories: []
