@@ -1,6 +1,6 @@
 ---
 title: 'My experience learning the Dvorak keyboard layout'
-date: '2025-07-10T12:42:43+01:00'
+date: '2025-07-15T12:42:43+01:00'
 draft: true 
 summary: ''
 tags: ['typing', 'Dvorak', 'Qwerty']
@@ -12,7 +12,9 @@ cover:
 images: []
 ---
 
-In this post, guest writter Billy interviews Pablo on learning Dvorak. Pablo started to learn Dvorak in January 2025. This is an interview about his experience.
+In this post, guest writer Billy interviews Pablo on learning Dvorak. Pablo started to learn Dvorak in January 2025. This is an interview about his experience.
+
+---
 
 **First of all, can you explain what Dvorak is?**
 
@@ -234,7 +236,7 @@ Raw notes from Pablo's learning diary.
 - Suprisingly, I tend to do better when I’m typing and my brain is thinking about something else. I’m pretty sure that I type faster than my score in monkeytype, but we’ll never know. The more I focus the more mistakes I make. 
 
 **Week ...**
-- Its been at least 4 weeks since my last entry. I have stopped trying to improve my speed, it is good enough by this point (60s or so). THe only thing I want now is to re-learn Qwerty, but I cannot be bothered!
+- Its been at least 4 weeks since my last entry. I have stopped trying to improve my speed, it is good enough by this point (60s or so). The only thing I want now is to re-learn Qwerty, but I cannot be bothered!
 
 ---
 
