@@ -1,5 +1,5 @@
 ---
-title: 'My experience switching to Dvorak'
+title: 'My experience learning the Dvorak keyboard layout'
 date: '2025-07-10T12:42:43+01:00'
 draft: true 
 summary: ''
@@ -12,7 +12,7 @@ cover:
 images: []
 ---
 
-In this post, guest writter Billy interviews Pablo on learning Dvorak. Pablo started to switch from Qwerty to Dvorak in January 2025. This is an interview about his experience.
+In this post, guest writter Billy interviews Pablo on learning Dvorak. Pablo started to learn Dvorak in January 2025. This is an interview about his experience.
 
 **First of all, can you explain what Dvorak is?**
 
@@ -21,15 +21,15 @@ Dvorak is a keyboard layout created in the 1930s, proposed as a more efficient a
 
 **Why did you learn Dvorak? Were there any issues with Qwerty that prompted you to move away from it?**
 
-There is absolutely nothing wrong with Qwerty. Some people learn Dvorak because it is supposed to enable you to have an even faster typing speed. I just wanted to learn it because it sounded like fun, although I was also intrigued by the increased speed.
+There is absolutely nothing wrong with Qwerty. Some people learn Dvorak because it is supposed to enable you faster typing speeds. I just wanted to learn it because it sounded like fun, although I was also intrigued by the increased speed.
 
 I remember the typing lessons in school quite fondly, and I wanted to re-create the experience.
 
-I've also always enjoyed learning new languages, but because I never get to practice my German or Portuguese I forgot them almost completely. Learning Dvorak felt almost close enough to learning a new langague. I get to use it every day, so there's no risk of forgetting it.
+I've also always enjoyed learning new languages, but because I never get to practice my German or Portuguese I forgot them almost completely. Learning Dvorak felt almost close enough to learning a new langague. I'd get to use it every day, so there would be no risk of forgetting it.
 
 **Did you consider other keyboard layouts?**
 
-I started learning Dvorak as a fun exercise after having heard about it from a couple different sources. At the time, I didn't really do much research into it, I just wanted to learn it for fun.
+I started learning Dvorak as a fun exercise after having heard about it from a couple different sources. At the time, I didn't really do much research into it, I just wanted to jump straight into learning it.
 
 Only after a few months of learning I started to do a bit of research into the world of typing, and found out about other alternatives such as Colemak which sounds like an awesome layout as well. If I had known about it back then, perhaps I would have chosen it instead.
 
@@ -37,54 +37,56 @@ Only after a few months of learning I started to do a bit of research into the w
 
 I went online and searched for "Learn Dvorak", and a website called typing.com came up. It has a couple of courses on learning Dvorak which were a really good start. As my progression and typing speed got better, I moved towards monkeytype.com, which is very nice, because it has different modes and keeps track of your progression.
 
-Learning where the keys are without looking (touch typing) takes a few days - at a very slow pace at the beginning, of course. After you start getting a bit more confident at knowing where the keys are, I started to use it in my day to day. 
+Learning where the keys are without looking (touch typing) takes a few days - at a very slow pace at the beginning, of course. After I started getting a bit more confident at knowing where the keys were, I started to use it in my day to day. 
 
 
 **Do you need to buy a special keyboard to learn?**
 
 Not at all. The best way to learn is to use your Qwerty keyboard and simply change the layout in your system settings. In mac, you can have both enabled and quickly switch  between the two.
 
-A lot of people also mention using mechanical keyboards to type and learn "faster". In my opinion, mechanical keyboards don't make a difference at all, except make your desk look cooler (I would know, I spent £100 on one). Any keyboard will do.
+A lot of people also mention using mechanical keyboards to type and learn "faster". In my opinion, mechanical keyboards don't make a difference at all, except make your desk look cooler. I would know because I spent £100 on one. Any keyboard will do.
 
 
 **Once you get past that initial phase, how do you progress?**
 
-I was practising about 30 minutes a day each day. After a couple of weeks, I finished the courses from typing.com. My typing speed was about 30 words per minute (for context, I could type at ~85 wpm with Qwerty) at that point, so I decided to start using Dvorak for my daily job tasks. Replying to Slack messages was painful, specially since the person on the other side can see you've been typing 10 minutes for a 2 line message. You start getting good at getting straight to the point to avoid typing long messages.
+The first few days the progression can be really fast, you can go from 0 to 30 WPM in a matter of days. After that, my progression started to slow down. As soon as I finished the course on typing.com I could type at around 30 WPM, at which point I switched to monkeytype.com where I would practice for 20 minutes each day, mostly focusing on getting over 95% accurary in all tests.
 
-Also at that point when I was almost using Dvorak full time, I started to mix up Qwerty and Dvorak. My brain was starting to forget how to Qwerty, so I really had no choice but make the full switch. I would recommend switching gradually if you can, but I didn't really have the choice!
+At this point I felt I could type fast enough to start using it in my daily job. Replying to Slack messages was painful, specially since the person on the other side can see you've been typing 10 minutes for a 2 line message. I started to get good at getting straight to the point!
 
-There were times when I was advancing really quickly to go from 5 to 30 WPM in a week or two, and other times when I'd plateau at a specific speed and feel like wasn't making any progress.
+As a fun fact, as soon as I started using Dvorak full time, I could no longer switch back to Qwerty without my brain mixing up with Dvorak. My brain's mental mapping of the Qwerty keybaord layout suddenly started to vanish. I had no choice but to make the full switch to Dvorak.
 
 
 **Wait there! So you forgot how to type in Qwerty?!**
 
-Indeed, I have. For a few days I kept switching, using Qwerty for any tasks that required some speed and Dvorak for everything else. At one point when trying to type Qwerty, I would mix up my keys with the Dvorak layout. My brain had all of a sudden forgotten how Qwerty.
+I did, and I still have. For a few days I kept switching back and forth: using Qwerty for any tasks that required some speed and Dvorak for everything else. At one point when trying to type Qwerty, I would mix up my keys with the Dvorak layout. My brain had all of a sudden forgotten how to Qwerty.
 
 A lot of guides online say you can learn them side by side. But what they forget to mention is that you lose Qwerty in the process, and you have to make an effort to re-learn it after you learn Dvorak. I've read online that it takes a couple of months of practice to get Qwerty back. I wouldn't know, because I can't be bothered to go through this again.
 
 
-**How do you get over the plateaus where you felt you weren't getting any faster?**
+**How do you get over the plateaus where you felt you weren't making any progress?**
 
 At around week 7, I wrote this in my notes:
 
 > *Learning this is a lot harder than I thought. I can write fast enough now (around 50wpm on avg?) but still my fingers feel very unsure of some keys and it is very frustrating. I make a lot of mistakes while typing which can be infuriating and frustrating at the same time. I’m doing my best to get better but the process is a lot slower than I was hoping. If I could go back I would probably not bother.*
 
-My first mistake was having the wrong expectations. I had read online about someone who got 100wpm within 4 weeks. In my case, I was only typing at around 45wpm at that point.
+My first mistake was having the wrong expectations. I had read online about someone who got 100wpm within 4 weeks. I could only type at around 45wpm after one month.
 
 The plateaus are different at different stages. My first big plateau was around the 45-55wpm region. My problem there was that I tried to type too fast while making a lot of mistakes. This started to create bad habits by reinforcing repeated mistakes. What worked for me was finding out which keys I was struggling the most with and practising those more. Particularly those letters used less often such as `qjk` or combinations such as `ch` or `qu`.
 
 Slowing down and focusing on accuracy started to pay off. Typing more consistently and having to correct fewer mistakes was giving me faster typing speeds.
 
+The second big plateau is when I reached the 60-70 WPM mark, which is where I'm still now. At this point I'm not getting any faster by simply typing on my day to day. To get faster I would need to keep practicing daily with specfic drills to improve accuracy and speed. But it is not something I'm interested on at the moment. I'm happy with my current speed.
+
 **How did learning affect your productivity?**
 
-I decided to start learning during a period of time where work wasn't too busy. At the beginning it did not affect me much because I kept switching between Qwerty and Dvorak depending on the urgency of the work. At the point where I had to do the full switch to Dvorak it would take me slightly longer to complete some tasks such as replying to messages or writing docs. But remember that unless your job is to do live transcription as a job, writing faster or slower doesn't really affect you much at work. In my case, I don't think anyone noticed any productivity change.
+I decided to start learning during a period of time where work wasn't too busy. At the beginning it did not affect me much because I kept switching between Qwerty and Dvorak depending on the urgency of the work. At the point where I had to do the full switch to Dvorak it would take me slightly longer to complete some tasks such as replying to messages or writing docs. But remember that unless your job is to do live transcription as a job, writing faster or slower doesn't really affect you much. In my case, I don't think anyone noticed any productivity change.
 
 For me, as a programmer, I don't really need to type that much unless I'm writing a confluence doc or replying to slack. Programming usually involves a combination of thinking and typing. I've never had the need to type my code faster than 30WPM.
 
 
 **You started learning Dvorak over 7 months ago, how is it going now?**
 
-I can type at about 70WPM vs the 85WPM I could type on Qwerty. At this point, it takes a conscious effort to try to increase typing speed, which I'd need to practice it. 70 WPM is fast enough for what I need, so I'm not practicing to go any faster.
+I can type at about 70WPM which is 15WPM slower than I could type when I used Qwerty. I've made my peace with it. 70WPM is fast enough for me.
 
 
 **Have you noticed any physical benefits or drawbacks?**
@@ -94,17 +96,16 @@ My life feels the same as it did when I typed Qwerty. Except for the bragging ri
 
 **Any tips for anyone who wants to learn?**
 
+The first thing I would recommend when learning Dvorak is to have your expectations set very low. Your progress will depend on how much effort you put into learning. In some cases, over practising won't make you learn faster. What works best is to do consistent practice every day.
 
-The first thing I would recommend when learning Dvorak is to have your expectations set very low. Your progress will depend on how much effort you put into learning. In some cases, over practising won't make you learn faster. What works best is to do consistently, practice a little bit each day.
-
-Also, to get faster, you need to keep practising. Using it full time in your every day work will only get you so far, but if you want to type really fast (70WPM +) you need to keep the practice going. I stopped practising after week 8, and after 7 months I've plateaued at 65-70WPM. This speed is good enough for me.
+Also, to get faster, you need to keep practising. Using it full time in your every day work will only get you so far, but if you want to type really fast (100WPM +) you need to keep the practice going. I stopped practising after week 8, and after 7 months I've plateaued at 65-70WPM. This speed is good enough for me.
 
 If I can give one tip, is that slow is fast: focusing on accuracy and making few mistakes will get you faster speeds than fast typing where you have to keep correcting mistakes. It will also stop you from learning bad habits.
 
 
-**I read a blog post from you where you mention you use vim. How was re-learning VIM mappings in Dvorak?**
+**You are a VIM user. How was re-learning VIM mappings in Dvorak?**
 
-I started learning Dvorak only after a couple of months of using vim, so my vim knowledge was not so extensive that it would bother me to re-learn it. The nice thing about VIM is that the key mappings have actual meanings (`diw` -> delete in word; `vt;` -> view to next colon ';'), so it is quite easy to keep using them with the new layout.
+I started learning Dvorak only after a couple of months of learning vim, so my vim knowledge was not so extensive that it would bother me too much to re-learn it. The nice thing about vim is that the key mappings have actual meanings (`diw` -> delete in word; `vt;` -> view to next colon ';'), so it is quite easy to keep using them with the new layout.
 
 One of the more annoying things is losing the navigation keys `hjkl`. But even then, the way it works out it is not too bad, with Dvorak you get the horizontal movement on the right hand (index and pinky fingers) and vertical movement in your left hand (both on the index finger). 
 
@@ -113,7 +114,7 @@ Another slightly annoying thing is that a lot of the symbols useful for programm
 
 **So, is it worth it?**
 
-No, not really.
+From a productivity point of view? No, not really.
 
 It takes a few weeks/months of practice to get to a reasonable speed, and it doesn't really bring any benefits, at least for the casual typer person like me. Of course, there is always the nice feeling of having learned something new. 
 
@@ -131,12 +132,12 @@ Progression charts from monkeytype.com. Pablo started using it after week 3 of l
 
 ![](./typing_accuracy.png)
 
-Fun fact, if you pay close attention at the accuracy chart (bottom chart), there was a week where he was practicing 100% accuracy. Not surprising that the speed (top chart) suddenly increased during that time.
+Fun fact, if you pay close attention at the accuracy chart (bottom chart), there was a week where he was practicing for 99% accuracy. Not surprising that the speed (top chart) suddenly increased during that time.
 
 ---
 ### 📅 Extra: Dvorak Learning Diary
 
-Raw notes from his learning journey (if you are that keen)
+Raw notes from Pablo's learning diary.
 
 **Week 1**
 
