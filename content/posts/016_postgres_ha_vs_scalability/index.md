@@ -1,5 +1,5 @@
 ---
-title: '016_postgres_ha_vs_scalability'
+title: 'Replicas vs Standby'
 date: '2025-07-21T10:11:56+01:00'
 draft: true 
 summary: ''
