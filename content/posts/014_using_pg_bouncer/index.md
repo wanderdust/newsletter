@@ -42,10 +42,6 @@ It is very unlikely that clients need to be running transactions 100% of the tim
 By re-assigning the same connections you can efficiently keep a smaller number of connections open to serve a much larger number of clients.
 
 
-## The Pooling Simulator
-<iframe width="100%" height="1500" name="iframe" src="/posts/014_using_pg_bouncer/pgbouncer_demo.html"></iframe>
-
-
 ## What is pgbouncer?
 
 Pgbouncer is a lightweight connection pooling service for Postgres. It comes with the following pooling modes: session, transaction or statement.
