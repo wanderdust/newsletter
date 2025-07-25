@@ -16,21 +16,11 @@ I recently had to run load testing for an API that fetches data from postgres. I
 
 Clearly the database was not prepared for the load.
 
-I started looking for some ways to better control the load. I knew that I could increase the number of connections as well as vertically scale the database, but this solution was only good if you have a predictable load that you can adjust your database for. It doesn't solve the problem in situations like my load test test, where the database is hit unexpectedly with a high load of requests.
+So I started to look for ways to improve connection management to the database, and I came across pg_bouncer, a connection pooling service for Postgres.
 
-I needed something to efficiently handle connections to the database as well as graceful handling of unexpected load to avoid runtime errors.
+Although pg_bouncer would not directly solve my problem with the increased load, it would reduce database load by effeciently re-using database connections. As soon as I implemented it, all my errors went away.
 
-I came across connection pooling: a method for efficiently re-using database connections. 
-
-Although connection pooling didn't originally answer my question into controlling concurrent database load, it still seemed like a good idea.
-
-So I implemented it.
-
-Surprisingly (or not) a nice side-effect of better connection management is that you get more control on how your dabase is accessed, which indirectly helps you manage the load. As soon as I started using connection pooling my runtime errors started going away.
-
-In this blog I get into the nitty gritty of connection pooling: what it is, how it works, and the different approaches you can take.
-
-On the second half of the post I include step by step guides on how to setup pgbouncer locally and in kubernetes.
+In this blog post I explain the concept of connection pooling and go into the specifics of pg_bouncer. At the end I show a couple of examples of how to deploy this service.
 
 ## What is connection Pooling?
 Open a connection. Run the queries. Close the connection. Repeat. This is the process a client goes through to run a queries in a database.
@@ -173,6 +163,10 @@ If we compare this to connection pooling sitting on the database side, pgbouncer
 The biggest problem with this approach, is that it is very unlikely that you will have control of the clients that access your database. In real life, you will have clients connecting to your database from different applications and sources. These clients may or may not have efficient connection management (e.g. Data scientists connecting via notebooks and forgetting to close the connection).
 
 The other issue with this approach is that the pooling is managed at the service end, which means that the pool size is calculated via *pool size* x *number of services*. If you have very dynamic horizontal autoscaling, it can make the number of connections to the database unpredictable and hard to control. 
+
+### Client and Database side pooling together
+
+There is a third option where you use pg_bouncer in front of your database as database side pooling, and you also implement pooling to pg_bouncer on the client side to benefit from long lived connections. This may require a a little bit of tuning to get right, but you get the best of both worlds.
 
 ## Setting up pgbouncer locally
 
