@@ -1,7 +1,7 @@
 ---
 title: 'Connection Pooling for Postgres using PG Bouncer'
 date: '2025-07-24T13:01:19+01:00'
-draft: true 
+draft: false 
 summary: ''
 tags: ['postgres', 'connection pooling', 'pgbouncer', 'kubernetes']
 categories: []
