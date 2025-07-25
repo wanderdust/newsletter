@@ -12,13 +12,13 @@ cover:
 images: []
 ---
 
-I recently had to run load testing for an API that fetches data from Postgres. I was monitoring Postgres when running the first test, and I noticed that hundreds of connections were being opened. I was also seeing runtime errors in postgres such as "no more connections allowed" or "out of shared memory".
+I recently had to run load testing for an API that fetches data from Postgres. I was monitoring Postgres when running the first test, and I noticed that hundreds of connections were being opened. I was also seeing runtime errors in Postgres such as "no more connections allowed" or "out of shared memory".
 
 Clearly the database was not prepared for the load.
 
 So I started to look for ways to improve connection management to the database, and I came across pgBouncer, a connection pooling service for Postgres.
 
-Although pgBouncer would not directly solve my problem with the increased load, it would reduce database load by effeciently re-using database connections. As soon as I implemented it, all my errors went away.
+Although pgBouncer would not directly solve my problem with the increased load, it would reduce database load by efficiently re-using database connections. As soon as I implemented it, all my errors went away.
 
 In this blog post I explain the concept of connection pooling and go into the specifics of pgBouncer. At the end I show a couple of examples of how to deploy this service.
 
@@ -27,7 +27,7 @@ Open a connection. Run the queries. Close the connection. Repeat.
 
 This is the process a client goes through to run a queries in a database.
 
-Rather than opening and closing a connection every time a new client connects, connection pooling helps by keeping a number of connections always open (a pool of connections) and re-assigning them acrcoss clients.
+Rather than opening and closing a connection every time a new client connects, connection pooling helps by keeping a number of connections always open (a pool of connections) and re-assigning them across clients.
 
 Imagine you have a lot of short lived queries hitting your database from different thousands of clients.
 
@@ -55,7 +55,7 @@ Pgbouncer is a lightweight connection pooling service for Postgres. It comes wit
 When a user connects, pgBouncer finds a connection from the pool and assigns it to the user. The connection is released back to pool **after the client disconnects**. This is the default mode.
 
 ### Transaction Pooling
-Transaction pooling is a bit more aggresive and efficient in re-using the connections.
+Transaction pooling is a bit more aggressive and efficient in re-using the connections.
 
 In this mode, connections are released once the **transactions are finished**, which after `commit` or `rollback`.
 
@@ -71,7 +71,7 @@ COMMIT;
 
 ### Statement Pooling
 
-Statement pooling tries to be even more aggresive than transaction pooling: the connection is released back to pool **after each query finishes**.
+Statement pooling tries to be even more aggressive than transaction pooling: the connection is released back to pool **after each query finishes**.
 
 In statement mode, transactions like the previous example are not allowed. Each query is executed separately.
 
@@ -104,9 +104,9 @@ I use a simple SELECT query which I benchmark and it runs within ~2.8ms.
 
 I use a python script to run this query 80,000 times with a maximum of 3 concurrent queries.
 
-I test both setups: with and without PGBouncer. When hitting postgres directly clients open and close a connection on each request.
+I test both setups: with and without PGBouncer. When hitting Postgres directly clients open and close a connection on each request.
 
-I use 10 postgres connections and a pool size of 3 for simplicity. In production you'd be dealing with hundreds or thousands of concurrent connections.
+I limit the connections to 10 and pool size of 3 for simplicity. In production you'd be dealing with hundreds or thousands of concurrent connections.
 
 Results
 
@@ -117,15 +117,15 @@ Average Execution Time:
   PGBouncer was 18.2% faster
 ```
 
-PGBouncer is 3.3ms faster on average than hitting postgres directly, which is quite good considering the query takes 2.8ms to execute.
+PGBouncer is 3.3ms faster on average than hitting Postgres directly, which is quite good considering the query takes 2.8ms to execute.
 
 Of course, this is only a small scale experiment, so take it with a grain of salt. Test on your production systems and decide for yourself.
 
 ### Connection Queues 
 
-A nice bonus of pgBouncer is that it will handle spikes of requests where `number of concurrent requests > number of connections available` by queing the requests until connections are available.
+A nice bonus of pgBouncer is that it will handle spikes of requests where `number of concurrent requests > number of connections available` by queuing the requests until connections are available.
 
-If the queries were going directly to postgres without pgBouncer in between, those additional requests would be refused.
+If the queries were going directly to Postgres without pgBouncer in between, those additional requests would be refused.
 
 This can come in handy if your database is not prepared to handle a large number of concurrent requests, so you limit your max connections to a reasonable number you know it can handle, and handle the excess requests gracefully by adding them to the queue.
 
@@ -144,7 +144,7 @@ With database side pooling, the pooling service sits right in front of the datab
 
 Database side pooling is best when you have incoming connections from multiple clients that you have no control of, e.g webservers, APIs, desktop clients, third party applications, analytics, etc, so you can centrally control connection pooling on the database side.
 
-The main downside is that clients still need to establish a connection to pgBouncer, which adds some latency. Although this should be faster than establishing a connection to postgres directly.
+The main downside is that clients still need to establish a connection to pgBouncer, which adds some latency. Although this should be faster than establishing a connection to Postgres directly.
 
 ### Client Side Pooling
 
@@ -174,7 +174,7 @@ app("/users", method=GET)
 # ...
 ```
 
-This approach is best when you have a lot of short lived requests coming from your service. You establish the connections once at the beggining in the pool, and re-use them across the lifetime of the service.
+This approach is best when you have a lot of short lived requests coming from your service. You establish the connections once at the beginning in the pool, and re-use them across the lifetime of the service.
 
 Client side pooling can shave that extra time that it takes to establish the connection to pgbouncer, because it keeps long lived connections open.
 
@@ -186,7 +186,7 @@ The other limitation with this approach is that the pooling is managed at the se
 
 ### Client and Database side pooling together
 
-There is a third option where you use pgBouncer in front of your database as database side pooling, and you also implement pooling to pgBouncer on the client side to benefit from long lived connections. This may require a a little bit of tuning to get right, but you get the best of both worlds.
+There is a third option where you use pgBouncer in front of your database as database side pooling, and you also implement pooling to pgBouncer on the client side to benefit from long lived connections. This may require a little bit of tuning to get right, but you get the best of both worlds.
 
 ## Setting up pgbouncer locally
 
@@ -258,7 +258,7 @@ psql -p 6432 -U billy mydb
 And bam! You are in!
 
 
-If you get below error ensure you have created the md5 hash properly. If you get a specific error for your postgres user (defined in the `[database]` section of `pgbouncer.ini`), ensure that the postgres connection is correct. 
+If you get below error ensure you have created the md5 hash properly. If you get a specific error for your Postgres user (defined in the `[database]` section of `pgbouncer.ini`), ensure that the Postgres connection is correct. 
 ```
 2025-06-12 11:56:44.176 UTC [1] WARNING C-0x7fe106331280: mydb/billy@127.0.0.1:50004 pooler error: password authentication failed
 ```
@@ -421,7 +421,7 @@ You can deploy all the files in one go using
 kubectl deploy -f *.yaml
 ```
 
-Connect your applications or clients to pgbouncer instead of postgres and you are good to go!
+Connect your applications or clients to pgbouncer instead of Postgres and you are good to go!
 
 ## Final words
 
