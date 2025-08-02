@@ -12,6 +12,13 @@ cover:
 images: []
 ---
 
+Sections
+- PT1: Overview, use cases, compontents
+- PT2: Data Platform Architecture (API Gateway, Facades, Standardisation, Connecting to the data sources)
+- PT3: Definitions component (Self Service): deploying the APIs from the config (Gateway, facades, queries, CI/CD etc)
+- PT4: Dealing with data - pre-modelling, data source types, dealing with inefficient queries defined by uers
+- PT5: Merging Hot & Cold Data
+
 Once the data arrives in the warehouse it is only the first step. To get value from your data it needs to be easily accessible by different parts of the business. In some cases, the data warehouse is the single source of truth with all the data, in others the data may be scattered across different data sources - Redshift, Databricks, Postgres, you name it. 
 
 One of the ways to make data accessible to the rest of the business is to make it accessible via APIs. In this blog post, I describe an architecture where users can create their own APIs to access the data they need using a centralised platform.
@@ -24,33 +31,92 @@ Every time a team needs to access data they need to figure out: where the data l
 
 In short, every time a team needs to access data for their platform or frontend, they need to figure this all out. There are no standards or reusability across teams.
 
-## The Solution
+### A Self Serve Data API Platform
 
 We can build an API platform where users can easily create APIs to access the data they need. Users can define some parameters such as the data source, auth method, the query and the parameters. With this information, the platform creates an API ready to go, so users don't need to worry about the low level stuff such as: rate limiting, caching, setting up Auth, creating secure access to the data sources, ensuring performance, or maintaning architecture.
 
 
-## 10000 ft Architecture
+#### Why APIs?
+
+Why use an API layer rather than connecting to the database directly?
+
+APIs are well understood by developers. They are easily integrated into other applications. Also, adding an API layer helps us standardise access even if we have multiple data sources in the backend.
+
+With APIs we can also easily define data contracts via OAS specifications. The users can easily understand what are the data inputs, and know what to expect in return. It is well defined.
+
+An APIs layer also give us additional levels of security to protect the database from being hit directly by the user, thanks to caching, rate limiting and authentication.
+
+#### Why Self Serve?
+
+The goal of this platform is to provide standardised and secure access to data to everyone in the organisation. The goal is to go from Data to API in with as little friction as possible.
+
+Self serving enables the end users (Users of the API) to define their own endpoins, without needing intervention from the Platform team for specific use cases. Users can indpedently create APIs without the platform team becoming a bottleneck. This also frees the platform team to be able to keep working on the plattform to develop new features.
+
+
+## How it works
+
+(High level overview of how the platform works!)
+
+
+## The Platform
 
 [Diagram] - 
 
 API Gateway - API (ensuring consistency) - online store - Warehouse
 
+### Components
 
-## The Components
-
-### API Gateway
+#### API Gateway
 
 The API Gateway gives us the ability to create an interface between the users and the APIs. THe API gateway gives us the ability to create multiple APIs (microservices) under a single URL. It helps us by detaching the backend from the users, so we can add, update, or remove the backend APIs with no changes to end user.
 
 API gateways also help us by removing some of the logic from the API microservices. The API gateway gives us athentication, rate limiting, endpoint based routing and many other features.
 
-### The Facades
+#### The Facades
 
-The Facades are the interface that connects the user to the datasources. The facade is an API that connects to the different backends, executes a query and returns the results. We can have a single facade to connect to the differnt data sources and route based on the endpoint, or we can have different facades to handle different datasources and have the API gateway route based on the endpoint or headers.
+The Facades are the interface that connects the user to the datasources. The facade is an API that connects to the different backends, executes a query and returns the results. If we have multiple data sources that our platform can connect to, we can have a single facade that redirects to each data source depending on the request. For example, we can have a header `x-data-source: postgres` that indicates the data source to redirect to, and write some logic in the facade to redirect to the correct datasource at runtime.
+
+Alternatively, we can have 1 facade for each data source (ie Postgres Facade for Postgres requests, Redis Facade for redis requests), where each facade acts as a connector to a data source. In this case, the API gateway is in charge of redirecting each request to the correct facade. This can be defined once when creating the API, and the API Gateway will automatically redirect to the correct facade.
+
+In AWS API Gateway, the redirection may look like this:
+
+```hcl
+resource "aws_api_gateway_rest_api" "example" {
+  body = jsonencode({
+    openapi = "3.0.1"
+    info = {
+      title   = "example"
+      version = "1.0"
+    }
+    paths = {
+      "/transactions" = {
+        get = {
+          x-amazon-apigateway-integration = {
+            httpMethod           = "GET"
+            payloadFormatVersion = "1.0"
+            type                 = "HTTP_PROXY"
+            uri                  = "https://redis-facade.com/users"
+          }
+        }
+      }
+      "/users" = {
+        get = {
+          x-amazon-apigateway-integration = {
+            httpMethod           = "GET"
+            payloadFormatVersion = "1.0"
+            type                 = "HTTP_PROXY"
+            uri                  = "https://postgres-facade.com/items"
+          }
+        }
+      }
+    }
+  })
+}
+```
+
+I prefer the latter approach because this way users don't need to remember to pass additional headers or parameters to connect to the right resource. They can simply define this at API creating time and it will automatically use the right facade.
 
 The goal of the facades is to standardise the way that requests come in, and the format of the response coming out.
-
-If we are connecting to multiple data sources we need to ensure the requests from the user point of view are all the same no matter the source of the data. We want to make sure we standardise the way endpoints are named, how query parameters and path parameters are passed, and the methods that are used. If we are building a read only Data API, we might want to standardise access via GET requests only.
 
 Different datasources return different response formats. We can use the facades to transform the data and return a unified schema. Another important aspect is to ensure error format and error codes are standardised across data sources.
 
@@ -59,25 +125,53 @@ Different datasources return different response formats. We can use the facades 
   "data": [{"col1": "val1", "col2": "val2"}],
   "error": []
 }
-
 ```
 
-### Data Sources
+Since we are handling endpoints at the API gateway level, we can define the facade as a dummy API whose job is simply trannforming the requests and the results.
 
-This is where the data lives. The APIs connect to the data sources to gather the data and return the results. The data sources can be the data warehouse, or an operational data store.
+```python
 
-Different data sources will satisfy different different business needs. We have the option to connect the API directly to the data warehouse use cases where the API is expected to have low load, and SLA is high (10+ seconds). However, hitting the warehouse directly is not reccommended for the following reasons
-- Warehouses are optimised for querying by column, now by row. Querying the warehouse for queries where we are interested in grabbing a handful of rows will be a lot slower than if we used an OLTP database like Posttgres.
-- Warehouses compute is not opitmised for a high volume of transactions. You may end up in a situation where queries get queued, and you'll also have to spend a lot more on compute than using OLT alternatives.
-- Some warehouses like Redshift, don't have a separate compute and storage. Hitting the warehouse repetaadly with non optimised queries can bring the whole warehouse down
+@app.get("/")
+def read_root(request):
+  db_connection = client.connect()
+  # Get the query corresponding to the endpoint
+  query = get_query(request.url.path)
 
-When creating Data APIs, a better solution is to move the data from the warehouse into an operational data store, such as Postgres. Postgres is designed to handle use cases with thousands of requests per second. It uses indexes to improve query performance and it has horizontal and vertical scalability to handle different levels of load.
+  # Execute query and gather results
+  data = db_connection.execute_query()
+  db_connection.close()
 
-We can use reverse ETL to move the data from the Warehouse into Postgres, and solve all the problems mentioned abave.
+  # Transform the results to standardised format and return
+  return {"data": transformed_results(data)}
+```
 
-## Creating APIs - User Journey
+#### Data Sources
 
-Now that we have defined the components, we can look at how the users interact with the platform to create APIs.
+The data source is what the facades connect to. For this platform we can have one or more data sources that users can connect to, and its up to the users to decide what datasource they want to connect to when definining the API. We'll go into more detail about the data in a later section.
+
+### Deploying the components
+
+Let's recap all the components.
+1. We have an API Gateway. THe API Gateway is where the routes are defined. The API gateway knows how to route each request to the correct backend. The API gateway gives us other features like caching, and authentication.
+2. The Facades. One facade connects to a single data source. The job of the facade is to standardise requests, response formats and error messages. From the point of view of the user, it is a single API no matter the database in the backend.
+3. The datasources. These probably already exist in our org, and we will be connecting the platform to each of them.
+
+We only need to deploy 2 components for this platform, the API Gateway and the Facade API servers.
+
+For the API Gateway we can use AWS API Gateway, Kong or any other provider. AWS API Gateway is a good simple solution, since it is serverless so we don't have to worry about maintaining infrastructure.
+
+THe second component we need to deploy is the facades. The facades can be written in any languague of your choice (python, Java, Go etc). The important element is to ensure each facade can scale. If we expect a high load of calls to the APIs, we can create multiple instances running and place them behing a load balancer. We then point the API Gateway to the load balancer DNS.
+
+We have multiple options for deploying the infrastucture. Using Docker containers to deploy our application is great to ensure we are developing and deploying using a consistent environment. We have a few options, such as Kubernetes (eg EKS) or ECS. ECS is a good choice for this use case, unless you have existing knoweldge of Kubernetes. ECS is easier to use 
+
+[final diagram]
+
+Now we have the platform running. Lets take a look at how users define the APIs, and how the endpoints are dynamically created.
+
+
+## Self Serving
+
+Now that we have defined the infrastructure, we can look at how the users create and deploy new APIs.
 
 ### Config Files - OAS Specs, API Gateway Config, SQL queries
 
@@ -97,50 +191,124 @@ routes:
     params:
       - name: active
         type: bool
-    auth_required: true # Define user/pass via env variables
+    auth:
+      secret_path: aws::secret/my-secret
     caching:
       enabled: true
       ttl: 100ms
-
 
 ```
 
 ### Generating Resources
 
-We need to create a component that is capable of taking a configuration file and generating all of the different resources we need.
+We need to create a component that is capable of taking a configuration file and generating all of the different resources we need, this can be created using your programming language of choice and can be deployed either as a library, a script or a cli.
+
+The Compontent takes the config file as an input and generates the resources that need to be deployed. In this case, the config file will generate the resources required to deploy the user endpoins, in this case it is the API Gateway config with the new endpoint (or endpoint modifications), and the SQL query that the endpoint will execute.
 
 
-[Diagram of how defs component]
+[Diagram of how defs component creates resaurces (OAS, terraform etc)]
 
 #### API Gateway
 
 The firs thing we need to generate from the config file is the API gateway configuration. Most API gateways providers allow us to create resources from an OAS template. 
 
-In this case, every time a new definition is created, updated or deleted, we can create an OAS template that we use to update our resources.
+In this case, every time a new definition is created, updated or deleted, we can create an OAS template that we use to update our resources. 
 
 
 ```json
 OAS example here
 ```
 
+We can deploy the OAS template to the API gateway via terraform templates.
 
-### Deployments 
+```
+terraform example here for AWS API gateway which poins to the OAS. ALso adds caching options etc, which are not included in the OAS.
+```
 
-
-## Challenges
-
-### Self Service - No control over queries
-
-
-### Data Modelling
+#### SQL Query
 
 
-### Local Testing - Database Modelling Access control
+### Deployment process
+
+Once we have the necessary configuration ready, we can start thinking about the deploying the compontents. We have a few options to deploy the APIs, but to 
+
+#### Terraform
 
 
-### Versioning
+
+#### SQL queries
+
+The SQL query is the query that gets executed when a user hits the `/users` endpoint. The SQL queries need to be 
+
+[Diagram]
 
 
+
+## The Data
+
+The good news is that we have a fully functioning data api platform: users can create APIs to access the data they need using a config file and deploying it via CI/CD. 
+
+The bad news? That is the easy part. Whether the Data API platform can be succesful depends on how we handle the data before it's served.
+
+For example, when a user is defining the query for a new API, nothing is stopping them from writing something like this
+
+```sql
+--- Very SLOW query with joins, deduplication etc
+```
+
+To begin with, running such a query can take a long time, from seconds to minutes depending on the data source, the compute, the amount of data and how the data is modelled. From an API perspective, waiting more than a few seconds for a response creates a very poor experience. Especially if such API is integrated in user facing applications.
+
+Another problem is the resources such a query consumes. Usually, slow queries are slow because they need to scan a lot of data, usually because of inefficient queries or badly modelled data (ie no indexes). The database can end up consuming a lot of resources because of this, and could bring the database down if the load is high, and the database is not capable of scaling.
+
+Long running queries can sometimes create blocks on other queries, meanining that other queries might not be able to execute until the long running has terminated, which creates a very poor user experence.
+
+### Modelling
+
+The good news, is that there is a solution: Data modelling. For a data api platform to work the data in the database needs to be properly modelled. This means that rather than trying to run expensive queries at runtime, we model this data beforehand so that the API can do a simple SELECT query of the data we need. We can achieve this by running a series of premodelling steps with tools such as dbt, where we have different stages of modelling, such as the medallion architecture. ALternatively we can use materialised views which refresh on a cadence acceptable for our API.
+
+[Diagram Showcasing modelling - ie medallion process]
+
+```sql
+--- Example query with simple SELECT
+```
+
+The second part is ensuring that the database has the correct indexes to ensure the database can efficiently find the data is looking for. For example, if we are searching some data by user id, by adding an index on the `user_id` the database can easily find the user id rather than having to do a full table scan, which can be expensive (link blog post about indexes).
+
+So users creating APIs need to be aware of the data before creating an API. It is very important that there exists coordination between the data teams preparing the data for the business use case, and the teams creating and integrating their APIs into their own platforms to ensure SLAs are met.
+
+### Choosing the right Database
+
+Not every database is suitable for every task. Data Warehouses (OLAP) are optimised for analytical queries. The data is stored in column format, which is optimised for spaced on disk, as well as for selecting data based on columns, rather than rows.
+
+On the other hand, OLTP databases such as postgres are opitimsed to serve thousands of requests per second, when the use case is small queries returning fewer rows. They can leverage indexes to make querying fast.
+
+If you have data in the Data Warehouse, you might be tempted to connect your API diretcly to it. THis can be a valid use case, depending on the situation, however this approach has some risks.
+
+Modern data warehouses such as Snowflake or Databricks separate compute from the data, which means you can hit the warehouse as hard as you can, which won't bring the warehouse down, you can scale compute independently of storage. However this is not the case for some data warehouses such as Redshift: if you connect an API dircetly to Redshift, an increase load of requests from the API could eventually bring the whole cluster down. This won't only affect your API going down, but systems in the company that depend on redshift. As you can imagine this is not a sustainable way of creating APIs.
+
+The second issue, which I've already mentioned, is that the data warehouse is not optimised to serve a high volume of small transactions with very low SLAs. They are meant for analytical use cases. OLTP databases such as Postgres or DynamoDB are better suited for API use cases.
+
+To ensure the APIs can handle a high volume of queries with slow SLAs, we need to move the data from the Warehouse to an OLTP database (of your choice) and connect the API to it. This means adding an extra step to the API creating process, however it will ensure high quality and high performance APIs.
+
+THis process is called Reverse ETL, and there are multiple ways to do it. I've recently written a blog on how to use spark to move data from Databricks Delta into Postgres. However, you can use other methods, such as third party vedors (hightouch) or custom implementations such as using EMR, Lamdbas etc.
+
+### Summary
+
+As we have seen in this section, the API creating process is not only about defining the data source and the query and start hitting the endpoint. It requires careful consideration about how the data is modelled and served to the APIs. The Data Platform should provide suitable solutions for the different use cases that the platform may have. For example, Postgres may be a suitable solution to move data from the Warehouse so it's ready to be queried at scale. For other use cases, such as real time data, other solutions such as Redis may be more suitable.
+
+## Federation and Hot & Cold data
 ### Hot & Cold Data
 
 In some cases, we need to serve data in real time - for example, if we are monitoring for fraudulent logins into a user account, we need to act very quickly from when the fraudulent user logs in to taking an action to block the account, particularly for platform where there is money involved. In these use cases we may choose to bypass the warehouse completely and send the data directly 
+
+
+
+
+## Lessons Learned
+
+### Local Testing - Database Modelling Access control
+
+### Data strategy
+
+
+### Data modelling is the most important element
