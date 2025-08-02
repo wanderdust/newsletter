@@ -12,6 +12,13 @@ cover:
 images: []
 ---
 
+Sections
+- PT1: Overview, use cases, compontents
+- PT2: Data Platform Architecture (API Gateway, Facades, Standardisation, Connecting to the data sources)
+- PT3: Definitions component (Self Service): deploying the APIs from the config (Gateway, facades, queries, CI/CD etc)
+- PT4: Dealing with data - pre-modelling, data source types, dealing with inefficient queries defined by uers
+- PT5: Merging Hot & Cold Data
+
 Once the data arrives in the warehouse it is only the first step. To get value from your data it needs to be easily accessible by different parts of the business. In some cases, the data warehouse is the single source of truth with all the data, in others the data may be scattered across different data sources - Redshift, Databricks, Postgres, you name it. 
 
 One of the ways to make data accessible to the rest of the business is to make it accessible via APIs. In this blog post, I describe an architecture where users can create their own APIs to access the data they need using a centralised platform.
