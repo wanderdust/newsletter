@@ -12,12 +12,10 @@ cover:
 images: []
 ---
 
-Sections
-- PT1: Overview, use cases, compontents
-- PT2: Data Platform Architecture (API Gateway, Facades, Standardisation, Connecting to the data sources)
-- PT3: Definitions component (Self Service): deploying the APIs from the config (Gateway, facades, queries, CI/CD etc)
-- PT4: Dealing with data - pre-modelling, data source types, dealing with inefficient queries defined by uers
-- PT5: Merging Hot & Cold Data
+GOAL: Describe How to build a Self Serving Data API Platform (potentially, create a lessons learned post instead)
+TARGET AUDIENCE: General Audience interested in data applications
+
+---
 
 Once the data arrives in the warehouse it is only the first step. To get value from your data it needs to be easily accessible by different parts of the business. In some cases, the data warehouse is the single source of truth with all the data, in others the data may be scattered across different data sources - Redshift, Databricks, Postgres, you name it. 
 
