@@ -197,7 +197,7 @@ routes:
 
 ```
 
-### Generating Resources
+### Generating the IaC form the Config
 
 We need to create a component that is capable of taking a configuration file and generating all of the different resources we need, this can be created using your programming language of choice and can be deployed either as a library, a script or a cli.
 
@@ -214,32 +214,161 @@ In this case, every time a new definition is created, updated or deleted, we can
 
 
 ```json
-OAS example here
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Self-Service Data API",
+    "description": "API for accessing business data",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "get": {
+        "summary": "Get all users",
+        "parameters": [
+          {
+            "name": "department",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Filter by department"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": { "$ref": "#/components/schemas/User" }
+                }
+              }
+            }
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "uri": "arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${lambda_arn}/invocations",
+          "type": "aws_proxy",
+          "httpMethod": "POST"
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "department": { "type": "string" }
+        }
+      }
+    }
+  }
+}
 ```
 
 We can deploy the OAS template to the API gateway via terraform templates.
 
-```
-terraform example here for AWS API gateway which poins to the OAS. ALso adds caching options etc, which are not included in the OAS.
-```
+```hcl
+resource "aws_api_gateway_rest_api" "data_api" {
+  name        = "self-service-data-api"
+  description = "API for accessing business data"
+  body        = file("${path.module}/openapi.json")
 
-#### SQL Query
+  endpoint_configuration {
+    types = ["REGIONAL"]
+  }
+}
+
+resource "aws_api_gateway_stage" "prod" {
+  deployment_id = aws_api_gateway_deployment.api_deployment.id
+  rest_api_id  = aws_api_gateway_rest_api.data_api.id
+  stage_name   = "prod"
+
+  # Cache configuration
+  cache_cluster_enabled = true
+  cache_cluster_size    = "0.5" # 0.5GB cache
+
+  # Method cache settings
+  variables = {
+    "cacheEnabled" = "true"
+  }
+}
+
+resource "aws_api_gateway_method_settings" "all" {
+  rest_api_id = aws_api_gateway_rest_api.data_api.id
+  stage_name  = aws_api_gateway_stage.prod.stage_name
+  method_path = "*/*"
+
+  settings {
+    metrics_enabled      = true
+    logging_level        = "INFO"
+    data_trace_enabled   = true
+    caching_enabled      = true
+    cache_ttl_in_seconds = 300 # 5 minutes
+  }
+}
+
+resource "aws_api_gateway_deployment" "api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.data_api.id
+
+  triggers = {
+    # Redeploy when the OAS spec changes
+    openapi_sha = sha1(file("${path.module}/openapi.json"))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+```
 
 
 ### Deployment process
 
-Once we have the necessary configuration ready, we can start thinking about the deploying the compontents. We have a few options to deploy the APIs, but to 
+Now we have the terraform files required to delpoy the API Gateway as well as the SQL query that we want each endpoint to execute. 
 
-#### Terraform
+The deployment process for the API Gateway is as follows
+
+1. THe config generation component looks at the API config and generates the terraform + OAS resources
+2. The terraform is applied to create or update the API Gateway
+3. THe endpoint is created in the API Gateway which points to the correct Facade.
+
+Depending on how we build this platform, this process can be integrated as a CI/CD pipeiline (if users define these definitions in a github repo), or we can create a cli that handles this process.
 
 
 
 #### SQL queries
 
-The SQL query is the query that gets executed when a user hits the `/users` endpoint. The SQL queries need to be 
+The final step is ensuring each endpoint will execute the query that the user has defined. However, if you rememeber the API facade is already running, and we don't want to redeploy the server every time a user wants to add or update an endpoint.
 
-[Diagram]
+What we can do instead is to upload the SQL queries to an S3 bucket. THe facade can have a running process running every few seconds that checks for any new SQL queries, and loads them into the facade. All of this can happen asynchronously without having to redeploy the server.
 
+If we remember the facade code it was a wildcard endpoint that routes all requests to the database. When a request comes in, we can use the endpoint name to load the correct SQL query at runtime.
+
+
+```python
+# Async process that loads the queries into memory
+queries = async cron_query_loader(s3_bucket_path="s3:://my-path", reload_time="30s")
+
+@app.get("/")
+def read_root(request):
+  db_connection = client.connect()
+  # Get the query corresponding to the endpoint
+  query = get_query(request.url.path)
+
+  # Execute query and gather results
+  data = db_connection.execute_query()
+  db_connection.close()
+
+  # Transform the results to standardised format and return
+  return {"data": transformed_results(data)}
+```
+
+And with this we have a fully functioning platform that creates API endpoints based on user configs.
 
 
 ## The Data
@@ -310,3 +439,9 @@ In some cases, we need to serve data in real time - for example, if we are monit
 
 
 ### Data modelling is the most important element
+
+### Designing User Interfaces is hard
+Getting feedback sometimes happens by accident as side comments or remarks. Checking for feedbakc often is impartont
+
+### Solving for 90% of problems
+In our case solving for long running queries caused issues. If we colud cut queries running over 10s, it would have made our lifes easier. However business needs sometimes require these exceptions that complicate platform design.
