@@ -11,31 +11,23 @@ cover:
   caption: ''
 images: []
 ---
+Goal: End to end streaming - from data gathering with Kafka to Serving the data via APIs.
+Target Audience: Data Engineers
 
-In this post, I share how to build a real-time API using Change Data Capture (CDC) to stream data from Databricks Delta Lake into PostgreSQL to provide sub-second response times.
+Outline
+- Sending transaction Data to Kafka via SDK (dummy API)
+- Streaming transformations with Delta Tables - combine 2 tables - Create an example where we have inserts
+- Reverse ETL into PostgreSQL
+- API
 
-The goal is to make warehouse data available in real-time to downstream systems that require millisecond-level access. These systems could be customer support tools that need to look up recent transactions, or online machine learning models that require fresh data for predictions.
-
-Data warehouses are optimized for analytics and won't perform well for high-volume, low-latency queries. On the other hand, PostgreSQL leverages indexes to make these reads very fast.
-
-This blog post shows a step-by-step implementation using Delta's Change Data Feed and structured streaming. I'll define the requirements, show how to implement the streaming pipeline with Spark, and then create a FastAPI service to expose the data.
-
-Let's dive in!
-
-## The Jargon
-
-Let's get the jargon out of the way first. Change Data Capture (CDC) is a technique that identifies and captures changes made to data in a database, then delivers those changes to a downstream system. It's what makes real-time data replication possible.
+---
+Intro here
 
 ## What are our requirements?
 
 Before we start implementing, we need to understand our requirements:
-
-- The source Delta table contains transaction records, approximately 20GB in size.
-- The data includes inserts, updates, and occasional deletes.
-- The source data is updated continuously as new transactions occur.
-- Customer support needs to access transaction data within 2 minutes of updates.
-- The API needs to support filtering by user ID and other transaction attributes.
-- Query response times need to be under 100ms, even under heavy load.
+- We collect transaction metrics from the front end APIs
+- We need to make this data available within 1 minute to customer support teams to be able to see this info in real time to handle support
 
 ## Design the pipeline
 
@@ -52,7 +44,13 @@ The pipeline will have three main components:
 - A properly indexed PostgreSQL database optimized for fast reads
 - A FastAPI service that provides a clean interface to the data
 
-## Implementation
+## Data Collection (kafka)
+
+
+## Data Transformations (Delta)
+
+
+## Reverse ETL (spark)
 
 Now to the juicy bit. Let's start with enabling Change Data Feed in our source Delta table:
 
@@ -258,22 +256,21 @@ This API:
 ## Putting it all together
 
 With all these pieces in place, we now have a complete solution:
-
-1. CDC captures changes from the Delta table in near real-time
-2. The streaming job processes these changes and updates PostgreSQL
-3. PostgreSQL indexes optimize the data for fast reads
-4. The FastAPI service provides a clean interface to access the data
+1. Capture all events with Kafka
+2. Send the events to DBX
+...
+5. Serve the data in near Real time via APIs
 
 This architecture gives us several benefits:
-- Low-latency access to transaction data (less than 100ms)
+- Low-latency access to transaction data
 - Reduced load on the data warehouse
 - Support for real-time operational use cases
 - Separation of analytical and operational workloads
 
 ## Conclusion
 
-We've built a real-time API using Change Data Capture and streaming to make warehouse data available with sub-second latency. By combining Delta's CDC capabilities with PostgreSQL's indexing and FastAPI's performance, we've created a solution that meets the needs of our customer support team.
+We've built a near real-time API using Change Data Capture and streaming to make warehouse data available with sub-second latency. By combining Delta's CDC capabilities with PostgreSQL's indexing and FastAPI's performance, we've created a solution that meets the needs of our customer support team.
 
 The same pattern can be applied to many other use cases where real-time access to warehouse data is needed, such as personalization, fraud detection, or inventory management.
 
-Thank you for making it this far! I hope you've found this post useful. Feel free to reach out with any questions or comments.
+We can also apply this pattern to move data into any database, such as Redis or DynamoDB.
