@@ -12,9 +12,47 @@ cover:
 images: []
 ---
 
-GOAL: Describe How to build a Self Serving Data API Platform (potentially, create a lessons learned post instead)
+GOAL: Lessons from a Retired Self-Serve Data API
 TARGET AUDIENCE: General Audience interested in data applications
+# Lessons from a Retired Self-Serve Data API
 
+## 1. Intro
+- Two–line history of the project  
+- Why it mattered and why it was shut down  
+- What readers will learn in the next five minutes  
+
+## 2. Fast Facts
+- Teams onboarded: _N_  
+- Endpoints at peak: _N_  
+- Main reasons for retirement: adoption drop, upkeep cost, newer vendor tools  
+
+## 3. Seven Key Lessons  
+1. Data modelling breaks or kills the performance
+2. Self Service in data requires guardrails
+3. Write good user facing documentation - safe yourself support
+4. Write good platform documentation
+5. Stick to a single Warehouse and a singgle operational Store if possible
+6.
+
+
+## 4. What Worked Well
+- Unified JSON schema for all responses  
+- Terraform-based gateway releases were safe and repeatable  
+
+## 5. What We Would Do Differently
+- Start with one data source and one killer use case  
+- Ship a monitoring dashboard alongside v1  
+- Versioning
+- Better UX (CI/CD based)
+- No trino - no running queries
+
+## 6. If We Rebuilt Today
+- Thin platform layer focused on developer experience  
+- Single Operational STore (SSOT)
+
+## 7. Takeaways
+- Three bullet-point actions readers can try this week  
+- Call for feedback and shared war stories  
 ---
 
 Once the data arrives in the warehouse it is only the first step. To get value from your data it needs to be easily accessible by different parts of the business. In some cases, the data warehouse is the single source of truth with all the data, in others the data may be scattered across different data sources - Redshift, Databricks, Postgres, you name it. 
@@ -427,6 +465,10 @@ As we have seen in this section, the API creating process is not only about defi
 ### Hot & Cold Data
 
 In some cases, we need to serve data in real time - for example, if we are monitoring for fraudulent logins into a user account, we need to act very quickly from when the fraudulent user logs in to taking an action to block the account, particularly for platform where there is money involved. In these use cases we may choose to bypass the warehouse completely and send the data directly 
+
+We used trino ... 
+
+But you can also combine both your hot data and cold data into a single operational store (ie Postgres) and combine queries that way.
 
 
 
