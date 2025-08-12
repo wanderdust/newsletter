@@ -41,7 +41,7 @@ Autoscaling only kicks in after queries have been added to the queue. We want to
 
 ## The queries
 
-query-1 (v3-crui)
+Query B 
 ```sql
 WITH aggregated_data AS (
     SELECT
@@ -72,7 +72,7 @@ FROM aggregated_data
 LIMIT 5000;
 ```
 
-query2 (v1-round)
+Query A
 ```sql
 WITH ranked_events AS (
     SELECT *, ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY created_date DESC) 
@@ -104,21 +104,102 @@ ORDER BY reference_id
 LIMIT 100 OFFSET 200;
 ```
 
-## The baseline
-Databricks Config:
-- Type: Serverless
-- Cluster Size: Small
-- Scaling: min 1, max 2
-- Cost: $201/day or $6,048/month
+## Databricks Load Testing Results
 
-Load: 
-- 2 concurrent requests per second
+### Baseline Test
+*Optimal query run time when load is low*
 
-Results
+#### Configuration
+- **Users**: 2 users
+- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 2
+- **Cost**: $201/day ($6,048/month)
 
-| Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg |
-|------------|----------|----------|----------|----------|-----|
-| v1-round | 1,400 | 1,900 | 2,300 | 2,730 | 1,489 |
-| v3-crui-statsbyentity | 500 | 650 | 1,100 | 1,489 | 526 |
+#### Results
+*2 users ~ 1.5 requests/s*
 
+| Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
+|------------|----------|----------|----------|----------|----------|
+| Query A | 1,400 | 1,900 | 2,300 | 2,730 | 1,489 |
+| Query B | 500 | 650 | 1,100 | 1,489 | 526 |
+
+
+---
+
+### Load Test #0
+*Same configuration as baseline but loading it with 150 concurrent users*
+
+#### Configuration
+- **Users**: 150 users
+- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 2
+- **Cost**: $201/day ($6,048/month)
+
+#### Results
+*150 users ~ 9 requests/s*
+
+| Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
+|------------|----------|----------|----------|----------|----------|
+| Query A | 4,300 | 20,000 | 164,000 | 192,000 | 9,943 |
+| Query B | 530 | 1,800 | 3,500 | 7,774 | 684 |
+
+
+![](./load_test_0.png)
+
+#### Key Observations
+- Queue grows faster than queries can execute, which has a big effect on p95 and p99
+- Slower queries experience a greater performance degradation under load compared to faster queries, which are less impacted
+
+---
+
+### Load Test #1
+*Increasing the number of max scaling clusters to 10*
+
+#### Configuration
+- **Users**: 150 users
+- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 10
+- **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
+
+#### Results
+*150 users ~ 35 requests/s*
+
+| Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
+|------------|----------|----------|----------|----------|----------|
+| Query A | 3,600 | 6,500 | 34,000 | 394,362 | 5,819 |
+| Query B | 480 | 650 | 1,100 | 16,348 | 524 |
+
+
+![](./load_test_1.png)
+
+
+#### Key Observations
+- When clusters are exhausted, the queue grows linearly but at a slower rate, eventually stabilising around 70
+- New clusters are added relatively quickly during autoscaling
+- During autoscaling, response time (P95) may spike briefly, but stabilizes once the new clusters are active
+
+---
+
+### Load Test #2
+*Same as load test #1 but adding more users*
+
+#### Configuration
+- **Users**: 300 users
+- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 10
+- **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
+
+#### Results
+*300 users ~ 40 requests/s*
+
+| Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
+|------------|----------|----------|----------|----------|----------|
+| Query A | 4,000 | 7,500 | 85,000 | 240,503 | 6,171 |
+| Query B | 480 | 760 | 2,300 | 18,760 | 567 |
+
+
+![](./load_test_2.png)
+
+#### Key Observations
+- Autoscaling is relatively fast. 1 to 10 cluster within 4 minutes
+- P95 is a bit inconsistent (spikes) while autoscaling is happening, then it stabilises
+- Queries queue at a linear rate faster than they can execute after ~ 180 users
+
+## Results
 
