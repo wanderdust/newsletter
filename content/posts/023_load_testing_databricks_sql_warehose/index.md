@@ -12,19 +12,25 @@ cover:
 images: []
 ---
 
-I needed to fetch data from the data warehouse to integrate in dowsnstream applications via an API. The API would recieve dozens up to hundreds of requests per second.
+We needed to fetch data from the data warehouse to integrate in dowsnstream applications via an API. The API would recieve dozens up to hundreds of requests per second.
 
-I run a load test to understand the performance and cost implications of hitting Databricks diretcly via the SQL warehouse.
+Data Warehouses are not designed to serve operational use cases such as this one. However this is no reason not to run this experiment to understand to what point this is true. It may be the case that for smaller workloads the data warehouse can serve these use cases, minimasing operational overhead of having to setup a downstream operational store such as Postgres to serve this data.
+
+After all, Databricks separates storage from compute, so we can hit the warehouse as hard as we want without worrying about bringing the Warehouse down right?
+
+In this blog post I run a load test into Databricks SQL Warehouse to better understand performance and cost under different levels of load.
+
+Enjoy!
 
 ## Methodology
 
 Steps
 
-1. Create a baseline
+1. Create a baseline. Execute the queries under a low load.
 
-2. Load test for each of the proposed configurations 
+2. Run load test for each of the proposed configurations.
 
-3. Compare to baseline and to other load tests
+3. Compare baseline to other Load tests
 
 4. Select most cost/efficient solution
 
@@ -38,39 +44,13 @@ Autoscaling only kicks in after queries have been added to the queue. We want to
 
 > If the queue is not decreasing quickly enough, autoscaling kicks in to rapidly procure more compute. [link](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing)
 
+## Choosing the compute
+
+For this use case we decided to go for serverless compute because it was the only option that could scale fast enough if there is a spike of requests. The idea is test whether we can put the data warehouse behind an API layer to directly handle operational requests.
 
 ## The queries
+THese are the queries used for this test. Query B is a simpler query with a GROUP BY clause. Query A is a bit more resource intensive with JOINs.
 
-Query B 
-```sql
-WITH aggregated_data AS (
-    SELECT
-        product_type_id,
-        SUM(event_count) AS event_count,
-        SUM(total_value) AS total_value,
-        SUM(net_amount) AS net_amount,
-        SUM(projected_amount) AS projected_amount,
-        SUM(tier_a_value) AS tier_a_value,
-        SUM(tier_b_value) AS tier_b_value,
-        SUM(tier_c_value) AS tier_c_value
-    FROM public.analytics.customer_activity_summary
-    WHERE
-        customer_id = ?
-        AND time_period = 'lifetime'
-    GROUP BY GROUPING SETS ( (), (product_type_id) )
-)
-SELECT
-    product_type_id,
-    event_count,
-    total_value,
-    net_amount,
-    projected_amount,
-    tier_a_value,
-    tier_b_value,
-    tier_c_value
-FROM aggregated_data
-LIMIT 5000;
-```
 
 Query A
 ```sql
@@ -104,13 +84,46 @@ ORDER BY reference_id
 LIMIT 100 OFFSET 200;
 ```
 
-## Databricks Load Testing Results
 
-### Baseline Test
-*Optimal query run time when load is low*
+Query B 
+```sql
+WITH aggregated_data AS (
+    SELECT
+        product_type_id,
+        SUM(event_count) AS event_count,
+        SUM(total_value) AS total_value,
+        SUM(net_amount) AS net_amount,
+        SUM(projected_amount) AS projected_amount,
+        SUM(tier_a_value) AS tier_a_value,
+        SUM(tier_b_value) AS tier_b_value,
+        SUM(tier_c_value) AS tier_c_value
+    FROM public.analytics.customer_activity_summary
+    WHERE
+        customer_id = ?
+        AND time_period = 'lifetime'
+    GROUP BY GROUPING SETS ( (), (product_type_id) )
+)
+SELECT
+    product_type_id,
+    event_count,
+    total_value,
+    net_amount,
+    projected_amount,
+    tier_a_value,
+    tier_b_value,
+    tier_c_value
+FROM aggregated_data
+LIMIT 5000;
+```
+
+The load tests are executed using the Locust framework. We use different load configurations for each test.
+
+## Baseline
+
+*The baseline tests the optimal query run time when load is low*
 
 #### Configuration
-- **Users**: 2 users
+- **Users**: 2 concurrent users
 - **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 2
 - **Cost**: $201/day ($6,048/month)
 
@@ -122,8 +135,7 @@ LIMIT 100 OFFSET 200;
 | Query A | 1,400 | 1,900 | 2,300 | 2,730 | 1,489 |
 | Query B | 500 | 650 | 1,100 | 1,489 | 526 |
 
-
----
+## Load Testing Results
 
 ### Load Test #0
 *Same configuration as baseline but loading it with 150 concurrent users*
@@ -145,13 +157,13 @@ LIMIT 100 OFFSET 200;
 ![](./load_test_0.png)
 
 #### Key Observations
-- Queue grows faster than queries can execute, which has a big effect on p95 and p99
+- The databricks queue grows faster than queries can execute, which has a big effect on p95 and p99
 - Slower queries experience a greater performance degradation under load compared to faster queries, which are less impacted
 
 ---
 
 ### Load Test #1
-*Increasing the number of max scaling clusters to 10*
+*Same configuration as baseline but loading it with 150 concurrent users and increasing the number of max scaling clusters to 10*
 
 #### Configuration
 - **Users**: 150 users
@@ -172,8 +184,12 @@ LIMIT 100 OFFSET 200;
 
 #### Key Observations
 - When clusters are exhausted, the queue grows linearly but at a slower rate, eventually stabilising around 70
-- New clusters are added relatively quickly during autoscaling
+- New clusters are added relatively quickly during autoscaling (within a few minutes)
 - During autoscaling, response time (P95) may spike briefly, but stabilizes once the new clusters are active
+- This is a very expensive configuration.
+- P99 is really bad for query A, and not too bad for query B. It implies that the slower query suffers more when the load is high.
+- THe max value, indicating the worst query execution times are shockingly bad for both queries.
+
 
 ---
 
@@ -200,6 +216,27 @@ LIMIT 100 OFFSET 200;
 - Autoscaling is relatively fast. 1 to 10 cluster within 4 minutes
 - P95 is a bit inconsistent (spikes) while autoscaling is happening, then it stabilises
 - Queries queue at a linear rate faster than they can execute after ~ 180 users
+- P99 is really bad for query A, and not too bad for query B. It implies that the slower query suffers more when the load is high.
+- THe max value, indicating the worst query execution times are shockingly bad for both queries.
 
-## Results
+## Discussion
 
+### Cost vs. Performance Scaling
+
+Running 10 clusters in serverless mode is prohibitively expensive while only handling about 35 requests per second. More concerning is that the relationship between resources and performance shows diminishing returns: a 5x increase in cluster capacity (from 2 to 10) only yielded a ~4x increase in throughput (from 9 to 35 req/s). This makes each additional request served progressively more expensive as you scale.
+
+For most API workloads, this cost structure simply doesn't make sense compared to alternatives like dedicated operational databases.
+
+Databricks offers managed solutions such as LakeBase or Online tables so you don't have to manage reverse ETL pipelines going from the warehouse to the operational database.
+
+### Query Complexity Determines Viability
+
+The tests showed a disparity in how different query types perform under load. Simple queries like Query B maintained reasonable performance even as concurrency increased, with p50 latency remaining stable around 480ms across all tests. Complex queries like Query A, however, degraded non-linearly. At baseline the performance gap for p99 was roughly 2x worse, but under load this worsened to 10-21x in p99 times.
+
+This suggests that data warehouses might actually be viable for certain simple operational queries if cost isn't the primary concern. It becomes unsuitable for more complex operations when serving for API use cases. The complexity of your query workload becomes the determining factor in whether this architecture could work.
+
+## Summary
+
+We came into this blog post knowing this was not going to work out. If everyone says OLAP databeses are not good for OLTP use cases it is probably for a reason. However, I hope you found it interesting getting a bit more of an insight into how the databricks SQL warehouse behaves under such load.
+
+It never hurts to try things for yourself, even if they are bound to fail. You may learn something on the way.
