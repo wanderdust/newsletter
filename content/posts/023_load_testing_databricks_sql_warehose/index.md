@@ -234,10 +234,22 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 ## Results
 
+Lets take a look at the plotted results. I will take a look at p50 instead of the average because the average will be heavily skewed to those really high max values.
+
+I will also be focusing on the p99, which will give the worst case execution times excluding the outliers. In other words, if we execute the query 100 times, 99 times the execution times will be equal or below the p99 value.
+
+This gives a good indication of what execution times users would expect if we were to implement this in an API.
+
+If we plot the results for each query side by side using the same y axsis, we can barely see the bars for query B. If we zoom in with our eyes, we can see that the values for query B get increasingly worse as we add more load.
+
 ![](./p99_results.png)
 
+In the baseline, query A is 2x slower than query B, so it makes sense that it will have worse p99 values overall. However, I want to see if both queries deterirate euqally when they are under load. 
 
-![](./p99_results_log.png)
+To do this, I will plot the relative query slowdown as compared to the baseline, using the p99 value as a guide.
+
+![](./plot_slowdown_results.png)
+
 
 ## Discussion
 
