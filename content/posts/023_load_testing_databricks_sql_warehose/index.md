@@ -12,11 +12,15 @@ cover:
 images: []
 ---
 
-My team needed to find a way to serve a table from Databricks via an API to integrate in a user facing application. This API was expected to recieve up to 100 requests per second of read operations.
+Our team needed to create a Data API to integrate in a downstream user facing system. This API was expected to recieve a load of around 100 requests per second of read operations.
 
-Since the table was already in Databricks, the simplest option would be to create an API and hit the table directly in Databricks.
+The data that we needed to serve lived in Databricks, and we needed to find a way to make it available to the API in a secure, cost efficient and scalable manner.
 
-This investigation explores the feasability of using the SQL warehouse to serve this use case. It shows the performance and cost implications of running a high volume of requests for different query types in the SQL Warehouse.
+At this point there were a few options, but the path of least resistance was to serve the data directly form Databricks using the SQL warehouse.
+
+It would be very irresponsible from us to not check if the SQL warehouse was capable of handling the load before integrating it in the API, so this is what this post all about.
+
+In this post I test the SQL Warehouse to see if I can sustain a load of up t 300 requests per second for two different queries. I review performance and cost considerations.
 
 Enjoy!
 
@@ -47,9 +51,8 @@ Autoscaling only kicks in after queries have been added to the queue. We want to
 ## The queries
 These are the queries used for this test. Query B is a simpler query with a GROUP BY clause. Query A is a bit more resource intensive with JOINs and window operations.
 
-{{< details >}}
+{{< details title="Query A" >}}
 
-Query A
 ```sql
 WITH ranked_events AS (
     SELECT *, ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY created_date DESC) 
@@ -80,9 +83,10 @@ FROM formatted_data
 ORDER BY reference_id
 LIMIT 100 OFFSET 200;
 ```
+{{< /details >}}
 
 
-Query B 
+{{< details title="Query B" >}}
 ```sql
 WITH aggregated_data AS (
     SELECT
@@ -114,11 +118,11 @@ LIMIT 5000;
 ```
 {{< /details >}}
 
-The load tests are executed using the Locust framework. To ensure realistic results, the [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is disabled. On top of that, the query parameters are randomised to prevent from submitting the same query multiple times as much as possible.
+The load tests are executed using the Locust framework. To ensure realistic results [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is disabled in the SQL Warehouse. On top of that, some of the query parameters are randomised to prevent from submitting the same query multiple times as much as possible.
 
 ## Baseline
 
-*The baseline tests the optimal query run time when load is low*
+The baseline consists on executing the SQL queries under very low load to find out what the *normal* exection times are for both queries.
 
 #### Configuration
 - **Users**: 2 concurrent users
@@ -126,7 +130,7 @@ The load tests are executed using the Locust framework. To ensure realistic resu
 - **Cost**: $201/day ($6,048/month)
 
 #### Results
-*2 users ~ 1.5 requests/s*
+*~1.5 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
@@ -135,7 +139,8 @@ The load tests are executed using the Locust framework. To ensure realistic resu
 
 ## Load Testing Results
 
-Feel free to skip this section and move directly to the results.
+If you are not really interested in the specific numbers, feel free to skip this section completely and head directly to the results.
+
 
 ### Load Test #0
 *Same configuration as baseline but loading it with 150 concurrent users*
@@ -146,14 +151,14 @@ Feel free to skip this section and move directly to the results.
 - **Cost**: $201/day ($6,048/month)
 
 #### Results
-*150 users ~ 9 requests/s*
+* ~9 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
 | Query A | 4,300 | 20,000 | 164,000 | 192,000 | 9,943 |
 | Query B | 530 | 1,800 | 3,500 | 7,774 | 684 |
 
-{{< details >}}
+{{< details title="Screenshots">}}
 
 Databricks SQL warehouse screenshot showing details about the running queries, queued queries and running clusters.
 
@@ -177,7 +182,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 - **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
 #### Results
-*150 users ~ 35 requests/s*
+* ~35 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
@@ -185,7 +190,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 | Query B | 480 | 650 | 1,100 | 16,348 | 524 |
 
 
-{{< details >}}
+{{< details title="Screenshots">}}
 Databricks SQL warehouse screenshot showing details about the running queries, queued queries and running clusters.
 
 ![](./load_test_1.png)
@@ -210,7 +215,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 - **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
 #### Results
-*300 users ~ 40 requests/s*
+*~40 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
@@ -219,7 +224,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 
 
-{{< details >}}
+{{< details title="Screenshots">}}
 Databricks SQL warehouse screenshot showing details about the running queries, queued queries and running clusters. There are two spikes because I ran the test, then stopped and then ran it again.
 
 ![](./load_test_2.png)
@@ -238,9 +243,9 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 ### The Queue
 
-If you took a look at the SQL warehouse screenshots for each of the tests you will have noticed that they all ended up with a very large queue of queries. This is not good, because it means that in neither of the tests the resources were enough to handle the load, which caused the queries to be queued, and in some cases for very long times (as we will see in the next section).
+If you took a look at the SQL warehouse screenshots for each of the tests you will have noticed that they all ended up with a very large queue of queries. This is not good, because it means that all load tests, the resources were not enough to handle the load, which caused the queries to be queued. In some cases they were queued for very long times (as we will see in the next section).
 
-Let's borrow the screenshot from load test one.
+Let's borrow the screenshot from load test #1.
 
 ![](./load_test_1.png)
 
@@ -248,29 +253,27 @@ If we take a look at the peak load time when all 10 clusters were running, the p
 
 
 ### Query Execution times
-Lets take a look at the plotted results. I will take a look at p50 instead of the average because the average will be heavily skewed to those really high max values.
+The load tests showed really high max exectution times, which is why I will use the p50 instead of the average, which would be heavyly skewed towards these.
 
 I will also be focusing on the p99, which will give the worst case execution times excluding the outliers. In other words, if we execute the query 100 times, 99 times the execution times will be equal or below the p99 value.
 
-This gives a good indication of what execution times users would expect if we were to implement this in an API.
-
-If we plot the results for each query side by side using the same y axsis, we can barely see the bars for query B. Query A execution times are a lot higher for all experments as compared to query B. But this is expected, because query A was already 2x slower in the baseline, so it makes sense this carries over to the load tests.
+If we plot the results for each query side by side using the same y axis, we can barely see the latency for query B. Query A execution times are a lot higher for all experiments as compared to query B. But this is expected, because query A was already 2x slower in the baseline, so it makes sense this carries over to the load tests.
 
 ![](./p99_results.png)
 
-What I'm interested on finding out is the relative performance for each query. Do both queries degrade the same? To do this I can plot the degradation performance for each query as compared to their baseline.
+What I'm interested on finding out is the relative performance for each query. Do both queries degrade the same under load? To see this let's plot the performance degradation for each query as compared to their baseline. Each bar represents how many times worse the p99 was as compared to the baseline.
 
 ![](./plot_slowdown_results.png)
 
-So now we can clearly see that query A has a much worse p99 than query B in all load tests. Query A gets 72x worse p99 for load test one as compared to 3x  worse for query B. 
+Now we can clearly see that query A has a much worse relative performance than query B for the p99 in all load tests. Query A gets 72x worse p99 for load test one as compared to 3x  worse for query B. 
 
 For load test two, query A performs 37x times worse on the p99, as compared to 2.1x worse for query B. This indicates that the slower the query, the worse it scales as we add more load.
 
 I'm going to make an assupmtion here, because I don't have enough data to verify this. There could be two reasons for the degradation to be much worse on the more on the slower queries.
 
-One reason could be that the faster queries rarely end up in the [queue](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling) and execute straight away.
+One reason could be that the faster queries (query B) rarely end up in the [queue](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling) and execute straight away without ending up in the queue.
 
-Reason number two could be that the queue prioritises the faster queries because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster and what query in the queue best fits at the time.
+Reason number two could be that the queue prioritises the faster queries because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. Queries in the queue best fits at the resources at a given time get prioritised.
 
 ### Cost
 
@@ -284,26 +287,22 @@ Of course, it may be the case where you have a small number of clusters running 
 
 ### Cost vs. Performance Scaling
 
-Running 10 clusters in serverless mode is prohibitively expensive while only handling about 35 requests per second. The relationship between resources and performance shows diminishing returns: a 5x increase in cluster capacity (from 2 to 10) only returned a ~4x increase in throughput (from 9 to 35 req/s). This makes each additional request served progressively more expensive as you scale.
+Running 10 clusters in serverless mode is prohibitively expensive while only handling about 35 requests per second.
 
-For most API workloads, this cost structure doesn't make sense compared to alternatives like dedicated operational databases, such as PostgreSQL.
+This cost structure doesn't cut it for our use case. We are better off investigating OLTP alternatives such as PostgreSQL, which are desinged for these type of use cases. The price of running a large PostgreSQL cluster with a read replica is prabably priced similarly to the 2 serverless cluster setup in databricks while being able to handle a much larger load of requests per second.
 
-Databricks offers managed solutions such as [LakeBase](https://www.databricks.com/product/lakebase) which is a managed Postgres database where you can easily sync data from the warehouse.
+The only issue with serving from an external database is that you need to figure out the data pipelines to move data out of Databricks and into this operational store. Databricks offers [LakeBase](https://www.databricks.com/product/lakebase) which is a managed Postgres database where you can easily sync data from the warehouse.
 
 ### Query Complexity Determines Viability
 
-Not all queries behave the same under load. The tests clearly showed this:
-- Simple queries (like Query B) stayed fast even as more users were added. Median latency (p50) barely changed, around 480 ms, across all tests.
-- Complex queries (like Query A) slowed down dramatically as load increased. The slowest 1% of queries (p99) went from being twice as slow at baseline to 10–20 times slower under heavy load.
+As we seen in the results, the more resource intensive queries scale worse under load as compared to the simpler query.
 
-For operational use cases, simple queries might work directly against the data warehouse if you don’t mind the cost. But complex queries quickly become a bottleneck, making the warehouse unsuitable for high-volume, low-latency API workloads.
+You could justify creating an API hitting the SQL Warehouse directly if the query is simple and you don't mind the cost. On the other hand, complex queries quickly become a bottleneck, making the warehouse unsuitable for this use case.
 
 ## Summary
 
-Databricks is an OLAP data lake, where tables is stored in columnar format, which optimised for analytical use cases. The SQL data warehouse is not opitimised for use cases that require a high volume of requests with very low latency. 
+In this post I've load tested the Databricks SQL Warehouse to explore whether it can power user-facing APIs by serving data directly from the warehouse
 
-This investigation has showed that connecting to Databricks Directily via the SQL Warehouse is not scalable solution to serve a high volume of requests when integrating with downstream applications such as user facing applications.
+This experiment has showed us something we already knew: OLAP databases are not a good fit for high-volume, low-latency workloads. That's what OLTP databases are for. This seems quite obvious in hindsight, but if nothing else this experiments reinforces why this is true.
 
-For this we are better off using an OLTP database like Postgres where we can leverage indexes to make queries really fast and it can scale to thousands of requests per second. It will also be cheaper to run.
-
-I hope you have found this investigation interesting, see you next time.
+I hope you've enjoyed it, see you next time.
