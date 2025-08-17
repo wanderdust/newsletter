@@ -114,7 +114,7 @@ LIMIT 5000;
 ```
 {{< /details >}}
 
-The load tests are executed using the Locust framework. We use different load configurations for each test.
+The load tests are executed using the Locust framework. To ensure realistic results, the [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is disabled. On top of that, the query parameters are randomised to prevent from submitting the same query multiple times as much as possible.
 
 ## Baseline
 
@@ -134,6 +134,8 @@ The load tests are executed using the Locust framework. We use different load co
 | Query B | 500 | 650 | 1,100 | 1,489 | 526 |
 
 ## Load Testing Results
+
+Feel free to skip this section and move directly to the results.
 
 ### Load Test #0
 *Same configuration as baseline but loading it with 150 concurrent users*
@@ -234,22 +236,49 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 ## Results
 
+### The Queue
+
+If you took a look at the SQL warehouse screenshots for each of the tests you will have noticed that they all ended up with a very large queue of queries. This is not good, because it means that in neither of the tests the resources were enough to handle the load, which caused the queries to be queued, and in some cases for very long times (as we will see in the next section).
+
+Let's borrow the screenshot from load test one.
+
+![](./load_test_1.png)
+
+If we take a look at the peak load time when all 10 clusters were running, the peak count of concurrently running queries was 86, and the queue was 77. Almost half the queries were queued, which means that you would expect a delay on queries almost half of the times under that load.
+
+
+### Query Execution times
 Lets take a look at the plotted results. I will take a look at p50 instead of the average because the average will be heavily skewed to those really high max values.
 
 I will also be focusing on the p99, which will give the worst case execution times excluding the outliers. In other words, if we execute the query 100 times, 99 times the execution times will be equal or below the p99 value.
 
 This gives a good indication of what execution times users would expect if we were to implement this in an API.
 
-If we plot the results for each query side by side using the same y axsis, we can barely see the bars for query B. If we zoom in with our eyes, we can see that the values for query B get increasingly worse as we add more load.
+If we plot the results for each query side by side using the same y axsis, we can barely see the bars for query B. Query A execution times are a lot higher for all experments as compared to query B. But this is expected, because query A was already 2x slower in the baseline, so it makes sense this carries over to the load tests.
 
 ![](./p99_results.png)
 
-In the baseline, query A is 2x slower than query B, so it makes sense that it will have worse p99 values overall. However, I want to see if both queries deterirate euqally when they are under load. 
-
-To do this, I will plot the relative query slowdown as compared to the baseline, using the p99 value as a guide.
+What I'm interested on finding out is the relative performance for each query. Do both queries degrade the same? To do this I can plot the degradation performance for each query as compared to their baseline.
 
 ![](./plot_slowdown_results.png)
 
+So now we can clearly see that query A has a much worse p99 than query B in all load tests. Query A gets 72x worse p99 for load test one as compared to 3x  worse for query B. 
+
+For load test two, query A performs 37x times worse on the p99, as compared to 2.1x worse for query B. This indicates that the slower the query, the worse it scales as we add more load.
+
+I'm going to make an assupmtion here, because I don't have enough data to verify this. There could be two reasons for the degradation to be much worse on the more on the slower queries.
+
+One reason could be that the faster queries rarely end up in the [queue](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling) and execute straight away.
+
+Reason number two could be that the queue prioritises the faster queries because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster and what query in the queue best fits at the time.
+
+### Cost
+
+Assuming we have all of our clusters running capacity 24/7, running two small serverless clusters [costs](https://www.databricks.com/product/pricing/databricks-sql) $201 per day or $6,048 per month.
+
+Running 10 small serverless clusters [costs](https://www.databricks.com/product/pricing/databricks-sql) $2,000 per day or $60,048 per month.
+
+Of course, it may be the case where you have a small number of clusters running most of the time, and you only need to use the full capacity occassionally. But this should give you a rough idea of what you could be spending.
 
 ## Discussion
 
