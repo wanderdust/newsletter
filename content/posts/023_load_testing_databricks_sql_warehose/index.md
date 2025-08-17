@@ -1,9 +1,9 @@
 ---
-title: 'Can we use the Databricks SQL Warehouse as an OLAP database?'
+title: 'Can You Use Databricks SQL Warehouse in Production APIs?'
 date: '2025-08-12T09:42:44+01:00'
 draft: true 
 summary: ''
-tags: []
+tags: [data warehouse, postgres, data engineering, databricks]
 categories: []
 cover:
   image: ''
