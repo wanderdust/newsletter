@@ -115,7 +115,7 @@ LIMIT 5000;
 ```
 {{< /details >}}
 
-The load tests are executed using a [Locust](https://locust.io/) script that hits the databricks SQL Warehouse API for the two queries. Each query type is executed with equal weights.
+The load tests are executed using a [Locust](https://locust.io/) script that hits the databricks SQL Warehouse API for the two queries. Each query type is executed an equal number of times.
 
 To ensure realistic results [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is also disabled. On top of that, the SQL query parameters are randomised to prevent from submitting repeated queries as much as possible.
 
