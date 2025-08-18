@@ -274,7 +274,9 @@ Now we can clearly see that query A has a much worse relative performance than q
 
 For load test two, query A performs 37x times worse on the p99, as compared to 2.1x worse for query B. This indicates that the slower the query, the worse it scales as we add more load.
 
-I'm going to make an assupmtion here, because I don't have enough data to verify this. Based on the [queuing documentation](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing), the reason the queue prioritises the faster queries is because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. Queries in the queue that best fit the resource capacity at given time get prioritised.
+I'm going to make an assupmtion here: based on the [queuing documentation](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing), the reason the queue prioritises the faster queries is because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. 
+
+Queries in the queue that best fit the resource capacity at given time get prioritised.
 
 ### Cost
 
