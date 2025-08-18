@@ -12,7 +12,7 @@ cover:
 images: []
 ---
 
-Our team needed to create a Data API to integrate in a downstream user facing system. This API was expected to recieve a load of around 100 requests per second of read operations.
+Our team needed to create a Data API to integrate in a downstream user facing system.
 
 The data that we needed to serve lived in Databricks, and we needed to find a way to make it available to the API in a secure, cost efficient and scalable manner.
 
@@ -20,24 +20,22 @@ At this point there were a few options, but the path of least resistance was to 
 
 It would be very irresponsible from us to not check if the SQL warehouse was capable of handling the load before integrating it in the API, so this is what this post all about.
 
-In this post I test the SQL Warehouse to see if I can sustain a load of up t 300 requests per second for two different queries. I review performance and cost considerations.
-
-Enjoy!
+In this post we test the SQL Warehouse to see if it can sustain a load of up to 300 concurrent requests for two different queries. We review if this a sustainable solutions in terms of scalability and cost.
 
 ## Methodology
 
-This is the methodology used in this investigation
+This is the methodology used to run the tests:
 
-1. Create a baseline. Execute the queries under a low load.
+1. Create a baseline.
 
-2. Run load test for each of the proposed configurations.
+2. Run a load test for each of the proposed configurations.
 
-3. Compare baseline to Load tests
+3. Compare load tests to baseline.
 
 
 ## Preparation
 
-For this use case we decided to go for serverless compute because it was the only option that can scale fast enough if there is a spike of requests.
+For this use case we decided to go for the serverless compute because it was the only option that can scale fast enough if there is a spike of requests.
 
 Databricks recommends that for running multiple queries at one time, we should increase number of clusters
 
@@ -48,7 +46,7 @@ Autoscaling only kicks in after queries have been added to the queue. We want to
 > *If the queue is not decreasing quickly enough, autoscaling kicks in to rapidly procure more compute. [link](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing)*
 
 
-## The queries
+## The Queries
 These are the queries used for this test. Query B is a simpler query with a GROUP BY clause. Query A is a bit more resource intensive with JOINs and window operations.
 
 {{< details title="Query A" >}}
@@ -118,16 +116,18 @@ LIMIT 5000;
 ```
 {{< /details >}}
 
-The load tests are executed using the Locust framework. To ensure realistic results [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is disabled in the SQL Warehouse. On top of that, some of the query parameters are randomised to prevent from submitting the same query multiple times as much as possible.
+The load tests are executed using a [Locust](https://locust.io/) script that hits the databricks SQL Warehouse API for the two queries.
+
+To ensure realistic results [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is also disabled. On top of that, the SQL query parameters are randomised to prevent from submitting repeated queries as much as possible.
 
 ## Baseline
 
 The baseline consists on executing the SQL queries under very low load to find out what the *normal* exection times are for both queries.
 
 #### Configuration
-- **Users**: 2 concurrent users
-- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 2
-- **Cost**: $201/day ($6,048/month)
+- **Load**: 2 concurrent users
+- **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 2
+- **Estimated Cost**: $201/day ($6,048/month)
 
 #### Results
 *~1.5 requests/s*
@@ -139,19 +139,21 @@ The baseline consists on executing the SQL queries under very low load to find o
 
 ## Load Testing Results
 
-If you are not really interested in the specific numbers, feel free to skip this section completely and head directly to the results.
+We run three different load tests to test different autoscaling options and load size.
+
+If you are not really interested in the specific numbers, feel free to skip this section and head directly to the results.
 
 
 ### Load Test #0
 *Same configuration as baseline but loading it with 150 concurrent users*
 
 #### Configuration
-- **Users**: 150 users
-- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 2
-- **Cost**: $201/day ($6,048/month)
+- **Load**: 150 users
+- **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 2
+- **Estimated Cost**: $201/day ($6,048/month)
 
 #### Results
-* ~9 requests/s*
+*~ 9 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
@@ -177,12 +179,12 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 *Same configuration as baseline but loading it with 150 concurrent users and increasing the number of max scaling clusters to 10*
 
 #### Configuration
-- **Users**: 150 users
-- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 10
-- **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
+- **Load**: 150 users
+- **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 10
+- **Estimated Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
 #### Results
-* ~35 requests/s*
+ *~ 35 requests/s*
 
 | Query Name | p50 (ms) | p95 (ms) | p99 (ms) | max (ms) | avg (ms) |
 |------------|----------|----------|----------|----------|----------|
@@ -210,9 +212,9 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 *Same as load test #1 but adding more users*
 
 #### Configuration
-- **Users**: 300 users
-- **Databricks**: Serverless, Small cluster size, Scaling min 1 to max 10
-- **Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
+- **Load**: 300 users
+- **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 10
+- **Estimated Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
 #### Results
 *~40 requests/s*
@@ -243,25 +245,29 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 ### The Queue
 
-If you took a look at the SQL warehouse screenshots for each of the tests you will have noticed that they all ended up with a very large queue of queries. This is not good, because it means that all load tests, the resources were not enough to handle the load, which caused the queries to be queued. In some cases they were queued for very long times (as we will see in the next section).
+If you took a look at the SQL Warehouse's screenshots for each of the tests, you will have noticed that they all ended up with a very large queue of queries.
+
+This is not good, because it means that for all load tests, the resources were not enough to handle the load, which caused the queries to end up in the queue. In some cases they were queued for very long times (as we will see in the next section).
 
 Let's borrow the screenshot from load test #1.
 
 ![](./load_test_1.png)
 
-If we take a look at the peak load time when all 10 clusters were running, the peak count of concurrently running queries was 86, and the queue was 77. Almost half the queries were queued, which means that you would expect a delay on queries almost half of the times under that load.
+If we take a look at the peak load time when all 10 clusters were running, the peak count of concurrently running queries was 86, and the queue was 77. Almost half the queries were queued, which means that nearly 50% of the times you should expect a delayed response.
 
 
 ### Query Execution times
-The load tests showed really high max exectution times, which is why I will use the p50 instead of the average, which would be heavyly skewed towards these.
+The load tests showed really high max exectution times, which is why we'll use the p50 instead of the average. We'll also be focusing on the p99.
 
-I will also be focusing on the p99, which will give the worst case execution times excluding the outliers. In other words, if we execute the query 100 times, 99 times the execution times will be equal or below the p99 value.
-
-If we plot the results for each query side by side using the same y axis, we can barely see the latency for query B. Query A execution times are a lot higher for all experiments as compared to query B. But this is expected, because query A was already 2x slower in the baseline, so it makes sense this carries over to the load tests.
+If we plot the results for each query side by side using the same y axis, we can barely see the latency for query B. Query A execution times are a lot higher for all experiments as compared to query B. But this is expected, because query A was already 2x slower at the baseline, so it makes sense this carries over to the load tests.
 
 ![](./p99_results.png)
 
-What I'm interested on finding out is the relative performance for each query. Do both queries degrade the same under load? To see this let's plot the performance degradation for each query as compared to their baseline. Each bar represents how many times worse the p99 was as compared to the baseline.
+What we're interested on finding out is the relative performance for each query.
+
+Do both queries degrade the same under load?
+
+To see this let's plot the performance degradation for each query as compared to their baseline. Each bar represents how many times worse the p99 was as compared to the baseline.
 
 ![](./plot_slowdown_results.png)
 
@@ -271,13 +277,13 @@ For load test two, query A performs 37x times worse on the p99, as compared to 2
 
 I'm going to make an assupmtion here, because I don't have enough data to verify this. There could be two reasons for the degradation to be much worse on the more on the slower queries.
 
-One reason could be that the faster queries (query B) rarely end up in the [queue](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling) and execute straight away without ending up in the queue.
+One reason could be that the faster queries (query B) rarely end up in the [queue](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling) and execute straight away without ending up in the queue because they are less resource intensive and therefore it is more likely that there's always room in the cluster to execute them.
 
-Reason number two could be that the queue prioritises the faster queries because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. Queries in the queue best fits at the resources at a given time get prioritised.
+Reason number two could be that the queue prioritises the faster queries because it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. Queries in the queue that best fit the resource capacity at given time get prioritised.
 
 ### Cost
 
-Assuming we have all of our clusters running capacity 24/7, running two small serverless clusters [costs](https://www.databricks.com/product/pricing/databricks-sql) $201 per day or $6,048 per month.
+Assuming we have all of our clusters running 24/7, two small serverless clusters [costs](https://www.databricks.com/product/pricing/databricks-sql) $201 per day or $6,048 per month.
 
 Running 10 small serverless clusters [costs](https://www.databricks.com/product/pricing/databricks-sql) $2,000 per day or $60,048 per month.
 
@@ -291,18 +297,18 @@ Running 10 clusters in serverless mode is prohibitively expensive while only han
 
 This cost structure doesn't cut it for our use case. We are better off investigating OLTP alternatives such as PostgreSQL, which are desinged for these type of use cases. The price of running a large PostgreSQL cluster with a read replica is prabably priced similarly to the 2 serverless cluster setup in databricks while being able to handle a much larger load of requests per second.
 
-The only issue with serving from an external database is that you need to figure out the data pipelines to move data out of Databricks and into this operational store. Databricks offers [LakeBase](https://www.databricks.com/product/lakebase) which is a managed Postgres database where you can easily sync data from the warehouse.
+The only issue with serving from an external database is that you need to figure out the data pipelines to move data out of Databricks and into this operational store. Databricks offers [LakeBase](https://www.databricks.com/product/lakebase) as a managed solution.
 
 ### Query Complexity Determines Viability
 
-As we seen in the results, the more resource intensive queries scale worse under load as compared to the simpler query.
+As we have seen in the results, the more resource intensive queries are, the worse they scale under load. 
 
 You could justify creating an API hitting the SQL Warehouse directly if the query is simple and you don't mind the cost. On the other hand, complex queries quickly become a bottleneck, making the warehouse unsuitable for this use case.
 
 ## Summary
 
-In this post I've load tested the Databricks SQL Warehouse to explore whether it can power user-facing APIs by serving data directly from the warehouse
+In this post we've load tested the Databricks SQL Warehouse to explore whether it can power user-facing APIs by serving data directly from the warehouse
 
-This experiment has showed us something we already knew: OLAP databases are not a good fit for high-volume, low-latency workloads. That's what OLTP databases are for. This seems quite obvious in hindsight, but if nothing else this experiments reinforces why this is true.
+This experiment has showed us something we kind of already knew: OLAP databases are not a good fit for high-volume, low-latency workloads. That's what OLTP databases are for. This seems quite obvious in hindsight, but if nothing else this experiments reinforces why this is the case.
 
 I hope you've enjoyed it, see you next time.
