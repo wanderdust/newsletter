@@ -18,7 +18,7 @@ The data that we needed to serve lived in Databricks, and we needed to find a wa
 
 The response time for the API didn't need to be too fast, with up to 5 seconds being acceptable performance, so we decided to test serving the data directly form the Databricks SQL warehouse. 
 
-This post is an investigation of Databricks' SQL Warehouse for a high load of concurrent queries where we review its capacity to scale and the cost.
+This post shares our findings from load testing Databricks SQL Warehouse with concurrent queries, analysing whether it can scale cost-effectively for our API use case
 
 
 ## Methodology
