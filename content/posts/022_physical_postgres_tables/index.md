@@ -20,7 +20,7 @@ I will do a step by step walk through so that we create a table and inspect what
 
 To setup this experiment, we will install Postgres locally and create table.
 
-**Install & start Postgres**
+### Install & start Postgres
 
 Install postgres using brew
 ```bash
@@ -32,12 +32,26 @@ Start the database service
 brew services start postgresql@17
 ```
 
-Use psql create a shell inside the database where we can start running commands.
+Use psql to connect to the `postgres` database.
 
 ```bash
 psql postgres
 ```
+As a refresher, remember that within a Postgres cluster, we can have different databases. `postgres` is the default database, but we could easily create many other databases. 
 
+Lets create our own database. From within the console run
+
+```sql
+CREATE DATABASE mydb;
+```
+
+And then exit the `postgres` database using the `\q` command. Then connect to the newly created database using
+
+```sql
+pysql mydb
+```
+
+### Add Data
 The next step is to create a dummy table. Run the following queries within the psql console.
 
 ```sql
@@ -62,89 +76,169 @@ INSERT INTO films (code, title, did, date_prod, kind, len) VALUES
 ('E7789', 'Parasite',                  105, '2019-05-30', 'Thriller', '02:12');
 ```
 
+Now we have a `films` table inside the `public` schema in the `mydb` database.
+
+
 ## Physical Structure of Postgres
 
-A postgres database is basically a single directory containing all its data inside it. 
+A postgres database is basically a single directory containing all its data inside it. In this section we'll find where the `films` table is stored within postgres.
 
-In Postgres, we can find this directory by running this query inside psql
+We can find the base directory where the cluster lives in our machine by running this command:
 
 ```sql
 show data_directory;
 
-> /opt/homebrew/var/postgresql@17
+/opt/homebrew/var/postgresql@17
 ```
 
-## Digging in
+We can verify this path actually exists by running ls on our machine
 
+```shell
+ls -lh /opt/homebrew/var/postgresql@17
+total 120
+drwx------@  6 pablolopez  admin   192B Aug 19 20:19 base
+drwx------@ 65 pablolopez  admin   2.0K Aug 19 20:20 global
+drwx------@  2 pablolopez  admin    64B Aug 11 19:39 pg_commit_ts
+drwx------@  2 pablolopez  admin    64B Aug 11 19:39 pg_dynshmem
+...
+```
 
-Use this function to find out where the table lives.
+Here you get a bunch of directories, each with different functions. In this case we will focus on the `base` directory which is the one containing the database directories.
+
+When we look into the `base` directory we get a list of folders representing the table different postgres databases.
+
+```shell
+ls -lh /opt/homebrew/var/postgresql@17/base
+total 0
+drwx------@ 301 pablolopez  admin   9.4K Aug 19 20:03 1
+drwx------@ 303 pablolopez  admin   9.5K Aug 19 20:20 16438
+drwx------@ 300 pablolopez  admin   9.4K Aug 11 19:39 4
+drwx------@ 304 pablolopez  admin   9.5K Aug 19 20:02 5
+```
+
+Each of these numbers is the object id (OID) referencing a database. We can find out which OID belongs to which database by running this SQL inside the psql console
+
+```sql
+SELECT oid, datname
+FROM pg_database;
+
+  oid  |  datname  
+-------+-----------
+     5 | postgres
+ 16438 | mydb
+     1 | template1
+     4 | template0
+(4 rows)
+```
+As we can see `mydb` folder is OID number `16438`. If we run the `ls` directory one more time, we can see all the objects in the `mydb` directory.
+
+```shell
+s -lh /opt/homebrew/var/postgresql@17/base/16438/
+
+total 15560
+-rw-------@ 1 pablolopez  admin   8.0K Aug 19 20:22 112
+-rw-------@ 1 pablolopez  admin   8.0K Aug 19 20:22 113
+-rw-------@ 1 pablolopez  admin   120K Aug 19 20:22 1247
+-rw-------@ 1 pablolopez  admin    24K Aug 19 20:22 1247_fsm
+-rw-------@ 1 pablolopez  admin   8.0K Aug 19 20:22 1247_vm
+-rw-------@ 1 pablolopez  admin   440K Aug 19 20:22 1249
+...
+```
+
+There are a bunch of objects in here. We are interested in finding the location of the films table within the database directory by running this SQL
 
 ```sql
 SELECT pg_relation_filepath('films');
 
-pg_relation_filepath
+ pg_relation_filepath 
 ----------------------
-  base/5/16388
- (1 row)
-```
-
-We can verify this by running
-
-```
-ls -lah /opt/homebrew/var/postgresql@17/base/5/16388
--rw-------@ 1 pablolopez  admin   8.0K 11 Aug 20:08 /opt/homebrew/var/postgresql@17/base/5/16388
-```
-
-The tables are stored in the `base` directory. The number `5` refers to the Database Object ID (OID) `Postgres`. We can verify this by looking at the database name with ID 5. 
-
-```sql
-SELECT oid, datname
-FROM pg_database
-WHERE oid = 5;
-
- oid | datname
------+----------
-   5 | postgres
+ base/16438/16439
 (1 row)
 ```
 
-And `16388` is the table relfiledode, which is the ID that identifies the data file. We can verify by running
+In this case `16439` refers to the table's `relfilenode` and not the Object ID. If we run this query, we can check that `relfilenode` and `oid` are two differnt things by running
 
 ```sql
-SELECT relname, oid, relfilenode FROM pg_class WHERE relname = 'films'
+SELECT relname, oid, relfilenode FROM pg_class WHERE relname = 'films';
 
- relname |  oid  | relfilenode
+relname |  oid  | relfilenode 
 ---------+-------+-------------
- films   | 16388 |       16388
-(1 row)
+ films   | 16439 |       16439
 ```
-In this case the relfilenode is the same as the OID.
+
+In this case, the OID and the `relfilenode` are exactly the same. Hoewever this may not always be the case.
+
+Once more, we can verify this table exists in our machine by checking the path
+
+```shell
+ls -lh /opt/homebrew/var/postgresql@17/base/16438/16439
+
+-rw-------@ 1 pablolopez  admin   8.0K Aug 19 20:24 /opt/homebrew/var/postgresql@17/base/16438/16439
+```
+
+Now that we know where the physical Postgres table actually lives, lets see how data is stored within it.
 
 ## Postgres Tables
 
-Inside a data file, it is divided into pages. Pages have fixed lenght which is 8192 bytes (8 KB) by default. The internal layout depends on the data type (table, indexes). Lets try to visualise the table file directly:
+When we query the table using SQL, it looks like this:
 
-
-```bash
-cat /opt/homebrew/var/postgresql@17/base/5/16388
-C8874InceptionfhSci-Fi�id\�
-Drama���%
+```sql
+select * from films;
+ code  |          title           | did | date_prod  |   kind   |   len    
+-------+--------------------------+-----+------------+----------+----------
+ B6717 | The Shawshank Redemption | 101 | 1994-09-23 | Drama    | 02:22:00
+ C8874 | Inception                | 102 | 2010-07-16 | Sci-Fi   | 02:28:00
+ A1234 | The Godfather            | 103 | 1972-03-24 | Crime    | 02:55:00
+ D4521 | Interstellar             | 104 | 2014-11-07 | Sci-Fi   | 02:49:00
+ E7789 | Parasite                 | 105 | 2019-05-30 | Thriller | 02:12:00
+(5 rows)
 ```
 
-The page is divided into 2 sections, the page header and the data tuples which contain the actual data.
+In your imagination, you are probably thinking that tha data is stored in some kind of comma separated value format. We can check by trying to visualise the table file directly:
 
-To view the page headers we can run the following command
+```bash
+cat /opt/homebrew/var/postgresql@17/base/16438/16439
+
+C8874InceptionfhSci-Fi�id\�
+Drama���%      
+```
+
+As you can see, we get gibbrish, because the file is in binary format. Postgres structures the table files into `pages`. Pages have fixed lenght which is 8192 bytes (8 KB) by default. The internal layout of pages depends on the data file type (table, indexes, etc). 
+
+![](./pg-table.png)
+
+(Image Source: [Internals of Postgres by Hironobu SUZUKI](https://www.interdb.jp/pg/pgsql01/03.html) )
+
+A page contains 3 sections: the page header which contains general information about the page; the line pointers which point to the location of each tuple in the page; and the tuples, where each tuple represents a row of data.
+
+Since the data file is encoded in binary format, we'll use SQL to visualise the different components of the table. We'll need to install the `pageinspect` extension within the database.
+
+```sql
+CREATE EXTENSION pageinspect;
+```
+
+To view the page headers we can run the following command. The 0 represents the page number.
 
 ```sql
 SELECT * FROM page_header(get_raw_page('films', 0));
 
-    lsn    | checksum | flags | lower | upper | special | pagesize | version | prune_xid
+    lsn    | checksum | flags | lower | upper | special | pagesize | version | prune_xid 
 -----------+----------+-------+-------+-------+---------+----------+---------+-----------
- 0/15DA5B0 |        0 |     0 |   380 |   400 |    8192 |     8192 |       4 |         0
+ 0/1A24320 |        0 |     0 |    44 |  7792 |    8192 |     8192 |       4 |         0
 (1 row)
 ```
 
-To view the actual tuples and the line pointers we can run these commands
+These are the header definitions:
+- lsn: last change recorded for this page
+- checksum: page integrity check value
+- flags: status bits about the page (e.g. visibility/fullness of the page)
+- lower/upper: start/end of free space within the page
+- special: reserved space (mainly used by indexes)
+- pagesize: size of the page in bytes (usually 8192)
+- version: page layout format version
+- prune_xid: oldest transaction that may still need cleaning on this page
+
+To view the actual tuples and the line pointers we can run these commands:
 
 ```sql
 SELECT *
@@ -160,18 +254,21 @@ lp | lp_off | lp_flags | lp_len | t_xmin | t_xmax | t_field3 | t_ctid | t_infoma
 (5 rows)
 ```
 
-Some definitions of the relevant items
-- tuple: contains a row of data
-- lp: line pointer id, or the position of the tuple
+
+
+The items prefixed with the letter `l` refers to line pointers:
+- lp: the position of the tuple
 - lp_off: line pointer offset in bytes where the data tuple begins
 - lp_flags:  1 = normal tuple, others indicate dead, redirected, etc.
 - lp_len: lenght in bytes of the tuple
+
+The items prefixed with `t` refers to transaction information:
 - t_xmin: transaction id that inserted this tuple
 - t_xmax: transaction id that deleted this tuple (0 if still alive)
 - t_ctid: physical location of this tuple as (block_number, offset_number).
 - t_data: Raw tuple data bytes (hex-encoded)
 
-
+Now that we know the structure of a table, we can look into how rows are retrieved when a SQL query is executed.
 
 ## Reading the data - Reading
 
