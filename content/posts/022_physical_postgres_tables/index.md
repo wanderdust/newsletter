@@ -12,26 +12,33 @@ cover:
 images: []
 ---
 
+In this blog post I want to demistify Postgres to show that it is not that scary under the hood. 
 
-## Install Postgres
+I will do a step by step walk through so that we create a table and inspect what it looks like under the hood.
 
-```
+## The Setup
+
+To setup this experiment, we will install Postgres locally and create table.
+
+**Install & start Postgres**
+
+Install postgres using brew
+```bash
 brew install postgresql@17
 ```
 
-## Start the database
-
-```
+Start the database service
+```bash
 brew services start postgresql@17
 ```
 
-Use psql to go into the database
+Use psql create a shell inside the database where we can start running commands.
 
-```
+```bash
 psql postgres
 ```
 
-## Create A table
+The next step is to create a dummy table. Run the following queries within the psql console.
 
 ```sql
 CREATE TABLE films (
@@ -44,7 +51,7 @@ CREATE TABLE films (
 );
 ```
 
-And add some data to the table
+and add some data to the table
 
 ```SQL
 INSERT INTO films (code, title, did, date_prod, kind, len) VALUES
@@ -55,14 +62,20 @@ INSERT INTO films (code, title, did, date_prod, kind, len) VALUES
 ('E7789', 'Parasite',                  105, '2019-05-30', 'Thriller', '02:12');
 ```
 
+## Physical Structure of Postgres
 
-## Find where the table is created
+A postgres database is basically a single directory containing all its data inside it. 
 
-Find where the database has been created in your system
+In Postgres, we can find this directory by running this query inside psql
 
 ```sql
 show data_directory;
+
+> /opt/homebrew/var/postgresql@17
 ```
+
+## Digging in
+
 
 Use this function to find out where the table lives.
 
