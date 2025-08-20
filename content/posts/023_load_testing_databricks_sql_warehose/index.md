@@ -3,7 +3,7 @@ title: 'Can You Use Databricks SQL Warehouse in Production APIs?'
 date: '2025-08-12T09:42:44+01:00'
 draft: true 
 summary: ''
-tags: [data warehouse, postgres, data engineering, databricks]
+tags: [data warehouse, data engineering, databricks]
 categories: []
 cover:
   image: ''
@@ -49,6 +49,7 @@ Autoscaling only kicks in after queries have been added to the queue. We want to
 These are the queries used for this test. Query B is a simpler query with a GROUP BY clause. Query A is a bit more resource intensive with JOINs and window operations.
 
 {{< details title="Query A" >}}
+The table size for `activity_events` is 3 TB.
 
 ```sql
 WITH ranked_events AS (
@@ -84,6 +85,8 @@ LIMIT 100 OFFSET 200;
 
 
 {{< details title="Query B" >}}
+The table size for `customer_activity_summary` is 25GB.
+
 ```sql
 WITH aggregated_data AS (
     SELECT
@@ -115,6 +118,7 @@ LIMIT 5000;
 ```
 {{< /details >}}
 
+
 The load tests are executed using a [Locust](https://locust.io/) script that hits the databricks SQL Warehouse API for the two queries. Each query type is executed an equal number of times.
 
 To ensure realistic results, [caching](https://docs.databricks.com/aws/en/sql/language-manual/parameters/use_cached_result) is also disabled. On top of that, the SQL query parameters are randomised to prevent from submitting repeated queries as much as possible.
@@ -125,6 +129,7 @@ The baseline consists on executing the SQL queries under very low load to find o
 
 #### Configuration
 - **Load**: 2 concurrent users
+- **Duration**: 5 minutes
 - **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 2
 - **Estimated Cost**: $201/day ($6,048/month)
 
@@ -152,6 +157,7 @@ If you are not really interested in the specific numbers, feel free to skip this
 
 #### Configuration
 - **Load**: 150 users
+- **Duration**: 5 minutes
 - **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 2
 - **Estimated Cost**: $201/day ($6,048/month)
 
@@ -183,6 +189,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 #### Configuration
 - **Load**: 150 users
+- **Duration**: 5 minutes
 - **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 10
 - **Estimated Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
@@ -204,7 +211,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 #### Key Observations
 - When clusters are at the concurrency limit, the queue size grows linearly, eventually stabilising at around 70 queries.
 - Autoscaling kicks in within minutes
-- During autoscaling, response time (P95) may spike briefly, but stabilizes once the new clusters are active
+- During autoscaling, response time (P95) may spike briefly, but stabilises once the new clusters are active
 - P99 is really bad for query A, and not too bad for query B. It implies that the slower query suffers more when the load is high.
 - The max value is shockingly bad. This suggest that some of the queued queries remain in the queue for very long times. It seems like databrick's queuing system favours faster queries and punishes slower queries with longer waiting times.
 
@@ -216,7 +223,8 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 
 #### Configuration
 - **Load**: 300 users
-- **SQL Warehouse Settings**: Serverless, Small cluster size, Scaling min 1 to max 10
+- **Duration**: 5 minutes
+- **SQL Warehouse Settings**: Serverless, Small cluster sizae, Scaling min 1 to max 10
 - **Estimated Cost**: $2,000/day ($60,048/month for 10 clusters running 24/7)
 
 #### Results
@@ -240,10 +248,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 - Autoscaling is relatively fast. 1 to 10 cluster within 4 minutes  
 - P95 is a bit inconsistent (spikes) while autoscaling is happening, then it stabilises
 - Queries queue at a linear rate faster than they can execute after ~ 180 users
-- P99 is really bad for query A, and not too bad for query B. It implies that the slower query suffers more when the load is high.
-- The max value, indicating the worst query execution times are shockingly bad for both queries.
-
-
+- Similar to the previous test, max execution times remained problematic
 ## Results
 
 ### The Queue
@@ -276,10 +281,6 @@ To see this, let's plot the performance degradation for each query as compared t
 
 Now we can clearly see that query A has a much worse relative performance than query B for the p99 in all load tests.
 
-Query A gets 71x worse p99 for load test #0 as compared to 3x worse for query B. 
-
-For load test #2, query A performs 37x times worse on the p99, as compared to 2x worse for query B.
-
 This indicates that the slower the query, the worse it scales as we add more load.
 
 Based on the [queuing documentation](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing), the reason the queue prioritises the faster queries is that it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. 
@@ -298,11 +299,11 @@ Of course, it may be the case where you have a few clusters running most of the 
 
 ### Cost and Performance
 
-Running 10 clusters in serverless mode is prohibitively expensive, while only handling a maximum of 40 requests per second.
+Running 10 clusters in serverless mode is very expensive, while only handling a maximum of 40 requests per second. 
 
-This performance and cost structure doesn't cut it for our use case. For this type of workload, OLTP databases like PostgreSQL offer far better throughput at a lower cost.
+This performance and cost structure doesn't cut it for our use case. For this type of workload, OLTP databases can offer far better throughput at a lower cost.
 
-The only issue is the need to move data out of Databricks into the external database. Databricks offers [LakeBase](https://www.databricks.com/product/lakebase) as a managed solution.
+The only issue is the need to move data out of Databricks into the external database, which comes with its own challenges in terms of managing data pipelines and data governance. Databricks offers [LakeBase](https://www.databricks.com/product/lakebase) as a managed solution.
 
 ### Query Complexity Determines Viability
 
@@ -312,7 +313,7 @@ You could justify creating an API hitting the SQL Warehouse directly if the quer
 
 On the other hand, complex queries quickly become a bottleneck, making the warehouse unsuitable for this use case.
 
-Having said that, we have not been very negligent with the data modelling in this post. As a best practice, any data that is ready to serve a business use case should have been premodelled in advance.
+Having said that, we have not been negligent with the data modelling in this post. As a best practice, any data that is ready to serve a business use case should have been premodelled in advance.
 
 By doing the pre-aggregations in advance such as using materialised views, we can further simplify the queries into simple SELECT statements, which would execute much faster, and would be more likely to scale under heavy load.
 
@@ -320,10 +321,12 @@ By doing the pre-aggregations in advance such as using materialised views, we ca
 
 Databricks SQL Warehouse can be used in production APIs, but only in specific scenarios.
 
-It can be a good fit if the queries are simple, and expect a modest volume of requests. The SQL Warehouse provides a managed and secure option with the convenience of serving the data directly from the warehouse.
+It works well for simple queries with modest request volumes. For complex queries or high concurrency workloads, costs skyrocket and performance degrades significantly - especially for slower queries that get stuck in the queue.
 
-For more complex queries or high concurrency workloads, costs can rise, and heavier queries will get disproportionally delayed.
+The SQL Warehouse is designed for analytical workloads, not powering production APIs at scale.
 
-The SQL Warehouse is designed for analytical workloads, not for powering production APIs at scale. It’s a poor fit for this use case unless your queries are very simple and your load requirements are low.
+Based on these findings, we moved our data into PostgreSQL for the API layer. This allowed us to add column-level indexes and partitions to optimise the tables and get sub-second performance.
+
+While this approach requires maintaining data pipelines to keep PostgreSQL in sync with our Databricks warehouse, the performance and cost benefits made it the clear choice for our production API requirements.
 
 I hope you've enjoyed it, see you next time.
