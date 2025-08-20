@@ -1,7 +1,7 @@
 ---
 title: 'Can You Use Databricks SQL Warehouse in Production APIs?'
 date: '2025-08-12T09:42:44+01:00'
-draft: true 
+draft: false 
 summary: ''
 tags: [data warehouse, data engineering, databricks]
 categories: []
