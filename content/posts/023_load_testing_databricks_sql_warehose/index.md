@@ -321,7 +321,7 @@ By doing the pre-aggregations in advance such as using materialised views, we ca
 
 Databricks SQL Warehouse can be used in production APIs, but only in specific scenarios.
 
-It works well for simple queries with modest request volumes. For complex queries or high concurrency workloads, costs skyrocket and performance degrades significantly - especially for slower queries that get stuck in the queue.
+It works well for simple queries with modest request volumes. For complex queries or high concurrency workloads, costs can get high and performance degrades significantly, especially for slower queries that get stuck in the queue.
 
 The SQL Warehouse is designed for analytical workloads, not powering production APIs at scale.
 
