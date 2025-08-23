@@ -18,7 +18,7 @@ jobs:
         with:
           hugo-version: 'latest'
 
-      - run: hugo --minify
+      - run: hugo --minify --theme papermod
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
