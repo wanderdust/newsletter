@@ -12,4 +12,4 @@ cover:
 images: []
 ---
 
-- THe worst part is having to learn a million different services that sound the same or do similar things (AWS WAF, AWS Firewall Manager)
+- THe worst part is having to learn a million different services that sound the same or do similar things (AWS WAF, AWS Firewall Manager).
