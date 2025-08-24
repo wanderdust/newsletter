@@ -17,8 +17,14 @@ jobs:
       - uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
+          
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
-      - run: hugo --minify --theme papermod
+      - run: hugo --minify --gc
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
