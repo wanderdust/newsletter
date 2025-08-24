@@ -4,6 +4,9 @@ on:
   push:
     branches: [ main ]
 
+env:
+  BASE_URL: http://drmvlfs3gt0ln.cloudfront.net/
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -17,14 +20,14 @@ jobs:
       - uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: 'latest'
-          
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
           fetch-depth: 0
 
-      - run: hugo --minify --gc
+      - run: hugo --minify --gc --baseURL $BASE_URL
 
       - name: configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
