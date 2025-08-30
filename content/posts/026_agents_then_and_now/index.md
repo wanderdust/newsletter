@@ -12,16 +12,20 @@ cover:
 images: []
 ---
 
-1. Intro
-2. Agent workflow (for loop and choosing actions, check if terminal state)
-2. Agents back in the day of reinforcement learning - workflow
-4. Agents today - workflow
-5. What is common and what has changed (conclusion)
+I was starting to get a bit overwhelmed with all the agent stuff I see on Linkedin. I kept reading agent this and agent that, without really being sure of what an agent really was, expect knowing it involved some sort of LLM calls.
+
+I came across [this blog post](https://ghuntley.com/agent/) which shows the basic flow of an agent, and it encouraged me to build my own. 
+
+I have [previously done some work with agents](https://pablolopezsantori.substack.com/p/q-learning-explained-through-billys) when I was learning about reinforcement learning, and I was curious to know how different agents today are from agents back then.
+
+This is a blop post that explains the basics of agents, and how LLM agents are still pretty much the same, expect we've added some LLM magic in the loop.
+
+At the end of this post, I show an example of a Sofware Engineering Agent I've build for the purpose of this blog.
 
 
 ## What Is an agent?
 
-An agent is anything on anyone taking actions within an environment.
+An agent is something or someone taking actions within an environment.
 
 Usually trying to complete a goal.
 
@@ -87,14 +91,35 @@ Lets look at an updated diagram that we can use to build an agent.
 
 In this case, the agent is the LLM, which has to take actions to achieve the goal defined in the user prompt.
 
-The environmnent is your laptop, with its files, directories etc.
+The environmnent is your laptop, with its files, directories, the shell, etc.
 
-The actions available to the agent are those that you define within your program. For example, if we are building a software engineering agent, we could give it access to actions such as reading files, listing directories, searching files and writing files. You can add whichever actions you want.
+The actions available to the agent are those that you define within your program. For example, if we are building a software engineering agent, we could give it access to tools such as reading files, listing directories, searching files and writing files. You can add whichever actions you want.
 
-It goes like this:
-1. THe user writes a prompt. THis is basically the goal the agent needs to achieve. For example "*Write unit tests for my program*".
-2. The prompt is passed to the LLM. THe LLM is aware of the available tools you have given it access to. It processes the prompt and returns a response. The response can be one of two:
+The flow goes like this:
+1. THe user writes a prompt. THis will be the goal the agent needs to achieve. For example "*Write unit tests for my program*".
+2. The prompt is passed to an LLM. THe LLM is aware of the available tools you have given it access to. It processes the prompt and returns a response. The response can be one of two:
     1. The LLM lists a list of tools that it wants to run to be able to achieve its task. To write some tests it may ask to run the read tool to read the files it needs to create tests for, and the list tool to know where it creates the new test files. 
     2. A final response. If the LLM does not want to use any tools, we can assume that the response is final.
 3. If the LLM wants to use tools, your program goes ahead and executes them, it gathers all the information and feeds them back to the LLM so it can generate a response. Again, the LLM can choose to use more tools, or generate a final response. In this case, the LLM has not yet written the tests, so it may ask to write the test file now that it has the relevant info it needs. We repeat the process until the lLM generates a response that does not want to use more tools.
-4. When we have a final response, we want to evaluate it agains the inital goal. Did the agent solve the task I originally asked for? We can also use an LLM for this.
+4. When we have a final response, we want to evaluate it agains the inital goal. Did the agent solve the task I originally asked for? We can also use an LLM to evaluate this.
+
+## Tools instead of actions
+
+When talking about LLM agents, we talk about tools instead of actions. With the simple agent, we had specific actions the agent could take. With LLMs, we provide a set of tools, and the LLM can use them to run specific actions.
+
+In the same way you can use a hammer to hammer a nail, or to kill a fly, the LLM can use the write tool to create files or to edit existing files. The action is what the agent decides to do with the tool.
+
+## Coding agent in action
+
+
+![example swe agent](./swe_agent_demo.gif)
+
+## Conclussion
+
+I built a coding agent to get more familiar with LLM agents. It all boils down to the same loop.
+
+LLM agents today are very much the same as the agents we've been building in the past, including your robot hoover. 
+
+I hope this blog post has clarified the topic a bit, and encourages everyone to build their own.
+
+After all, all it is, is an API call within a for loop.
