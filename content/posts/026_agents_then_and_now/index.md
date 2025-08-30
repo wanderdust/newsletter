@@ -40,34 +40,61 @@ Or an agent could simply be a computer program, like this guy.
 This guf is trying to reach the present without falling into the lake.
 
 
-
 ## How do agents work?
 
-In very simple terms, an agent is simply a program taking actions an an environment and constantly checking if it has achieved its goal.
+In very simple terms, an agent takes action within an environment. Every time it takes an action, it checks if it has accomplished its goal, and if it hasn't it continues.
 
-In the case of the robot hoover it goes like this. The goal of the hoover is to remove all fluff from your livingroom.
+Lets take a look at the elf in the frozen lake.
 
-1. Before doing anything, hoover looks around the livingroom. Hoover sees some fluff to its left.
-2. Hoover takes action to move left, and hoover the fluff.
-3. Hoover has now removed the fluff, so hoover checks if it has accomplished its goal. In this case, it needs to clean the whole livingroom. The answer is no, so hoover repeats step one.
+The agent is the little elf, whose goal is to get to the present at the bottom right corner.
 
-As you can see this is an infinite loop that only breaks when the livingroom has been cleaned. 
+The agent starts in an initial *state*, in this case, at the very top left of the map. A *state* is the position of the agent in the environment.
 
-There is also the possibilty of the hoover running out of battery or getting stuck (very likely this one) before accomplishing its goal. These would also cause the loop to break.
+The agent acts within an environment, which is in this case it is a grid of 4x4.
 
-If you like diagrams, this is what it would look like
+In this environment the agent can take 4 *actions*, move up, down, left or right.
 
-![Diagram of an agent]()
+The basic loop looks something like this.
 
-So that is basically all it is. Agents try to achieve their goals the best of their abilites using that basic loop.
+![agent diagram](./agent_diagram.png)
 
-Sometimes they achieve their goals, and sometimes they get stuck along the way. 
+Every time the agent takes an action, it evaluates whether it has achieved its goal, and if not it continues to take more actions until it finally achieves its goal or dies along the way.
 
-But don't we all.
+## Taking actions
 
+This is where it gets interesting. It is up to us to define how the agent acts in the environment.
+
+A very naive approach can be to get the agent to select an action randomly until it achieves its goal. However this will not only be inefficient, but it will not work for complex environments with more complex goals.
+
+
+A better approach is to take an action by taking your current position in the environment. For example, if there is a hole in front of you, move right to avoid falling into it.
+
+For this you can have rule based agents, which may work in some environments.
+
+For more complex environments, machine learning models can come in handy.
+
+And this is where LLMs come in.
 
 ## Building an agent with LLMs
 
-Building an agent with an LLM is pretty much the same.
+LLMs can be used to create agents to solve non trivial tasks such as "*Add unit tests to my project*".
 
-Except we use the LLM
+The agent flow remains pretty much the same, except we use an LLM to decide which actions to take and to evaluate whether the task has been completed.
+
+Lets look at an updated diagram that we can use to build an agent.
+
+![LLM Diagram](./llm_diagram.png)
+
+In this case, the agent is the LLM, which has to take actions to achieve the goal defined in the user prompt.
+
+The environmnent is your laptop, with its files, directories etc.
+
+The actions available to the agent are those that you define within your program. For example, if we are building a software engineering agent, we could give it access to actions such as reading files, listing directories, searching files and writing files. You can add whichever actions you want.
+
+It goes like this:
+1. THe user writes a prompt. THis is basically the goal the agent needs to achieve. For example "*Write unit tests for my program*".
+2. The prompt is passed to the LLM. THe LLM is aware of the available tools you have given it access to. It processes the prompt and returns a response. The response can be one of two:
+    1. The LLM lists a list of tools that it wants to run to be able to achieve its task. To write some tests it may ask to run the read tool to read the files it needs to create tests for, and the list tool to know where it creates the new test files. 
+    2. A final response. If the LLM does not want to use any tools, we can assume that the response is final.
+3. If the LLM wants to use tools, your program goes ahead and executes them, it gathers all the information and feeds them back to the LLM so it can generate a response. Again, the LLM can choose to use more tools, or generate a final response. In this case, the LLM has not yet written the tests, so it may ask to write the test file now that it has the relevant info it needs. We repeat the process until the lLM generates a response that does not want to use more tools.
+4. When we have a final response, we want to evaluate it agains the inital goal. Did the agent solve the task I originally asked for? We can also use an LLM for this.
