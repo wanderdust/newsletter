@@ -12,114 +12,100 @@ cover:
 images: []
 ---
 
-I was starting to get a bit overwhelmed with all the agent stuff I see on Linkedin. I kept reading agent this and agent that, without really being sure of what an agent really was, expect knowing it involved some sort of LLM calls.
 
-I came across [this blog post](https://ghuntley.com/agent/) which shows the basic flow of an agent, and it encouraged me to build my own. 
+I came across [this blog post](https://ghuntley.com/agent/) the other day which shows the basic flow of an agent, and it encouraged me to build my own. 
 
-I have [previously done some work with agents](https://pablolopezsantori.substack.com/p/q-learning-explained-through-billys) when I was learning about reinforcement learning, and I was curious to know how different agents today are from agents back then.
+I have [previously done some work with agents](https://pablolopezsantori.substack.com/p/q-learning-explained-through-billys) when I was learning about reinforcement learning, and I was curious to know how different LLM agents are from agents back then.
 
-This is a blop post that explains the basics of agents, and how LLM agents are still pretty much the same, expect we've added some LLM magic in the loop.
+This blog post is about what agents are, and the similarities between LLM agents today and agents back then.
 
-At the end of this post, I show an example of a Sofware Engineering Agent I've build for the purpose of this blog.
+At the end of this post, I show an example of a Sofware Engineering Agent.
 
+## What is an agent?
 
-## What Is an agent?
-
-An agent is something or someone taking actions within an environment.
-
-Usually trying to complete a goal.
+An agent is something or someone taking actions within an environment. Usually trying to complete a goal.
 
 An agent could be your robot hoover, whose goal is to clean your livingroom (and getting stuck halfway)
 
 ![Image of robot hoover]()
 
-An agent could be a person, making choices to try and find the meaning of life
+An agent could be a person, making choices, hoping it eventually leads them to the meaning of life.
 
-![Image of a person]()
-
-Or an agent could simply be a computer program, like this guy.
+Or an agent could simply be a computer program, like this elf, whose goal is to try and reach the present in the bottom right corner.
 
 ![frozen lake agent](./frozen_lake.gif)
-
-This guf is trying to reach the present without falling into the lake.
 
 
 ## How do agents work?
 
-In very simple terms, an agent takes action within an environment. Every time it takes an action, it checks if it has accomplished its goal, and if it hasn't it continues.
+Lets take the elf as an example. This agent has been taken from the [Gymnasium library](https://gymnasium.farama.org/environments/toy_text/frozen_lake/), which offers a wide range of environments to make it easy to develop agents.
 
-Lets take a look at the elf in the frozen lake.
+In very simple terms, agents are programs that need to achieve a goal. Agents live within an environment where they can execute a specific set of actions.
 
-The agent is the little elf, whose goal is to get to the present at the bottom right corner.
+In this case, the elf would be the agent. It can only go up, down, left or right, and its goal is to reach the present at the very bottom.
 
-The agent starts in an initial *state*, in this case, at the very top left of the map. A *state* is the position of the agent in the environment.
+Agents follow a very simple workflow: they have an initial state. A state is the position of the agent in the environment at a given point in time. In this case the initial state for the elf is the top right box.
 
-The agent acts within an environment, which is in this case it is a grid of 4x4.
+Based on that state, the agent might decide to take an action. The agent will take into account its available actions, and its current state. Based on this, it chooses an action that will take it closer towards the goal.
 
-In this environment the agent can take 4 *actions*, move up, down, left or right.
+Once it takes an action, it evaluatues its now state (its new position in the environment). It checks if the goal has been completed, and if not it continues until it completes the goal or dies along the way.
 
-The basic loop looks something like this.
+In this case, a terminal state can be when the elf reaches the present, or when it falls into a hole and dies. In the latter case the agent finishes the task without achieving its goal.
+
+A basic agent diagram looks like this
 
 ![agent diagram](./agent_diagram.png)
 
-Every time the agent takes an action, it evaluates whether it has achieved its goal, and if not it continues to take more actions until it finally achieves its goal or dies along the way.
-
 ## Taking actions
 
-This is where it gets interesting. It is up to us to define how the agent acts in the environment.
+Choosing the right actions on each state is what makes a useful agent.
 
-A very naive approach can be to get the agent to select an action randomly until it achieves its goal. However this will not only be inefficient, but it will not work for complex environments with more complex goals.
+It is up to us to define how the agent behaves in the environment when it encounters different obsticles along the way. 
 
+It is perfectly valid to create a rule/based agent, which may work for simpler environments like the frozen world. It will not be the case for agents trying to navigate more complex environments, for example think about building rule based logic for the mars rover to navigate the unknown surface of mars, it can easily get out of hand.
 
-A better approach is to take an action by taking your current position in the environment. For example, if there is a hole in front of you, move right to avoid falling into it.
+This is where machine learning has come in very useful in the past decade. We can rely on *Neural Networks* to choose the right action for agents who need to navigate complex environments.
 
-For this you can have rule based agents, which may work in some environments.
-
-For more complex environments, machine learning models can come in handy.
-
-And this is where LLMs come in.
+And this is where LLMs come into the picture.
 
 ## Building an agent with LLMs
 
-LLMs can be used to create agents to solve non trivial tasks such as "*Add unit tests to my project*".
+LLMs are amazing at answering ambiguous questions, such as "Why did my girlfriend dump me?".
 
-The agent flow remains pretty much the same, except we use an LLM to decide which actions to take and to evaluate whether the task has been completed.
+In the context of agents, you can think of the user prompt as the *goal* the agent needs to achieve, and the LLM answer as the *action* taken by the agent to attempt and achieve the *goal*.
 
-Lets look at an updated diagram that we can use to build an agent.
+To make the agent more useful, we can give it access to tools. The tools are used by the agent to execute different actions.
+
+For example, we may give the model a tool to run internet search. The agent may choose to use this tool to search on reddit common causes for relationships to break apart.
+
+Finally, we can put this in a loop. Every time the agent takes an action, we evaluate whether the agent has achieved its goal. If not we take a different action that will move us towards achieving this goal.
+
+In a diagram it looks like this.
 
 ![LLM Diagram](./llm_diagram.png)
 
-In this case, the agent is the LLM, which has to take actions to achieve the goal defined in the user prompt.
+I've color coded each of the steps to what they correspond in the classic agent. As you can see the flow is pretty much the same, except we add LLM calls and tools into the mix.
 
-The environmnent is your laptop, with its files, directories, the shell, etc.
+In this flow, when the agent decides not to use any tools, we consider it a "final answer". We evaluate this answer to see if the goal has been achieved or not. And guess what, we can also use an LLM to do this evaluation.
 
-The actions available to the agent are those that you define within your program. For example, if we are building a software engineering agent, we could give it access to tools such as reading files, listing directories, searching files and writing files. You can add whichever actions you want.
+## Tools and Actions
 
-The flow goes like this:
-1. THe user writes a prompt. THis will be the goal the agent needs to achieve. For example "*Write unit tests for my program*".
-2. The prompt is passed to an LLM. THe LLM is aware of the available tools you have given it access to. It processes the prompt and returns a response. The response can be one of two:
-    1. The LLM lists a list of tools that it wants to run to be able to achieve its task. To write some tests it may ask to run the read tool to read the files it needs to create tests for, and the list tool to know where it creates the new test files. 
-    2. A final response. If the LLM does not want to use any tools, we can assume that the response is final.
-3. If the LLM wants to use tools, your program goes ahead and executes them, it gathers all the information and feeds them back to the LLM so it can generate a response. Again, the LLM can choose to use more tools, or generate a final response. In this case, the LLM has not yet written the tests, so it may ask to write the test file now that it has the relevant info it needs. We repeat the process until the lLM generates a response that does not want to use more tools.
-4. When we have a final response, we want to evaluate it agains the inital goal. Did the agent solve the task I originally asked for? We can also use an LLM to evaluate this.
+When talking about LLM agents, we talk a lot about tools. A tool is something the agent can use to execute an action.
 
-## Tools instead of actions
+In the same way you can use a hammer to hammer a nail or to kill a fly, the LLM can decide to use the internet search tool to look information in wikipedia or to find cute pictures of cats and dogs. All depending on the end goal.
 
-When talking about LLM agents, we talk about tools instead of actions. With the simple agent, we had specific actions the agent could take. With LLMs, we provide a set of tools, and the LLM can use them to run specific actions.
+Depending on what you are building your agent for, you might decide to give it access to a different range of tools.
 
-In the same way you can use a hammer to hammer a nail, or to kill a fly, the LLM can use the write tool to create files or to edit existing files. The action is what the agent decides to do with the tool.
-
-## Coding agent in action
-
+In the following example, I have created a Coding Agent that can independently write code. I have created four functions (tools) that it can use to read, write, search and list files.
 
 ![example swe agent](./swe_agent_demo.gif)
 
-## Conclussion
+In this demo I ask the agent to create a unit tests for a specific file. It uses the read tool to read the file, and the write tool to create the file and write the testing code.
 
-I built a coding agent to get more familiar with LLM agents. It all boils down to the same loop.
+## Conclusion
 
-LLM agents today are very much the same as the agents we've been building in the past, including your robot hoover. 
+I've been trying to avoid the agent hype for the last few months. Eventually I decided to give in, and build my own software engineering agent. I wanted to see how different LLM agents are to my concept of agents from the Reinforcement Learning days. As it turns out, it is pretty much the same thing, only that we add LLMs into the loop.
 
-I hope this blog post has clarified the topic a bit, and encourages everyone to build their own.
+I have to say that it is pretty cool when you build something that is capable of taking actions independently to solve an ambigous propmt. And the best thing is that it is not difficult to build at all.
 
-After all, all it is, is an API call within a for loop.
+After all, all we are doing is an API call within a for loop.
