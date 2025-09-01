@@ -12,7 +12,11 @@ cover:
 images: []
 ---
 
-I recently passed the AWS Solutions Architect Associate exam with a score of 848. This certification covers a wide range of AWS services, so I wanted to share what worked for me.
+I recently passed the AWS Solutions Architect Associate exam with a score of 848.
+
+This certification covers a wide range of AWS services which has taken a good amount of work and effort to prepare.
+
+In this blog post I wanted to share my experience preparing for the exam, sharing some info about the exam, and what has worked for me.
 
 ## Preparation
 
