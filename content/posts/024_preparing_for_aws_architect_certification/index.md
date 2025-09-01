@@ -12,80 +12,81 @@ cover:
 images: []
 ---
 
-![](./aws-architect-associate-cert.png)
-
-I recently passed the AWS Architect Associate Exam with a score of 848! This certification is tricky and covers a wide range of AWS services, so I wanted to share my experience preparing for it.  
+I recently passed the AWS Solutions Architect Associate exam with a score of 848. This certification covers a wide range of AWS services, so I wanted to share what worked for me.
 
 ## Preparation
 
-I have about 5 years of on-and-off experience with AWS, mostly with RDS, Cloudformation, Lambda, EC2 and a few other services.  
+I have about five years of on-and-off AWS experience, mostly with RDS, CloudFormation, Lambda, EC2 and a few other services.
 
-To prepare, I took the well-known course by Stephane Mareek. It is a long course, around 27 hours, and it covers a huge amount of content. The course touches on almost every service that may appear in the exam. I definitely recommend going through it because I discovered services I had never used before, and for others I only knew some features but not all.  
+To prepare, I took the well-known course by **Stephane Maarek**. It’s long (about 27 hours) and covers a huge amount of content, touching almost every service that may appear on the exam. I discovered services I had never used before, and for others I filled in gaps.
 
-Preparation took me about a month. Some days I studied for an hour or less, and other days I spent a few hours.  
+I studied for roughly a month, some days an hour or less, other days a few hours.
 
-At first, I took notes on every service and even drew a mind map of all AWS services covered in the exam.  
+At first I took notes on every service and even drew a mind map of the services that could appear in the exam.
 
-![AWS Mindmap](./aws_mindmap.png)  
+![AWS Mindmap](./aws_mindmap.png "My quick AWS services mind map")
 
-This was a nice way to start, because otherwise all the unfamiliar services blurred together in your head (shield, guarduty, config etc) 
+This helped me separate the unfamiliar services, since a lot of the names started to mix up in my head (Shield, GuardDuty, Config, etc).
 
-The real key, though, is hands-on practice. Try the services yourself if you can. That’s the only way things will stick long term. 
+The real key was **hands-on practice**. Try services yourself where you can. That’s the only way things stick long term.
 
-I once read a quote along the lines of: *If I can’t implement it, I don’t understand it*, which I truly live by. 
+I once read a quote along the lines of *If I can’t implement it, I don’t understand it*, which I try to live by.
 
-Of course, not everything can be tested in a personal AWS account. Services like VPNs or AWS Organisations aren’t the kind of thing you spin up casually.  
+Of course, there are some things you won't implement in your personal AWS account. VPNs or AWS Organizations, for example, aren’t things you easily spin up and then delete.
 
-That’s why I recommend also getting the practice exams course on udemy, which comes with five mock exams similar in difficulty to the real one. Going through wrong answers helps spot gaps in your knowledge, which then you can fill in by reading the documentation.  
+That’s why I also took the practice exams course from Udemy, which includes five mock tests. In my case, I have access to Udemy via my work, so I could access the exams at no extra cost, but I'd say its worth the money to ensure you are ready for the exam.
 
-The exam will often test you on fine details like [KMS keys at bucket or object level](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html), which the main course might not cover.  
+I failed the first test with 60% score, but I passed the rest with an average of 80% after that. That made me feel confident that I was ready for the exam. For every wrong answer, I would review the docs to fill in knowledge gaps. A single wrong questions could sometimes takes a few hours of research into a single service.
+
+The exam can test for small details that may not be covered in the main course, and this is where the mock exams truly help. 
 
 ## Exam day
 
-You need to check in about 30 minutes before the exam. The process itself can take 20 minutes or more, especially if you don’t already have the secure browser installed.  
+You check in about 30 minutes before the exam. The process can take around 20 minutes, especially if you don’t already have the secure browser installed.
 
-You will be recorded for the entire session, and you must show photos of your desk and room. Thankfully, unlike the Kubernetes exam, you don’t need to remove books from the room as long as they are out of reach. I even had my dogs walking around while I sat the exam without any issues.  
+You’re recorded for the whole session and you must show photos of your desk and room. Unlike the Kubernetes exam, books can stay if they’re out of reach. I even had my dogs walking around the room with no issues.
 
-The exam is 65 multiple choice questions. Some are harder than others; in my case, the first half felt tougher than the second. You can flag questions and return to them later. In my case, I either knew the question or not, so for those that I did not know I trusted my gut at the time with a guess and moved on. I did not go back to any of the flagged questions.
+The exam has **65 questions in 130 minutes**. You’ll see both multiple-choice and multiple-response questions. You can flag questions and return later. I either knew the answer or not, so for those that I did not know I trusted my gut and moved on. I was so mentally exhausted by the end that I did not think reviewing tricky questions would be of any use.
 
-The exam lasts 2 hours 10 minutes, but you’ll likely finish earlier. I finished with 30 minutes to spare. The passing score is 72/100.
+The passing score is 720/1000.
 
-## Exam topics
+## Exam Topics
 
-Here are some of the topics that appeared in the exam. This is not a full list:  
+Some of the topics that came up in the exam. This is not an exhaustive list:
 
-- AWS Recycle Bin for accidental deletes and retention  
-- AWS Backups  
-- Elastic Disaster Recovery  
-- VPC Endpoints (Interface vs Gateway)  
-- EC2, ASG, and ALBs  
-- EBS (choosing the right option)  
-- CloudFront and S3 Buckets (use OAC)  
-- Global Accelerator (for UDP connections)  
-- Kinesis, SQS, SNS, Firehose, Athena  
-- S3 and KMS Keys (Bucket Keys, Object Keys)  
-- S3 Replication  
-- EFS and Lustre (EFS to S3 access)  
-- Cross-Account EFS access  
-- RDS, Aurora and database migrations  
-- WAF, AWS Config, GuardDuty  
-- AWS Organisations and SCPs  
-- Resource-based vs IAM-based Policies  
-- Troubleshooting IAM Policies  
-- Cognito  
-- PTR and OTR questions (at least two)  
+- **Recycle Bin** for recovering accidentally deleted EBS snapshots and EBS-backed AMIs  
+- **AWS Backup**  
+- **AWS Elastic Disaster Recovery (DRS)**  
+- **VPC Endpoints** (Interface vs Gateway)  
+- **EC2, EC2 Auto Scaling, and ALB**  
+- **EBS** volume types and choices  
+- **CloudFront + S3** (use **OAC** rather than OAI)  
+- **Global Accelerator** (notable for UDP)  
+- **Kinesis family, SQS, SNS, Firehose, Athena**  
+- **S3 + KMS**: SSE-KMS and **S3 Bucket Keys**  
+- **S3 replication**  
+- **EFS and FSx for Lustre** (FSx integrates with S3)  
+- **Cross-account EFS access**  
+- **RDS, Aurora, and migrations**  
+- **WAF, AWS Config, GuardDuty**  
+- **AWS Organizations and SCPs**  
+- **Resource-based vs identity-based policies**  
+- **Troubleshooting IAM policies**  
+- **Amazon Cognito**  
+- **DNS** basics including **PTR** (reverse DNS)
+
+Docs for a few of these: OAC is the current recommendation for CloudFront + S3, and Global Accelerator supports UDP. :contentReference[oaicite:14]{index=14}  
+Recycle Bin’s scope is EBS snapshots and AMIs. :contentReference[oaicite:15]{index=15}
 
 ## Is the certification worth it?
 
-Only if you want it to be.  
+Only if you want it to be.
 
-Some people pass the certification without ever having used AWS. While it may look good on a CV, I don’t think that alone brings many practical benefits.  
+Some people pass the certification without ever having touched AWS. It may look good on a CV, but that alone might not bring you many practical benefits.
 
-If you already have hands-on AWS experience, then it can be very valuable. For me, it helped fill a lot of gaps when thinking about end to end architectures, such as soldifying knowledge in DNS and Caching data at the edge, autoscaling and availability for EC2 and RDS, or security for S3.
+If you already use AWS it can be very valuable. You will get the chance to look into services that you may have used in the past, but have not explored in detail, and you may find functionaity or features you were not aware of. You may also learn about services you were not aware of.
 
-Plus I got to learn about a bunch of new cool services such as Amazon Database Migration Service or DynamoDB Accelerator (DAX).
-
-Thanks to preparing for the exam, I explored services in depth that I would not otherwise have touched. I now feel more confident designing end-to-end AWS architectures for different use cases.  
+Thanks to preparing this certification I feel more confident about designing systems in AWS. I am aware about the different services and their features that can be used to solve different problems.
 
 ## What’s next?
 
