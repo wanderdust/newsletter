@@ -51,19 +51,17 @@ Once it takes an action, it evaluatues its new state (its new position in the en
 
 In this case, a terminal state can be when the elf reaches the present, or when it falls into a hole and dies. In the latter case the agent finishes the task without achieving its goal.
 
-A basic agent diagram looks like this
-
 ![agent diagram](./agent_diagram.png)
 
 ## Taking actions
 
-Choosing the right actions on each state is what makes a useful agent.
+Choosing the right actions is what makes a useful agent.
 
 It is up to us to define how the agent behaves in the environment when it encounters different obsticles along the way. 
 
-It is perfectly valid to create a rule/based agent or even a random agent, which may work for simpler environments like the frozen world.
+It is perfectly valid to create a rule-based agent or even an agent that takes actions at random. This may work for simpler environments like the frozen world, although it would not be very efficient.
 
-It will not be the case for agents trying to navigate more complex environments, for example think about building rule based logic for the Mars Rover to navigate the unknown surface of Mars. It can easily get out of hand.
+For agents trying to navigate more complex environments, we need a better way to decide which actions to take. Think about building rule based logic for the Mars Rover to navigate the unknown surface of Mars. It can easily get out of hand.
 
 This is where machine learning has come in very useful in the past decade. We can rely on *Neural Networks* to choose the right action for agents who need to navigate complex environments.
 
@@ -73,13 +71,11 @@ And this is where LLMs come into the picture.
 
 LLMs are amazing at answering ambiguous questions, such as "Why did my girlfriend dump me?".
 
-This feature also makes them great at solving ambigous goals such as "Write some unit tests for main.py".
+This feature also makes them great at solving ambigous goals such as "Write some unit tests for main.py", where we don't define which tests or even the location of main.py in the file system.
 
 In the context of LLM agents, you can think of the user prompt as the *goal* the agent needs to achieve, and the LLM's answer as the *action* taken by the agent to attempt and achieve the *goal*.
 
-To make the agent more useful, we can give it access to tools. Here we talk about tools instead of actions, and it is up to the LLM how to use the tool to perform an action.
-
-For example, we can have a tool for writing files, that the LLM can use to perform edit, or delete actions on different files.
+To make the agent more useful, we can give it access to tools. For example, we can have a tool for writing files, that the LLM can use to perform edit, or delete actions on different files.
 
 Finally, we can put this in a loop.
 
@@ -95,15 +91,21 @@ In this flow, when the agent decides not to use any tools, we consider it a "fin
 
 When talking about LLM agents, we talk a lot about tools. A tool is something the agent can use to execute an action.
 
-In the same way you can use a hammer to hammer a nail or to kill a fly, the LLM can decide to use the internet search tool to look information in wikipedia or to find cute pictures of cats and dogs. All depending on the end goal.
+Rather than limiting the LLM to a specific set of actions like our elf before, we give it access to tools and let it decide how to best use them to accomplish the goal.
+
+In the same way you can use a hammer to hammer a nail or to kill a fly, the LLM can decide to use the internet search tool to look information in wikipedia or to search the latest gossip on Kim Kardashian. All depending on the end goal.
 
 Depending on what you are building your agent for, you might decide to give it access to a different range of tools.
 
-In the following example, I have created a Coding Agent that can independently write code. I have created four functions (tools) that it can use to read, write, search and list files.
+A tool is just a function I define in my code. For example, a read tool can simply be someting as simple as `def read(my_dir) -> os.listdir(my_dir)`. 
+
+## Coding Agent Example
+
+In the following example, I have created a Coding Agent that can independently write code. I gave it access to four tools to read, write, search and list files. 
 
 ![example swe agent](./swe_agent_demo.gif)
 
-In this demo I ask the agent to create a unit tests for a specific file. It uses the read tool to read the file, and the write tool to create the file and write the testing code.
+In this demo, the agent is asked to create unit tests for a specific file. It first uses the read tool to open `search.py`, then sends the contents for validation. The validator is an LLM that compares the original prompt with the tool’s results. The first validation fails, so the process restarts with a new LLM call. With the contents of `search.py` now in context, the agent uses the write tool to generate the unit tests. The outputs are validated again; this time they pass, and the agent sends the final response to the user.
 
 ## Conclusion
 
