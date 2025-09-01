@@ -26,7 +26,7 @@ Preparation took me about a month. Some days I studied for an hour or less, and 
 
 At first, I took notes on every service and even drew a mind map of all AWS services covered in the exam.  
 
-![](./knowledge_map.png)  
+![AWS Mindmap](./aws_mindmap.png)  
 
 This was a nice way to start, because otherwise all the unfamiliar services blurred together in your head (shield, guarduty, config etc) 
 
