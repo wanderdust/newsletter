@@ -34,9 +34,10 @@ Or an agent could simply be a computer program, like this elf, whose goal is to 
 ![frozen lake agent](./frozen_lake.gif)
 
 As you can see, an agent can be anything as long as you frame in the right way.
+
 ## How do agents work?
 
-Lets take the elf as an example. This agent has been taken from the [Gymnasium library](https://gymnasium.farama.org/environments/toy_text/frozen_lake/), which offers a wide range of environments to make it easy to develop agents.
+Lets take the elf as an example. This elf lives in a tiny game-like environment which is helpful to teach agents how to make decisions.
 
 In very simple terms, agents are programs that need to achieve a goal. Agents live within an environment where they can execute a specific set of actions.
 
@@ -48,7 +49,7 @@ Based on that state, the agent might decide to take an action. The agent will ta
 
 Once it takes an action, it evaluatues its new state (its new position in the environment). It checks if the goal has been completed, and if not it continues until it completes the goal or dies along the way.
 
-In this case, a terminal state can be when the elf reaches the present, or when it falls into a hole and dies. In the latter case the agent finishes the task without achieving its goal.
+A terminal state is simply a point where the task ends, whether successfully or not. In this case, a terminal state can be when the elf reaches the present, or when it falls into a hole and dies. In the latter case the agent finishes the task without achieving its goal.
 
 ![agent diagram](./agent_diagram.png)
 
@@ -62,7 +63,9 @@ It is perfectly valid to create a rule-based agent or even an agent that takes a
 
 For agents trying to navigate more complex environments, we need a better way to decide which actions to take. Think about building rule based logic for the Mars Rover to navigate the unknown surface of Mars. It can easily get out of hand.
 
-This is where machine learning has come in very useful in the past decade. We can rely on *Neural Networks* to choose the right action for agents who need to navigate complex environments.
+This is where machine learning has come in very useful in the past decade. We can rely on neural networks to choose the right action for agents who need to navigate complex environments.
+
+Unlike simple rules, neural networks can learn patterns from experience, making smarter choices in complex situations.
 
 And this is where LLMs come into the picture.
 
@@ -96,7 +99,9 @@ In the same way you can use a hammer to hammer a nail or to kill a fly, the LLM 
 
 Depending on what you are building your agent for, you might decide to give it access to a different range of tools.
 
-A tool is just a function I define in my code. For example, a read tool can simply be someting as simple as `def read(my_dir) -> os.listdir(my_dir)`. 
+A tool is just a function you define in your code, like reading a folder or writing a file.
+
+For example, a read tool can simply be someting as simple as `def read(my_dir) -> os.listdir(my_dir)`. 
 
 ## Coding Agent Example
 
@@ -104,7 +109,9 @@ In the following example, I have created a Coding Agent that can independently w
 
 ![example swe agent](./swe_agent_demo.gif)
 
-In this demo, the agent is asked to create unit tests for a specific file. It first uses the read tool to open `search.py`, then sends the contents for validation. The validator is an LLM that compares the original prompt with the tool’s results. The first validation fails, so the process restarts with a new LLM call. With the contents of `search.py` now in context, the agent uses the write tool to generate the unit tests. The outputs are validated again; this time they pass, and the agent sends the final response to the user.
+In this demo, the agent is asked to create unit tests for a specific file. It first uses the read tool to open `search.py`, then sends the contents for validation. Validation means checking if the agent’s action actually solved the problem.
+
+The validator is an LLM that compares the original prompt with the tool’s results. The first validation fails, so the process restarts with a new LLM call. With the contents of `search.py` now in context, the agent uses the write tool to generate the unit tests. The outputs are validated again; this time they pass, and the agent sends the final response to the user.
 
 ## Conclusion
 
