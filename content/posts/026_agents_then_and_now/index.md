@@ -1,5 +1,5 @@
 ---
-title: '026_agents_then_and_now'
+title: 'Agents Then and Now: Not So Different After All'
 date: '2025-08-25T09:55:49+01:00'
 draft: true 
 summary: ''
@@ -33,8 +33,7 @@ Or an agent could simply be a computer program, like this elf, whose goal is to 
 
 ![frozen lake agent](./frozen_lake.gif)
 
-As you can see, an agent can be anything as long as you frame in the right way. All agents follow the same loop of: state -> action -> next state -> repeat.
-
+As you can see, an agent can be anything as long as you frame in the right way.
 ## How do agents work?
 
 Lets take the elf as an example. This agent has been taken from the [Gymnasium library](https://gymnasium.farama.org/environments/toy_text/frozen_lake/), which offers a wide range of environments to make it easy to develop agents.
