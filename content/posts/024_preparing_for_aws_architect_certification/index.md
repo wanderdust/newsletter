@@ -18,7 +18,7 @@ I recently passed the AWS Solutions Architect Associate exam with a score of 848
 
 I have about five years of on-and-off AWS experience, mostly with RDS, CloudFormation, Lambda, EC2 and a few other services.
 
-To prepare, I took the well-known course by **Stephane Maarek**. It’s long (about 27 hours) and covers a huge amount of content, touching almost every service that may appear on the exam. I discovered services I had never used before, and for others I filled in gaps.
+To prepare, I took the well-known course by **Stephane Maarek**. It’s long (about 27 hours) and covers a huge amount of content, touching almost every service that may appear on the exam.
 
 I studied for roughly a month, some days an hour or less, other days a few hours.
 
@@ -28,7 +28,7 @@ At first I took notes on every service and even drew a mind map of the services 
 
 This helped me separate the unfamiliar services, since a lot of the names started to mix up in my head (Shield, GuardDuty, Config, etc).
 
-The real key was **hands-on practice**. Try services yourself where you can. That’s the only way things stick long term.
+The real key is to do hands-on practice if you can. That’s the only way things stick long term, and where you learn about the little details of each service.
 
 I once read a quote along the lines of *If I can’t implement it, I don’t understand it*, which I try to live by.
 
@@ -54,18 +54,18 @@ The passing score is 720/1000.
 
 Some of the topics that came up in the exam. This is not an exhaustive list:
 
-- **Recycle Bin** for recovering accidentally deleted EBS snapshots and EBS-backed AMIs  
+- **Recycle Bin**
 - **AWS Backup**  
 - **AWS Elastic Disaster Recovery (DRS)**  
 - **VPC Endpoints** (Interface vs Gateway)  
 - **EC2, EC2 Auto Scaling, and ALB**  
 - **EBS** volume types and choices  
-- **CloudFront + S3** (use **OAC** rather than OAI)  
-- **Global Accelerator** (notable for UDP)  
+- **CloudFront + S3**
+- **Global Accelerator**
 - **Kinesis family, SQS, SNS, Firehose, Athena**  
 - **S3 + KMS**: SSE-KMS and **S3 Bucket Keys**  
 - **S3 replication**  
-- **EFS and FSx for Lustre** (FSx integrates with S3)  
+- **EFS and FSx** (FSx for lustre integrates with S3)
 - **Cross-account EFS access**  
 - **RDS, Aurora, and migrations**  
 - **WAF, AWS Config, GuardDuty**  
@@ -73,10 +73,7 @@ Some of the topics that came up in the exam. This is not an exhaustive list:
 - **Resource-based vs identity-based policies**  
 - **Troubleshooting IAM policies**  
 - **Amazon Cognito**  
-- **DNS** basics including **PTR** (reverse DNS)
-
-Docs for a few of these: OAC is the current recommendation for CloudFront + S3, and Global Accelerator supports UDP. :contentReference[oaicite:14]{index=14}  
-Recycle Bin’s scope is EBS snapshots and AMIs. :contentReference[oaicite:15]{index=15}
+- **Recovery Point Objective (RPO) and Recovery Time Objective (RTO)** (at least 2 questions)
 
 ## Is the certification worth it?
 
