@@ -84,13 +84,13 @@ Only if you want it to be.
 
 Some people pass the certification without ever having touched AWS. It may look good on a CV, but that alone might not bring you many practical benefits.
 
-If you already use AWS it can be very valuable. You will get the chance to look into services that you may have used in the past, but have not explored in detail, and you may find functionaity or features you were not aware of. You may also learn about services you were not aware of.
+If you already use AWS it can be very valuable. You will get the chance to look into services that you may have used in the past, but have not explored in detail, and you may find functionality or features you were not aware of. You may also learn about services you did not even know existed.
 
 Thanks to preparing this certification I feel more confident about designing systems in AWS. I am aware about the different services and their features that can be used to solve different problems.
 
 ## What’s next?
 
-Preparing for this exam has been intense. There is a huge amount of content to cover. But since the knowledge is fresh, it would be silly not to attempt the Architect Professional certification next. That’s the plan, though I’ll see how it goes.  
+Preparing for this exam has been intense. There is a huge amount of content to cover, but since the knowledge is fresh, it would be silly not to attempt the Architect Professional certification next. That’s the plan, though I’ll see how it goes.  
 
 If you are considering this certification, feel free to message me on [LinkedIn](https://www.linkedin.com/in/lopezsantoripablo/) and I’ll be happy to answer questions.  
 
