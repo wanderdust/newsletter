@@ -64,9 +64,20 @@ TOOLS = {
     "write_file": write_file,
 }
 user_prompt = "Write unit tests for search.py"
-instructions = "You are a software engineer. Use available tools to answer user prompt"
+instructions = f"""
+    You are a software engineering agent.
+    When you need a tool, choose one of the provided tools.
+    When you can answer, reply in plain text.
+    Be decisive, keep steps minimal, and ground answers in observed tool results.
 
-response = LLM.chat(TOOLS, user_prompt, instructions)
+    Your goal is to answer the user prompt 
+        {user_propmt}
+
+    The available tools are
+        {TOOLS}
+""""
+
+response = LLM.chat(instructions)
 
 if wants_to_run_tools(response)
     response = ... # run tool
