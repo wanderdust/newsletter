@@ -1,5 +1,5 @@
 ---
-title: 'Agents Then and Now: Not So Different After All'
+title: 'From LLM to Agent'
 date: '2025-08-25T09:55:49+01:00'
 draft: true 
 summary: ''
