@@ -1,6 +1,6 @@
 ---
 title: 'From LLM to Agent'
-date: '2025-08-25T09:55:49+01:00'
+date: '2025-09-02T09:55:49+01:00'
 draft: true 
 summary: ''
 tags: []
