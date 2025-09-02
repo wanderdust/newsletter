@@ -12,12 +12,15 @@ cover:
 images: []
 ---
 
+After having ignored the agent hype for quite a while, I was starting to get that inevitable feeling of being left out.
 
 I recently came across [this blog post](https://ghuntley.com/agent/) which walks through the basic flow of an agent, and it inspired me to build my own.  
 
-I had already [done some work with agents](https://pablolopezsantori.substack.com/p/q-learning-explained-through-billys) when learning reinforcement learning, so I wanted to see how LLM agents compare to the classic loop of state, action, next state, repeat.  
+I had already [done some work with agents](https://pablolopezsantori.substack.com/p/q-learning-explained-through-billys) when learning reinforcement learning, so I wanted to see how LLM agents compared. 
 
-This post is an overview of what agents are, how they work, and how the same ideas show up in LLM agents today. At the end I share an example of a Software Engineering Agent I've built.  
+This post gives a generic overview of what agents are, how they work, and how the same ideas from agents 15 years ago show up in LLM agents today.
+
+At the end I share an example of a Software Engineering Agent I've built.  
 
 ## What is an agent?
 
@@ -33,17 +36,19 @@ Or an agent could simply be a computer program, like this elf, whose goal is to 
 
 ![frozen lake agent](./frozen_lake.gif)
 
-As you can see, an agent can be anything as long as you frame in the right way.
+An agent can be anything as long as you frame in the right way.
 
 ## How do agents work?
 
 Lets take the elf as an example. This elf lives in a tiny game-like environment which is helpful to teach agents how to make decisions.
 
-In very simple terms, agents are programs that need to achieve a goal. Agents live within an environment where they can execute a specific set of actions.
+These type of simplated environments are commonly used by Machine Learning engineers when training agents.
+
+In very simple terms, agents are programs that interact with an environment that need to achieve a goal. Within this environment they can execute a specific set of actions.
 
 In this case, the elf would be the agent. It can only go up, down, left or right, and its goal is to reach the present at the very bottom.
 
-A state is the position of the agent in the environment at a given point in time. In this case the initial state for the elf is the top right box.
+A state is the position of the agent in the environment at a given point in time. In this case the initial state for the elf is the top left box.
 
 Based on that state, the agent might decide to take an action. The agent will take into account its available actions, and its current state. Based on this, it chooses an action that will take it closer towards the goal.
 
