@@ -18,31 +18,29 @@ I recently came across [this blog post](https://ghuntley.com/agent/) which walks
 
 This post is walks through the steps to convert an LLM into an agent.
 
-At the end I share an example of a Software Engineering Agent that uses the workflows described in this post.
+At the, end I share an example of a Software Engineering Agent that uses the workflows described in this post.
 
 ## The LLM
 
-Lets start with a simple LLM workflow. This will be our starting point.
+Let's start with a simple LLM workflow. This will be our starting point.
 
 ![](./llm-loop-1.png)
 
-
 The user writes a prompt, and the LLM returns a response.
 
-We are already very familiar with this, we all use chatgpt everyday. Next.
+We are already very familiar with this, we all use ChatGPT everyday. Next.
 
 ## Accessing Tools
 
-What makes an LLM tuly useful is when it can do things on its own.
+What makes an LLM truly useful is when it can do things on its own.
 
 It is very annoying having to copy the contents of a file, and ask ChatGPT to generate some tests for that file. Then we have to copy the code response, and manually create a file in our project.
 
-It is much better if the LLM can do that directly for us. We can give the LLM access to tool for this.
+It is much better if the LLM can do that directly for us. We can give the LLM access to tools for this.
 
 ![](./llm-loop-2.png)
 
-
-The way it works is that you define a set of actions in your program that the LLM can execute. Lets say for example we are building a coding agent. We can create 2 actions to read and to write files.
+The way it works is that you define a set of actions in your program that the LLM can execute. Let's say for example we are building a coding agent. We can create two functions to read and to write files.
 
 ```python
 def read_file(path: str) -> str:
@@ -158,13 +156,13 @@ print("Final answer:", response["answer"])
 
 
 
-And with this we have a fully functional LLM agent that can independently do tasks for us. For a coding agent we may want to give access to more tools other than read and write, such as file search, listing directories, terminal command exectution, and even internet search so it can search documentation. The world is your oister.
+And with this we have a fully functional LLM agent that can independently do tasks for us. For a coding agent we may want to give access to more tools other than read and write, such as file search, listing directories, terminal command execution, and even internet search so it can search documentation. The world is your oyster.
 
 ## Final Tweaks
 
 We can add a few tweaks here and there to make the agent even more robust.
 
-For example we may decide to add an additional LLM call at the beggining to turn the user prompt into a detailed propmt with a step by step plan. This plan will make the validation process better for the model by not only giving the next LLM a clue of what tools to use and in what order (ie list files first, read file next, write after), but also by making the validation more robust. During validation we check the model actions against a detailed list of TODOs to see if the task was accomplished or not.
+For example we may decide to add another LLM call at the beginning to turn the user prompt into a detailed prompt with a step by step plan. This plan will make the validation process better for the model by not only giving the next LLM a clue of what tools to use and in what order (eg list files first, read file next, write after), but also by making the validation more robust. During validation we check the model actions against a detailed list of To-Dos to see if the task was accomplished or not.
 
 In our code we simply add this line after the user prompt
 
@@ -192,7 +190,7 @@ It is quite simple to build your own agent, and you can use them for all sorts o
 
 Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there.
 
-You may have also noticed a few logical gaps in the code, such as not tracking the entire history properly, but I wanted to keep things as simple as possible to avoid overloading the post with code. As you start building agents you'll start to realise all the small things that are required to make it robust, with proper context managent being one of them.
+You may have also noticed a few logical gaps in the code, such as not tracking the entire history properly, but I wanted to keep things as simple as possible to avoid overloading the post with code. As you start building agents you'll start to realise all the small things that are required to make it robust, with proper context management being one of them.
 
 I'd recommend you build your own and you see what works and what does not work.
 
