@@ -53,10 +53,12 @@ def read_file(path: str) -> str:
     with open(path, "r") as f:
         return f.read()
 
-def write_file(path: str, content: str) -> None:
+def write_file(path: str, content: str) -> list:
     """Write some content to a file"""
     with open(path, "w") as f:
         f.write(content)
+    return ... # return list of edits
+
 
 # Register tools in a dictionary so the agent can call them
 TOOLS = {
@@ -66,7 +68,7 @@ TOOLS = {
 user_prompt = "Write unit tests for search.py"
 instructions = f"""
     You are a software engineering agent.
-    When you need a tool, choose one of the provided tools.
+    When you need a tool, choose one or more of the provided tools.
     When you can answer, reply in plain text.
     Be decisive, keep steps minimal, and ground answers in observed tool results.
 
@@ -79,8 +81,12 @@ instructions = f"""
 
 response = LLM.chat(instructions)
 
-if wants_to_run_tools(response)
-    response = ... # run tool
+if wants_to_run_tools(response):
+    observations = []
+    for tool in response["tools"]:
+        observation = ... # run tool
+        observations.append(observation)
+    response = llm.chat(f" Provide a final response given the tool observations: {observations}, user prompt {user_prompt}")
 
 print("Final answer from LLM:", response)
 ```
@@ -101,7 +107,35 @@ To do the validation, we take the final answer candidate, and make a new LLM cal
 
 Now, before sending a final response to the user, we check if the task has been completed. If not, we start the process all over again.
 
-With the new loop, we need to make sure we log and save all the outputs from every state into memory, so that the agent can re-use the outputs of previous actions in follow up iterations.
+With the new loop, we need to make sure we log and save all the outputs from every step into a history so that it can be used by the agent in future iterations.
+
+We'd update our code to do a validation loop:
+
+
+```python
+# ... same as before
+
+response = LLM.chat(instructions)
+
+while True:
+    observations = []
+    if wants_to_run_tools(response):
+        for tool in response["tools"]:
+            observation = ... # run tool and observe the results
+            observations.append(observation)
+
+        response = llm.chat(instructions + observations)
+    
+    # Run validation step
+    is_task_complete = llm.chat(f"Is the task complete? User prompt: {user_prompt}, tool observations: {observations}")
+
+    if is_task_complete == True:
+        break # break the loop and end
+
+print("Final answer from LLM:", response)
+```
+
+
 
 And with this we have a fully functional LLM agent that can independently do tasks for us. For a coding agent we may want to give access to more tools other than read and write, such as file search, listing directories, terminal command exectution, and even internet search so it can search documentation. The world is your oister.
 
@@ -129,8 +163,10 @@ We have seen how to go from LLM to agent by adding a few simple steps.
 
 It is quite simple to build your own agent, and you can use them for all sorts of things, although I yet have to find a decent use case of a custom agent that can improve my efficiency at work. But still, they are fun to play with.
 
+Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there. I'd recommend you build your own and you see what works and what does not work.
+
 You don't have to build agents from scratch like we have done in this post. You can use libraries like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html) that abstract a lot of this logic, so you can mainly focus on the tooling part.
 
-I hope you found this educational, and hopefully I've encouraged you to build your own LLM agent.
+I hope you found this educational, and hopefully it has been an enjoyable read.
 
 See you next time!
