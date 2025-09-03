@@ -129,7 +129,7 @@ To do the validation, we take the final answer candidate, and make a new LLM cal
 
 Now it looks at the user prompt (the task to be achieved) together with the history of actions taken, and decides whether the task was completed. For example, if the prompt was to create unit tests, it will check whether a test file was written and whether the contents of that file actually include the tests.  
 
-The validation step will check if the task was completed. If not, we start the process all over again.
+The validation step will check if the task was completed. If not, we start the agent loop all over again.
 
 Let's add this functionality to the agent loop:
 
@@ -184,7 +184,7 @@ This way the model can take a full view of what's been done and summarise the ou
 
 Let's see this in action!
 
-As part of the process of learning about agents I have built a coding agent so I could better understand the workflows.
+As part of the process of learning about agents I have built a coding agent so I could better understand the agent loop.
 
 This agent follows the same loop described in this blog post and it has access to four tools: read, write, search files and list directories.
 
