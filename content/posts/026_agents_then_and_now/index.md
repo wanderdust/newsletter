@@ -3,7 +3,7 @@ title: 'From LLM to Agent'
 date: '2025-09-02T09:55:49+01:00'
 draft: true 
 summary: ''
-tags: ["agents", ""]
+tags: ["agents", "llm"]
 categories: []
 cover:
   image: ''
@@ -34,13 +34,16 @@ We are already very familiar with this, we all use ChatGPT everyday. Next.
 
 What makes an LLM truly useful is when it can do things on its own.
 
-It is very annoying having to copy the contents of a file, and ask ChatGPT to generate some tests for that file. Then we have to copy the code response, and manually create a file in our project.
+It is very annoying having to copy the contents of a file, paste them in the ChatGPT window, and ask it to generate some tests for that file that you then have to paste back to your project.
 
-It is much better if the LLM can do that directly for us. We can give the LLM access to tools for this.
+It is much better if the LLM can write the test directly for us. We can give the LLM access to tools for this.
 
 ![](./llm-loop-2.png)
 
-The way it works is that you define a set of actions in your program that the LLM can execute. Let's say for example we are building a coding agent. We can create two functions to read and to write files.
+You define tools by creating a set of functions the program running the LLM can execute.
+
+Let's say for example we are building a coding agent. We can create two functions to read and to write files.
+
 
 ```python
 def read_file(path: str) -> str:
@@ -51,10 +54,9 @@ def write_file(path: str, content: str) -> None:
     with open(path, "w") as f:
         f.write(content)
 ```
+Once we have the tools defined, we need a way for the LLM to let us know which tools it wants to use. To do this, when we make the initial call to the LLM, we let it know that we have these two tools available. Then, we force the LLM to return a structured JSON response that returns a list of tools it wants to use and its arguments.
 
-Whe can have the LLM return a structured JSON output to make the response easier to process.
-
-In the first example we ignore the answer and run the tools instead.
+In this example LLM response, we get both an answer and a list of tools. If the LLM response includes a list of tools, we ignore the `answer` section and run the suggested tools instead.
 ```json
 {
   "answer": "We ignore this answer as a final answer and run the tools instead", 
@@ -72,7 +74,7 @@ In the first example we ignore the answer and run the tools instead.
   ]
 }
 ```
-In this next example, the LLM does not want to use any tools. If no tool is suggested, we treat the text as the final answer.
+In this next example, the LLM does not want to use any tools. If no tools are suggested, we treat the `answer` as the final answer.
 
 ```json
 {
@@ -81,8 +83,8 @@ In this next example, the LLM does not want to use any tools. If no tool is sugg
 }
 ```
 
+Now that we know what an LLM response looks like, we can start creating our agent loop.
 
-The agent loop will look like this.
 ```python
 # Import tools we defined eariler
 from tools import read_file, write_file
@@ -95,6 +97,7 @@ You are a coding agent. Use these tools when needed: {list(TOOLS.keys())}.
 Otherwise, reply in plain text. Task: {user_prompt}
 """
 
+# The response will be in the JSON format we saw earlier
 response = LLM.chat(instructions)
 
 if response["tools"]:  # run suggested tools
@@ -108,13 +111,15 @@ if response["tools"]:  # run suggested tools
 print("Final answer:", response["answer"])
 ```
 
-And with this you already have a useful LLM that can independently choose any of the tools available to run all sorts of actions on its own. Goodbye copy/paste.
+And with this you already have a useful LLM that can independently choose any of the tools available to run all sorts of actions on its own.
+
+Goodbye copy pasta.
 
 ## Adding a Validation Loop
 
 The thing is, that agents get it wrong all the time.
 
-The best thing we can do is add a validation step before we send the final response to the user. We want to check if the LLM actually accomplished the task set by the user.
+The best thing we can do to ensure tasks are completed correctly, is to add a validation step before we send the final response to the user.
 
 If we skip this step, it is very likely that the agent will do some of the work, and forget to do the rest, giving the user an incomplete response.
 
@@ -122,12 +127,11 @@ To do the validation, we take the final answer candidate, and make a new LLM cal
 
 ![](./llm-loop-3.png)
 
-Now, before sending a final response to the user, we check if the task has been completed. If not, we start the process all over again.
+Now it looks at the user prompt (the task to be achieved) together with the history of actions taken, and decides whether the task was completed. For example, if the prompt was to create unit tests, it will check whether a test file was written and whether the contents of that file actually include the tests.  
 
-With the new loop, we need to make sure we log and save all the outputs from every step into a history so that it can be used by the agent in future iterations.
+The validation step will check if the task was completed. If not, we start the process all over again.
 
-We'd update our code to do a validation loop:
-
+Let's add this functionality to the agent loop:
 
 ```python
 # ... same as before
@@ -154,40 +158,48 @@ while True:
 print("Final answer:", response["answer"])
 ```
 
-
-
-And with this we have a fully functional LLM agent that can independently do tasks for us. For a coding agent we may want to give access to more tools other than read and write, such as file search, listing directories, terminal command execution, and even internet search so it can search documentation. The world is your oyster.
+And with this we now have a fully functional LLM agent that can run tasks on its own and verify completion before returning the results.  
 
 ## Final Tweaks
 
 We can add a few tweaks here and there to make the agent even more robust.
 
-For example we may decide to add another LLM call at the beginning to turn the user prompt into a detailed prompt with a step by step plan. This plan will make the validation process better for the model by not only giving the next LLM a clue of what tools to use and in what order (eg list files first, read file next, write after), but also by making the validation more robust. During validation we check the model actions against a detailed list of To-Dos to see if the task was accomplished or not.
+For example we may decide to add another LLM call at the beginning to turn the user prompt into a detailed plan.
 
-In our code we simply add this line after the user prompt
+This plan will give the next LLM call more context into how to solve the task so it can choose which tools to use more efficiently.
+
+It will also improve the validation process by checking the results against the detailed plan, and check if all the points were addressed.
+
+In our code we simply add this line after the user prompt, and then we ensure the validation checks against this plan.
 
 ```python
 plan = llm.chat(f"Break the task into steps: {user_prompt}")
 ```
 
-Another nice tweak is to add an LLM call before the final response, when the answer has already been validated. This way the model can take a full view of the action history and summarise the outcome into a one nice final answer. If you don't this part, the agent may still have done the task, but you may get an ugly and unpolished final text answer.
+Another nice tweak is to add a final summarising LLM call before we return the response to the user, after it has been validated.
+
+This way the model can take a full view of what's been done and summarise the outcome into a one nice final answer. This step will ensure much prettier final answers and a nicer user experience.
 
 ![](./llm-loop-4.png)
 
-Now we can see this in action. I have built a coding agent so I could understand this process better. I recommend you do the same!
+Let's see this in action!
+
+As part of the process of learning about agents I have built a coding agent so I could better understand the workflows.
+
+This agent follows the same loop described in this blog post and it has access to four tools: read, write, search files and list directories.
 
 ![example swe agent](./swe_agent_demo.gif)
 
 In this demo, the agent is asked to create unit tests for a specific file. It first uses the read tool to open `search.py`, then sends the contents for validation.
 
-The first validation fails, so the process restarts with a new LLM call. With the contents of `search.py` now in context, the agent uses the write tool to generate the unit tests. The outputs are validated again; this time they pass, and the agent sends the final response to the user.
+The first validation fails, so the process restarts with a new LLM call to choose new tools. With the contents of `search.py` now in context, the agent uses the write tool to generate the unit tests. The outputs are validated again; this time they pass, and the agent sends the final response to the user.
 
 ## Final Words
 
-We have just walked through how to go from LLM to agent with only a few extra steps.  
+We have just walked through how to go from LLM to agent by adding a few extra steps.  
 
-The point is not that my implementation is perfect. It is not. There are gaps in the code and there are definitely more efficient loops out there. But that is part of the fun. Agents are still raw, still experimental, and the best way to learn is to build your own.  
+My implementation is not perfect. There are gaps in the code and there are definitely more efficient ways to build the loops. But that is part of the fun. Agents are still raw, still experimental, and the best way to learn is to build your own.  
 
-Whether you start from scratch like I did, or use a library like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html), you will quickly see what works, what breaks, and what needs to be refined. And that is exactly how you move beyond simply using LLMs into shaping them into agents.  
+Whether you start from scratch like I did, or use a library like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html), you will quickly see what works, what breaks, and what needs to be refined. And that is exactly how you move beyond simply using LLMs to shaping them into agents.  
 
-I hope this gave you both a clear starting point and the push to try it yourself. Because there is nothing like that feeling the first time you watch an agent generate code on its own.
+I hope this gave you both a clear starting point and the push to try it yourself, because there is nothing like that feeling the first time you watch your agent generate code on its own.
