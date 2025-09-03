@@ -3,7 +3,7 @@ title: 'Preparing for the AWS Certified Solutions Architect – Associate Exam'
 date: '2025-09-01T08:34:53+01:00'
 draft: false 
 summary: ''
-tags: []
+tags: ['aws', 'certification']
 categories: []
 cover:
   image: ''
