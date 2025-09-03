@@ -3,7 +3,7 @@ title: 'From LLM to Agent'
 date: '2025-09-02T09:55:49+01:00'
 draft: true 
 summary: ''
-tags: []
+tags: ["agents", ""]
 categories: []
 cover:
   image: ''
@@ -12,13 +12,13 @@ cover:
 images: []
 ---
 
-After having ignored the agent hype for quite a while, I was starting to get that inevitable feeling of being left out.
+After ignoring the whole “agent” hype for a while, I started to get that inevitable feeling of being left behind.  
 
-I recently came across [this blog post](https://ghuntley.com/agent/) which walks through the basic flow of an agent, and it inspired me to build my own.  
+That changed when I came across [this blog post](https://ghuntley.com/agent/) explaining the basic flow of an agent. It made me want to try it for myself and see what it actually takes to move from a plain LLM to an agent.  
 
-This post is walks through the steps to convert an LLM into an agent.
+This post is my walkthrough of that process: step by step, showing how to turn an LLM into an agent. The code here is mainly illustrative, meant to highlight the concepts rather than provide a fully working solution.
 
-At the, end I share an example of a Software Engineering Agent that uses the workflows described in this post.
+At the end, I share an example of a Software Engineering Agent built with the exact workflows described in this post.  
 
 ## The LLM
 
@@ -184,18 +184,10 @@ The first validation fails, so the process restarts with a new LLM call. With th
 
 ## Final Words
 
-We have seen how to go from LLM to agent by adding a few simple steps.
+We have just walked through how to go from LLM to agent with only a few extra steps.  
 
-It is quite simple to build your own agent, and you can use them for all sorts of things.
+The point is not that my implementation is perfect. It is not. There are gaps in the code and there are definitely more efficient loops out there. But that is part of the fun. Agents are still raw, still experimental, and the best way to learn is to build your own.  
 
-Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there.
+Whether you start from scratch like I did, or use a library like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html), you will quickly see what works, what breaks, and what needs to be refined. And that is exactly how you move beyond simply using LLMs into shaping them into agents.  
 
-You may have also noticed a few logical gaps in the code, such as not tracking the entire history properly, but I wanted to keep things as simple as possible to avoid overloading the post with code. As you start building agents you'll start to realise all the small things that are required to make it robust, with proper context management being one of them.
-
-I'd recommend you build your own and you see what works and what does not work.
-
-You don't have to build agents from scratch like we have done in this post. You can use libraries like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html) that abstract a lot of this logic, so you can mainly focus on the tooling part.
-
-I hope you found this educational, and hopefully it has been an enjoyable read.
-
-See you next time!
+I hope this gave you both a clear starting point and the push to try it yourself. Because there is nothing like that feeling the first time you watch an agent generate code on its own.
