@@ -44,12 +44,22 @@ It is much better if the LLM can do that directly for us. We can give the LLM ac
 
 The way it works is that you define a set of actions in your program that the LLM can execute. Lets say for example we are building a coding agent. We can create 2 actions to read and to write files.
 
+```python
+def read_file(path: str) -> str:
+    with open(path) as f:
+        return f.read()
+
+def write_file(path: str, content: str) -> None:
+    with open(path, "w") as f:
+        f.write(content)
+```
+
 Whe can have the LLM return a structured JSON output to make the response easier to process.
 
 In the first example we ignore the answer and run the tools instead.
 ```json
 {
-  "answer": "I have provided a list of tools blah blah ...", # ignore "answer" here and only run tools
+  "answer": "We ignore this answer as a final answer and run the tools instead", 
   "tools": [
     {
       "tool": "read_file",
@@ -76,14 +86,8 @@ In this next example, the LLM does not want to use any tools. If no tool is sugg
 
 The agent loop will look like this.
 ```python
-# Simple tools
-def read_file(path: str) -> str:
-    with open(path) as f:
-        return f.read()
-
-def write_file(path: str, content: str) -> None:
-    with open(path, "w") as f:
-        f.write(content)
+# Import tools we defined eariler
+from tools import read_file, write_file
 
 TOOLS = {"read_file": read_file, "write_file": write_file}
 
@@ -102,8 +106,8 @@ if response["tools"]:  # run suggested tools
         history.append({"action": action, "result": result})
     
     response = LLM.chat(f"Give a final answer for task {user_prompt} after having executed these actions {history}")
-else:
-    print("Final answer:", response["answer"])
+
+print("Final answer:", response["answer"])
 ```
 
 And with this you already have a useful LLM that can independently choose any of the tools available to run all sorts of actions on its own. Goodbye copy/paste.
@@ -112,7 +116,7 @@ And with this you already have a useful LLM that can independently choose any of
 
 The thing is, that agents get it wrong all the time.
 
-The best thing we can do is add a validation step before we send the final response to the user. We want to check if the LLM actually accomplished the goal set by the user propmt.
+The best thing we can do is add a validation step before we send the final response to the user. We want to check if the LLM actually accomplished the task set by the user.
 
 If we skip this step, it is very likely that the agent will do some of the work, and forget to do the rest, giving the user an incomplete response.
 
@@ -138,6 +142,7 @@ while True:
         for action in response["tools"]:
             result = TOOLS[action["tool"]](**action["args"])
             history.append({"action": action, "result": result})
+
         response = LLM.chat(f"Give a final answer for task {user_prompt} after having executed these actions {history}")
 
     # Validation step
@@ -185,7 +190,11 @@ We have seen how to go from LLM to agent by adding a few simple steps.
 
 It is quite simple to build your own agent, and you can use them for all sorts of things.
 
-Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there. I'd recommend you build your own and you see what works and what does not work.
+Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there.
+
+You may have also noticed a few logical gaps in the code, such as not tracking the entire history properly, but I wanted to keep things as simple as possible to avoid overloading the post with code. As you start building agents you'll start to realise all the small things that are required to make it robust, with proper context managent being one of them.
+
+I'd recommend you build your own and you see what works and what does not work.
 
 You don't have to build agents from scratch like we have done in this post. You can use libraries like [pydantic ai](https://martinfowler.com/articles/build-own-coding-agent.html) that abstract a lot of this logic, so you can mainly focus on the tooling part.
 
