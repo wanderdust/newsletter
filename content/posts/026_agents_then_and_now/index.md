@@ -34,32 +34,18 @@ We are already very familiar with this, we all use ChatGPT everyday. Next.
 
 What makes an LLM truly useful is when it can do things on its own.
 
-It is very annoying having to copy the contents of a file, paste them in the ChatGPT window, and ask it to generate some tests for that file that you then have to paste back to your project.
+It is very annoying having to copy the contents of a file, paste them in the ChatGPT window, and ask it to generate some tests that you then paste back to your project.
 
 It is much better if the LLM can write the test directly for us. We can give the LLM access to tools for this.
 
 ![](./llm-loop-2.png)
 
-You define tools by creating a set of functions the program running the LLM can execute.
+First, we need a way for the LLM to let us know which tools it wants to use. To do this, when we make the initial call to the LLM, we let it know which tools are available. Then, we force the LLM to return a structured JSON response that returns a list of tools.
 
-Let's say for example we are building a coding agent. We can create two functions to read and to write files.
-
-
-```python
-def read_file(path: str) -> str:
-    with open(path) as f:
-        return f.read()
-
-def write_file(path: str, content: str) -> None:
-    with open(path, "w") as f:
-        f.write(content)
-```
-Once we have the tools defined, we need a way for the LLM to let us know which tools it wants to use. To do this, when we make the initial call to the LLM, we let it know that we have these two tools available. Then, we force the LLM to return a structured JSON response that returns a list of tools it wants to use and its arguments.
-
-In this example LLM response, we get both an answer and a list of tools. If the LLM response includes a list of tools, we ignore the `answer` section and run the suggested tools instead.
+In this example LLM response, we get both an `answer` and a `tools` section. If the LLM response includes a list of `tools`, we ignore the `answer` section and run the suggested tools instead.
 ```json
 {
-  "answer": "We ignore this answer as a final answer and run the tools instead", 
+  "answer": "We ignore this answer and run the tools instead", 
   "tools": [
     {
       "tool": "read_file",
@@ -74,8 +60,7 @@ In this example LLM response, we get both an answer and a list of tools. If the 
   ]
 }
 ```
-In this next example, the LLM does not want to use any tools. If no tools are suggested, we treat the `answer` as the final answer.
-
+Lets look at another example response where the LLM provides an empty list for the `tools` section.
 ```json
 {
   "answer": "Here are the unit tests for search.py...",
@@ -83,7 +68,25 @@ In this next example, the LLM does not want to use any tools. If no tools are su
 }
 ```
 
-Now that we know what an LLM response looks like, we can start creating our agent loop.
+We can assume that because it does not need to use any tools, it has all the information it needs, so we treat the `answer` as the final answer.
+
+The next part is defining the tools.
+
+Let's say for example we are building a coding agent. We can create two functions to read and to write files.
+
+
+```python
+def read_file(path: str) -> str:
+    with open(path) as f:
+        return f.read()
+
+def write_file(path: str, content: str) -> None:
+    with open(path, "w") as f:
+        f.write(content)
+```
+
+
+Now that we have the tools defined, and know what the LLM response looks like, we can start creating our agent logic.
 
 ```python
 # Import tools we defined eariler
