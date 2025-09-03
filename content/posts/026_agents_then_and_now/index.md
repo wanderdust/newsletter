@@ -44,51 +44,66 @@ It is much better if the LLM can do that directly for us. We can give the LLM ac
 
 The way it works is that you define a set of actions in your program that the LLM can execute. Lets say for example we are building a coding agent. We can create 2 actions to read and to write files.
 
-In python it may look like this.
+Whe can have the LLM return a structured JSON output to make the response easier to process.
 
+In the first example we ignore the answer and run the tools instead.
+```json
+{
+  "answer": "I have provided a list of tools blah blah ...", # ignore "answer" here and only run tools
+  "tools": [
+    {
+      "tool": "read_file",
+      "args": {
+        "path": "search.py"
+      }
+    },
+    {
+      "tool": "write_file",
+      ...
+   }
+  ]
+}
+```
+In this next example, the LLM does not want to use any tools. If no tool is suggested, we treat the text as the final answer.
+
+```json
+{
+  "answer": "Here are the unit tests for search.py...",
+  "tools": []
+}
+```
+
+
+The agent loop will look like this.
 ```python
-# Define some simple tools
+# Simple tools
 def read_file(path: str) -> str:
-    """Read the contents of a file"""
-    with open(path, "r") as f:
+    with open(path) as f:
         return f.read()
 
-def write_file(path: str, content: str) -> list:
-    """Write some content to a file"""
+def write_file(path: str, content: str) -> None:
     with open(path, "w") as f:
         f.write(content)
-    return ... # return list of edits
 
+TOOLS = {"read_file": read_file, "write_file": write_file}
 
-# Register tools in a dictionary so the agent can call them
-TOOLS = {
-    "read_file": read_file,
-    "write_file": write_file,
-}
 user_prompt = "Write unit tests for search.py"
 instructions = f"""
-    You are a software engineering agent.
-    When you need a tool, choose one or more of the provided tools.
-    When you can answer, reply in plain text.
-    Be decisive, keep steps minimal, and ground answers in observed tool results.
-
-    Your goal is to answer the user prompt 
-        {user_propmt}
-
-    The available tools are
-        {TOOLS}
-""""
+You are a coding agent. Use these tools when needed: {list(TOOLS.keys())}.
+Otherwise, reply in plain text. Task: {user_prompt}
+"""
 
 response = LLM.chat(instructions)
 
-if wants_to_run_tools(response):
-    observations = []
-    for tool in response["tools"]:
-        observation = ... # run tool
-        observations.append(observation)
-    response = llm.chat(f" Provide a final response given the tool observations: {observations}, user prompt {user_prompt}")
-
-print("Final answer from LLM:", response)
+if response["tools"]:  # run suggested tools
+    history = []
+    for action in response["tools"]:
+        result = TOOLS[action["tool"]](**action["args"])
+        history.append({"action": action, "result": result})
+    
+    response = LLM.chat(f"Give a final answer for task {user_prompt} after having executed these actions {history}")
+else:
+    print("Final answer:", response["answer"])
 ```
 
 And with this you already have a useful LLM that can independently choose any of the tools available to run all sorts of actions on its own. Goodbye copy/paste.
@@ -116,23 +131,24 @@ We'd update our code to do a validation loop:
 # ... same as before
 
 response = LLM.chat(instructions)
+history = []
 
 while True:
-    observations = []
-    if wants_to_run_tools(response):
-        for tool in response["tools"]:
-            observation = ... # run tool and observe the results
-            observations.append(observation)
+    if response["tools"]:
+        for action in response["tools"]:
+            result = TOOLS[action["tool"]](**action["args"])
+            history.append({"action": action, "result": result})
+        response = LLM.chat(f"Give a final answer for task {user_prompt} after having executed these actions {history}")
 
-        response = llm.chat(instructions + observations)
-    
-    # Run validation step
-    is_task_complete = llm.chat(f"Is the task complete? User prompt: {user_prompt}, tool observations: {observations}")
+    # Validation step
+    is_done = LLM.chat(
+        f"Prompt: {user_prompt}\nHistory: {history}\nHas the task been completed? Reply True/False."
+    )
 
-    if is_task_complete == True:
-        break # break the loop and end
+    if is_done == "True":
+        break  # exit loop when task resolved
 
-print("Final answer from LLM:", response)
+print("Final answer:", response["answer"])
 ```
 
 
@@ -144,6 +160,12 @@ And with this we have a fully functional LLM agent that can independently do tas
 We can add a few tweaks here and there to make the agent even more robust.
 
 For example we may decide to add an additional LLM call at the beggining to turn the user prompt into a detailed propmt with a step by step plan. This plan will make the validation process better for the model by not only giving the next LLM a clue of what tools to use and in what order (ie list files first, read file next, write after), but also by making the validation more robust. During validation we check the model actions against a detailed list of TODOs to see if the task was accomplished or not.
+
+In our code we simply add this line after the user prompt
+
+```python
+plan = llm.chat(f"Break the task into steps: {user_prompt}")
+```
 
 Another nice tweak is to add an LLM call before the final response, when the answer has already been validated. This way the model can take a full view of the action history and summarise the outcome into a one nice final answer. If you don't this part, the agent may still have done the task, but you may get an ugly and unpolished final text answer.
 
@@ -161,7 +183,7 @@ The first validation fails, so the process restarts with a new LLM call. With th
 
 We have seen how to go from LLM to agent by adding a few simple steps.
 
-It is quite simple to build your own agent, and you can use them for all sorts of things, although I yet have to find a decent use case of a custom agent that can improve my efficiency at work. But still, they are fun to play with.
+It is quite simple to build your own agent, and you can use them for all sorts of things.
 
 Keep in mind that I came up with this implementation from playing around with it, but there will definitely be more efficient loops out there. I'd recommend you build your own and you see what works and what does not work.
 
