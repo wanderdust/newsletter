@@ -53,13 +53,17 @@ It is much better if the LLM can write the test directly for us. We can give the
 
 ![](./llm-loop-2.png)
 
-First, we need a way for the LLM to let us know which tools it wants to use. To do this, when we make the initial call to the LLM, we let it know which tools are available.
+When making the initial LLM call, we provide the list of available tools in the instructions so that it knows which ones to choose.
 
-The default LLM response will be a bunch of free text. It would make it very hard for us to find which tools to use based on some free text from the LLM:
+### Structuring the LLM response
 
-> _Oh yeah, it would be cool if you used the read tool and the write tool_ to solve this task
+The default LLM response will be a bunch of free text. It would make it very hard for us to programmatically find which tools to use based on some free text from the LLM:
 
-Instead, we can "force" the LLM to return an answer in a more structured format which is predictable and we can use to easily find the information we need. In the instructions, we can provide a detailed JSON schema of how we want the answers to be delivered. In this case we can ask for a response with an `answer` and a `tools` section.
+> _Oh yeah, it would be cool if you used the read tool and the write tool to solve this task_
+
+Instead, we can "force" the LLM to return an answer in a more structured format which is predictable and we can use to easily find the information we need.
+
+In the instructions, we can provide a detailed JSON schema of how we want the answers to be delivered. In this case we can ask for a response with an `answer` and a `tools` section.
 
 In this example, the LLM response contains both an `answer` section and a `tools` section. When both are present, the `tools` section takes priority, and the `answer` section is ignored while the suggested tools are executed instead.
 ```json
@@ -205,9 +209,9 @@ This way the model can take a full view of what's been done and summarise the ou
 
 ![](./llm-loop-4.png)
 
-Let's see this in action!
+## The Real Thing
 
-I've built my own coding agent so I could understand the agent loop better.
+I've built my own coding agent so I could understand the agent loop better myself.
 
 This agent follows the same loop described in this blog post and it has access to four tools: read files, write files, search files and list files and directories.
 
