@@ -1,5 +1,5 @@
 ---
-title: '019_building_a_self_service_data_api'
+title: 'Lessons Learned from building Data APIs'
 date: '2025-08-02T10:41:15+01:00'
 draft: true 
 summary: ''
