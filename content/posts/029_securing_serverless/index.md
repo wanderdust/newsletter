@@ -22,34 +22,49 @@ It’s also incredibly cheap for small projects or apps with modest traffic. Hos
 
 But here’s the catch: the same magic that lets your app scale smoothly from 0 to hundreds of requests can also scale into thousands of requests if someone decides to run a DDoS attack—or even just accidentally spams your endpoint. Without guardrails, you can end up with an eye-watering AWS bill.
 
-This post walks through a sample serverless setup (S3 + CloudFront, API Gateway + Lambda, DynamoDB) and highlights what you can do to keep your costs predictable and your application safe.
+This post walks through a sample serverless setup (S3 + CloudFront, API Gateway + Lambda, DynamoDB) and highlights some best practices to keep your costs predictable and your application safe.
+
+## The application
+
+For the purpose of this blog post I'll use an example of a serverless architecture I bulit for a hobby project. This architecture is very common in AWS, but it is not without risks if you don't secure it properly.
+
+![serverless diagram]()
+
+The purpose of the application was a note taking app for career progress, where you would regularly keep track of career achievements so that you could refer to them later in time and not forget any of the work done. In this application you could create, edit and delete notes. 
+
+The website was created using react and hosted in an S3 bucket. The API logic to edit,create and delete notes was hosted in a lambda function, fronted by an API Gateway. For the database layer I used Dynamodb. All of these services are serverless.
+
+## Securing the components
+
+In this section we take a look at each of the components, and see how we can secure them to prevent spending a lot of money when there is unusually high traffic, or when a bad actor tries a Denial of Service attack.
+
+### S3 Buckets
+
+S3 is a very cheap way to host static websites or webapps, for example those you build with React. One thing that is easy to forget is that S3 charges you for "egress" costs. This means that every time someone accesses the website, you will pay for all of the media that needs to be loaded in the user's browser. If you have larger files, like HD images or videos this can get expensive very fast.
+
+The easiest way to save yourself trouble is to cache any content that does not change very often, like images, videos etc. In AWS the best way is to use Cloudfront as a Content Delivery Network.
+
+**Caching with CloudFront**: Cloudfront caches content at edge in locations all over the world. Every request that CloudFront serves directly is one less request hitting your S3 bucket. This reduces S3 read costs and, more importantly, avoids unnecessary data transfer charges.
+
+**Restrict Direct Access to S3**: Add a bucket policy so only CloudFront can access your files. This prevents people from bypassing caching and hammering your bucket directly.
 
 ⸻
 
-## S3 and CloudFront
+### API Gateway
 
-**Cache Aggressively with CloudFront**.
-Every request that CloudFront serves directly is one less request hitting your S3 bucket. This reduces S3 read costs and, more importantly, avoids unnecessary data transfer charges.
+An API Gateway sits in front of your APIs and handles authentication, security, and routing, so you don’t need to build that logic into your application code. This separation makes microservices easier to maintain. AWS's API Gateway can be used as a first layer of security to protect your backend from unnecessary calls.
 
-**Restrict Direct Access to S3**
-Add a bucket policy so only CloudFront can access your files. This prevents people from bypassing caching and hammering your bucket directly.
+**Enable Rate Limiting**: Use API Gateway’s rate limiting features to stop anyone from spamming your API. With rate limitting you can set a maximum number of calls that can be made to your API within a window of time, for example add a limit of 100 requests per second. Anything beyond that recieves a 429 error.
 
-⸻
+**Add Authentication**: Don’t expose your API to the entire internet without checks. At minimum, validate JWTs (e.g., Cognito, Auth0). This ensures requests come from valid clients that have authenticated to your application.
 
-## API Gateway
+**Use Caching**: Cache frequent read requests in API Gateway. If your data changes infrequently, set longer cache times so repeated calls are served at the gateway instead of hitting your backend.
 
-**Enable Rate Limiting**
-Use API Gateway’s usage plans and throttling features to set sensible per-user and per-API limits. This protects against brute force traffic spikes.
-
-**Add Authentication**
-Don’t expose your API to the entire internet without checks. At minimum, validate JWTs (e.g., Cognito, Auth0). This ensures requests come from valid clients.
-
-**Lock Down CORS**
-Only allow requests from your known frontend domain(s). This prevents random websites from abusing your API in browser contexts.
+**Lock Down CORS**: Only allow requests from your known frontend domain(s). This prevents random websites from abusing your API in browser contexts.
 
 ⸻
 
-## Lambda
+### Lambda
 **Set Reserved Concurrency**
 By default, Lambda can scale up very quickly. If your function is tied to costly downstream services (like DynamoDB), set a reserved concurrency limit. This caps how many functions can run at once and gives you cost predictability. It also ensures other applications using lambda will still be able to run even if your application is at max capacity.
 
@@ -58,7 +73,7 @@ If Lambda is overwhelmed, do you want to queue requests, or should they fail fas
 
 ⸻
 
-## DynamoDB
+### DynamoDB
 **Use DAX for Caching**
 DynamoDB Accelerator (DAX) helps reduce repeated queries. By serving cached responses, you cut costs and improve latency.
 
