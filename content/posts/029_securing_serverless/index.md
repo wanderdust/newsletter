@@ -65,11 +65,12 @@ An API Gateway sits in front of your APIs and handles authentication, security, 
 ⸻
 
 ### Lambda
-**Set Reserved Concurrency**
-By default, Lambda can scale up very quickly. If your function is tied to costly downstream services (like DynamoDB), set a reserved concurrency limit. This caps how many functions can run at once and gives you cost predictability. It also ensures other applications using lambda will still be able to run even if your application is at max capacity.
 
-**Think About Failure Modes**
-If Lambda is overwhelmed, do you want to queue requests, or should they fail fast? Designing with limits in mind avoids runaway cost scenarios.
+Lambda is one of the most versatile AWS services, it can serve as the backend for your APIs as well as many other workloads. The problem is that each AWS account has a hard limit of 1,000 concurrent Lambda executions. If your application uses them all, other services or functions in your account may be left without capacity.
+
+**Set Reserved Concurrency**
+The solution is to configure reserved concurrency for critical functions. This caps the maximum number of concurrent executions, giving you predictable costs and preventing downstream services (like DynamoDB) from being overwhelmed. It also guarantees that other Lambda functions in your account still have room to run, even during heavy load.
+
 
 ⸻
 
