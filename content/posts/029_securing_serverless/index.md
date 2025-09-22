@@ -12,17 +12,19 @@ cover:
 images: []
 ---
 
-
+![Serverless BIll](./burned_by_cloud.png)
 
 ## Introduction
 
+I was recently reading about some horror stories of users running into insane bills on their serverless applications.
+
+A few months ago I deployed a fully serverless web application for a hobby project. Looking back, I realised it could just as easily have been me staring at a six-figure bill at the end of the month. Since I was not maintaining the app, I deleted it, but that close call made me think harder about what it really takes to secure serverless infrastructure and avoid an eye-watering AWS bill
+
 One of the best things about serverless is how easy it is to get started. You don’t need to worry about infrastructure, scaling groups, or servers. You just deploy and go.
 
-It’s also incredibly cheap for small projects or apps with modest traffic. Hosting a static site on S3 and wiring it up with CloudFront? A few dollars a month. Adding Lambda, API Gateway, and DynamoDB? Still pennies for small workloads.
+It’s also incredibly cheap for small projects or apps with low or inconsistent traffic. But there's a catch: the same flexibility that lets you pay almost nothing when traffic is low, can also bite you in the bum if traffic becomes suddenly very high, for example if a bad actor decides to do a DDoS attack. If you don't have the correct guardrails, you can endup bankrupt overnight.
 
-But here’s the catch: the same magic that lets your app scale smoothly from 0 to a few dozen requests can also scale into thousands of requests if someone decides to run a DDoS attack, or even just accidentally spams your endpoint. Without guardrails, [you can end up with an eye-watering AWS bill](https://serverlesshorrors.com/all/firebase-100k/).
-
-This post walks through a sample serverless setup and highlights some best practices to keep your costs predictable and your application safe.
+In this post I walk through the serverless architecture I used for my app, sharing some best practices to keep costs predictable and the application safe.
 
 ## The application
 
@@ -88,3 +90,5 @@ Serverless is powerful because it lets you move fast without managing infrastruc
 It is much better to build these protections in from the start than to discover them after a surprising AWS bill. With the right setup your apps will stay reliable, secure, and affordable even if traffic suddenly spikes.
 
 If you want more real-world examples of what happens when these guardrails aren’t in place, check out [serverlesshorrors.com](https://serverlesshorrors.com/).
+
+If I had an extra 100k to spare, I'd rather spend it on a [cool campervan](https://www.volkswagen-vans.co.uk/en/new-vehicles/california.html) than on a cloud bill.
