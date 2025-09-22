@@ -34,7 +34,7 @@ For the purpose of this blog post I'll use a classic example of a serverless arc
 
 The purpose of the application was a note taking app for career progress, where you would regularly keep track of career achievements so that you could refer to them later in time and not forget any of the work done. In this application you could create, edit and delete notes. 
 
-The website was created using React and hosted in an S3 bucket. The API logic to create notes was hosted in a lambda function, fronted by an API Gateway. For the database layer I used Dynamodb. All of these are serverless services.
+The website was created using React and hosted in an S3 bucket. The API logic to create notes was hosted in a lambda function, fronted by an API Gateway. For the database layer I used DynamoDB. All of these are serverless services.
 
 ## Securing the components
 
@@ -42,22 +42,22 @@ In this section we take a look at each of the components, and see how we can sec
 
 ### S3 Buckets
 
-S3 is a very cheap way to host static websites or webapps, for example those you build with React. One thing that is easy to forget is that S3 charges you for egress costs. This means that every time someone accesses the website, you will pay for all of the media that needs to be loaded in the user's browser. If you have larger files, like HD images, music or videos [this can get expensive very fast](https://old.reddit.com/r/webdev/comments/1b14bty/netlify_just_sent_me_a_104k_bill_for_a_simple/).
+S3 is a very cheap way to host static websites or webapps, for example those you build with React. One thing that is easy to forget is that S3 charges you for egress costs. This means that every time someone accesses the website, you will pay for all the media that needs to be loaded in the user's browser. If you have larger files, like HD images, music or videos [this can get expensive very fast](https://old.reddit.com/r/webdev/comments/1b14bty/netlify_just_sent_me_a_104k_bill_for_a_simple/).
 
 The easiest way to save yourself trouble is to cache any content that does not change very often, like static images or videos.
 
-[**Caching with CloudFront**](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html): Cloudfront caches content at edge in locations all over the world. Every request that CloudFront serves directly is one less request hitting your S3 bucket. This reduces S3 read costs and, more importantly, avoids unnecessary data transfer charges.
+[**Caching with CloudFront**](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/getting-started-secure-static-website-cloudformation-template.html): CloudFront caches content at edge in locations all over the world. Every request that CloudFront serves directly is one less request hitting your S3 bucket. This reduces S3 read costs and, more importantly, avoids unnecessary data transfer charges.
 
 **Restrict Direct Access to S3**: Add an [Origin Access Control (OAC)](https://aws.amazon.com/blogs/networking-and-content-delivery/amazon-cloudfront-introduces-origin-access-control-oac/) to your bucket, so content can only be accessed via CloudFront. This prevents people from bypassing caching and hammering your bucket directly.
 
 
-[**AWS Web Application Firewall**](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-awswaf.html): AWS WAF are a set of rules you add to protect Cloudfront from unwanted traffic, such as blocking specific IPs. AWS has sets of predefined rules that are easy to setup and can come in handy.
+[**AWS Web Application Firewall**](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/distribution-web-awswaf.html): AWS WAF are a set of rules you add to protect CloudFront from unwanted traffic, such as blocking specific IPs. AWS has sets of predefined rules that are easy to setup and can come in handy.
 
 ### API Gateway
 
 An API Gateway sits in front of your APIs and handles authentication, security, and routing, so you don’t need to build that logic into your application code. This separation makes microservices easier to maintain. AWS's API Gateway can be used as a first layer of security to protect your backend from unnecessary calls.
 
-[**Enable Rate Limiting**](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html): Use API Gateway’s rate limiting features to stop anyone from spamming your API. With rate limitting you can set a maximum number of calls that can be made to your API within a window of time, for example add a limit of 100 requests per second. Anything beyond that recieves a 429 error. Rate limitting can be set globally, per endpoint or per user.
+[**Enable Rate Limiting**](https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-request-throttling.html): Use API Gateway’s rate limiting features to stop anyone from spamming your API. With rate-limiting you can set a maximum number of calls that can be made to your API within a window of time, for example add a limit of 100 requests per second. Anything beyond that receives a 429 error. Rate-limiting can be set globally, per endpoint or per user.
 
 [**Add Authentication**](https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-jwt-authorizer.html): Don’t expose your API to the entire internet without checks. At minimum, validate JWTs (e.g., Cognito, Auth0). This ensures requests come from valid clients that have authenticated to your application.
 
