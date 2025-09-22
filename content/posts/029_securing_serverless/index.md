@@ -20,7 +20,7 @@ One of the best things about serverless is how easy it is to get started. You do
 
 It’s also incredibly cheap for small projects or apps with modest traffic. Hosting a static site on S3 and wiring it up with CloudFront? A few dollars a month. Adding Lambda, API Gateway, and DynamoDB? Still pennies for small workloads.
 
-But here’s the catch: the same magic that lets your app scale smoothly from 0 to a few dozen requests can also scale into thousands of requests if someone decides to run a DDoS attack—or even just accidentally spams your endpoint. Without guardrails, [you can end up with an eye-watering AWS bill](https://serverlesshorrors.com/all/firebase-100k/).
+But here’s the catch: the same magic that lets your app scale smoothly from 0 to a few dozen requests can also scale into thousands of requests if someone decides to run a DDoS attack, or even just accidentally spams your endpoint. Without guardrails, [you can end up with an eye-watering AWS bill](https://serverlesshorrors.com/all/firebase-100k/).
 
 This post walks through a sample serverless setup and highlights some best practices to keep your costs predictable and your application safe.
 
@@ -28,7 +28,7 @@ This post walks through a sample serverless setup and highlights some best pract
 
 For the purpose of this blog post I'll use a classic example of a serverless architecture I used for a hobby project.
 
-![serverless diagram]()
+![serverless diagram](./serverless_app_diagram.png)
 
 The purpose of the application was a note taking app for career progress, where you would regularly keep track of career achievements so that you could refer to them later in time and not forget any of the work done. In this application you could create, edit and delete notes. 
 
@@ -68,19 +68,16 @@ An API Gateway sits in front of your APIs and handles authentication, security, 
 
 Lambda is one of the most versatile AWS services, it can serve as the backend for your APIs as well as many other workloads. The problem is that each AWS account has a hard limit of 1,000 concurrent Lambda executions. If your application uses them all, other services or functions in your account may be left without capacity.
 
-**Set Reserved Concurrency**
-The solution is to configure reserved concurrency for critical functions. This caps the maximum number of concurrent executions, giving you predictable costs and preventing downstream services (like DynamoDB) from being overwhelmed. It also guarantees that other Lambda functions in your account still have room to run, even during heavy load. Ensure the frontend code retries API calls using exponential backoff in case the API call fails.
+**Set Reserved Concurrency**: The solution is to configure reserved concurrency for critical functions. This caps the maximum number of concurrent executions, giving you predictable costs and preventing downstream services (like DynamoDB) from being overwhelmed. It also guarantees that other Lambda functions in your account still have room to run, even during heavy load. Ensure the frontend code retries API calls using exponential backoff in case the API call fails.
 
 
 ### DynamoDB
 
 DynamoDB is a low latency key value database for unstructured data. It comes with serverless and provisioned options. Serverless is the more expensive mode, but it comes at the benefit of out of the box autoscaling and not having to pay for provisioned infrastructure. The other side of the coin is that you run into more cost when the traffic is high.
 
-**Use DAX for Caching**
-Consider using DynamoDB Accelerator (DAX) to cache repeated queries. By serving cached responses, you cut costs and improve latency.
+**Use DAX for Caching**: Consider using DynamoDB Accelerator (DAX) to cache repeated queries. By serving cached responses, you cut costs and improve latency.
 
-**Apply Resource-Based Policies**
-Restrict DynamoDB access to just your Lambda functions. This ensures nobody can hit your tables directly.
+**Apply Resource-Based Policies**: Restrict DynamoDB access to just your Lambda functions. This ensures nobody can hit your tables directly.
 
 ## Conclusion
 
