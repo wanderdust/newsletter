@@ -2,7 +2,7 @@
 title: 'How to Stop Your Serverless App from Running Up a $100k Bill Overnight'
 date: '2025-09-18T20:04:11+01:00'
 draft: true 
-summary: ''
+summary: 'Practical strategies to protect your serverless applications from runaway AWS bills, including caching, rate limiting, WAF rules, and DynamoDB safeguards.'
 tags: ['aws', 'serverless', 'security']
 categories: []
 cover:
@@ -83,6 +83,8 @@ DynamoDB is a low latency key value database for unstructured data. It comes wit
 
 ## Conclusion
 
-Serverless gives you power and flexibility with minimal effort, but that same ease of scaling can backfire if you’re not careful. By putting guardrails in place across S3, CloudFront, API Gateway, Lambda, and DynamoDB, you can prevent an innocent project from running up thousands in AWS costs.
+Serverless is powerful because it lets you move fast without managing infrastructure. The tradeoff is that the same flexibility can lead to unpredictable costs if you do not set guardrails. By adding caching with CloudFront, setting limits in API Gateway and Lambda, restricting access to DynamoDB, and protecting your endpoints with WAF, you turn unlimited scaling into scaling that you control.
 
-If you are still not convinced, visit https://serverlesshorrors.com/.
+It is much better to build these protections in from the start than to discover them after a surprising AWS bill. With the right setup your apps will stay reliable, secure, and affordable even if traffic suddenly spikes.
+
+If you want more real-world examples of what happens when these guardrails aren’t in place, check out [serverlesshorrors.com](https://serverlesshorrors.com/).
