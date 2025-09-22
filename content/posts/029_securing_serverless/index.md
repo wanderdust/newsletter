@@ -6,7 +6,7 @@ summary: 'Practical strategies to protect your serverless applications from runa
 tags: ['aws', 'serverless', 'security']
 categories: []
 cover:
-  image: '/images/029/cool_campervan.png'
+  image: ''
   alt: ''
   caption: ''
 images: []
