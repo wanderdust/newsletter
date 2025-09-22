@@ -18,7 +18,7 @@ images: []
 
 I was recently reading about some horror stories of developers running into insane bills on their serverless applications.
 
-A few months ago I deployed a fully serverless web application for a hobby project. Looking back, I realised it could just as easily have been me staring at a six-figure bill at the end of the month. Since I was not maintaining the app, I deleted it, but that close call made me think harder about what it really takes to secure serverless infrastructure and avoid an eye-watering AWS bill.
+A few months ago I deployed a fully serverless web application for a hobby project. Looking back, I realised it could just as easily have been me staring at a six-figure bill at the end of the month. After reading some horror stories I decided that since I was not actively maintaining the app, to delete it and save myself some trouble. But this got me thinking about best practices to secure serverless applications in AWS.
 
 One of the best things about serverless is how easy it is to get started. You don’t need to worry about infrastructure, scaling groups, or servers. You just deploy and go.
 
@@ -28,7 +28,7 @@ In this post I walk through the serverless architecture I used for my app, shari
 
 ## The application
 
-The purpose of the application was a note taking app for career progress, where you would regularly keep track of career achievements so that you could easily refer to them later in time. In this application you could create, edit and delete notes. 
+I built a note taking app for career progress to keep track of every day career progress that you could easily refer to them later in time. In this application you could create, edit and delete notes. 
 
 ![serverless diagram](./serverless_app_diagram.png)
 
@@ -37,6 +37,8 @@ The webapp was created using React and hosted in an S3 bucket. The API logic to 
 ## Securing the components
 
 In this section we take a look at each of the components, and see how we can secure them to prevent spending a lot of money when there is unusually high traffic, or when a bad actor tries a Denial of Service attack.
+
+This is not the kind of post to read through in sequence, so feel free to scroll and jump up and down to find whatever may be relevant to your use cases.
 
 ### S3 Buckets
 
@@ -68,7 +70,7 @@ An API Gateway sits in front of your APIs and handles authentication, security, 
 
 ### Lambda  
 
-Lambda is one of the most versatile AWS services. It can be used to power your AWS APIs, as well as many other workloads. Lambda functions are charged per millisecond of execution time. 
+Lambda is the one service in AWS that can literally be squeezed anywhere and everywhere, and one of its many uses is that it can be used to power your AWS APIs. Lambda functions are charged per millisecond of execution time. 
 
 [**Set Reserved Concurrency**](https://docs.aws.amazon.com/lambda/latest/dg/configuration-concurrency.html): You can configure reserved concurrency to cap the maximum number of concurrent executions, giving you predictable costs and preventing downstream services (like DynamoDB) from being overwhelmed. It also guarantees that other Lambda functions in your account still have room to run, even during heavy load.
 
@@ -86,12 +88,12 @@ DynamoDB is a low latency key value database for unstructured data. It comes wit
 
 ## Conclusion
 
-Serverless is powerful because it lets you move fast without managing infrastructure. The tradeoff is that the same flexibility can lead to unpredictable costs if you do not set guardrails. By adding caching with CloudFront, setting limits in API Gateway and Lambda, restricting access to DynamoDB, and protecting your endpoints with WAF, you turn unlimited scaling into scaling that you control.
+Serverless is powerful because it lets you move fast without managing infrastructure. The tradeoff is that the same flexibility can lead to unpredictable costs if you do not set guardrails. 
 
-It is much better to build these protections in from the start than to discover them after a surprising AWS bill. With the right setup your apps will stay reliable, secure, and affordable even if traffic suddenly spikes.
+If you are going to have a public facing application that uses a serverless in the infrastructure, it is a good idea to add these protections from the start, rather than discovering a surprising AWS bill.
 
 If you want more real-world examples of what happens when these guardrails aren’t in place, check out [serverlesshorrors.com](https://serverlesshorrors.com/).
 
-If I had an extra 100k to spare, I'd rather spend it on a [cool campervan](https://www.volkswagen-vans.co.uk/en/new-vehicles/california.html) than on a cloud bill.
+I don't know about you, but if I had an extra 100k to spare, I'd rather spend it on a [cool campervan](https://www.volkswagen-vans.co.uk/en/new-vehicles/california.html) than on a cloud bill.
 
 ![cool campervan](./cool_campervan.png)
