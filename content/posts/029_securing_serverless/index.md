@@ -18,7 +18,7 @@ images: []
 
 I was recently reading about some horror stories of developers running into insane bills on their serverless applications.
 
-A few months ago I deployed a fully serverless web application for a hobby project. Looking back, I realised it could just as easily have been me staring at a six-figure bill at the end of the month. After reading some horror stories I decided that since I was not actively maintaining the app, to delete it and save myself some trouble. But this got me thinking about best practices to secure serverless applications in AWS.
+A few months ago I deployed a fully serverless web application for a hobby project. Looking back, I realised it could just as easily have been me staring at a six-figure bill at the end of the month. After reading some horror stories I decided that since I was not actively maintaining the app, I'd delete it and save myself some trouble. But this got me thinking about best practices to secure serverless applications in AWS.
 
 One of the best things about serverless is how easy it is to get started. You don’t need to worry about infrastructure, scaling groups, or servers. You just deploy and go.
 
