@@ -22,7 +22,7 @@ A few months ago I deployed a fully serverless web application for a hobby proje
 
 One of the best things about serverless is how easy it is to get started. You don’t need to worry about infrastructure, scaling groups, or servers. You just deploy and go.
 
-It’s also incredibly cheap for small projects or apps with low or inconsistent traffic. But there's a catch: the same flexibility that lets you pay almost nothing when traffic is low, can also bite you in the bum if traffic becomes suddenly very high, for example if a bad actor decides to do a DDoS attack. If you don't have the correct guardrails, you can endup bankrupt overnight.
+It’s also incredibly cheap for small projects or apps with low or inconsistent traffic. But there's a catch: the same flexibility that lets you pay almost nothing when traffic is low, can also bite you in the bum if traffic becomes suddenly very high, for example if a bad actor decides to do a DDoS attack. If you don't have the correct guardrails, you can end up bankrupt overnight.
 
 In this post I walk through the serverless architecture I used for my app, sharing some best practices to keep costs predictable and the application safe.
 
