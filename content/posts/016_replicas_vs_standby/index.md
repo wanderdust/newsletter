@@ -1,9 +1,9 @@
 ---
 title: 'Replicas vs Standby'
-date: '2025-07-21T10:11:56+01:00'
-draft: true 
+date: '2025-10-05T10:11:56+01:00'
+draft: false 
 summary: ''
-tags: []
+tags: ['replication', 'standby', 'databases']
 categories: []
 cover:
   image: ''
@@ -51,8 +51,6 @@ For the standby instance, you also have to pay for hosting, even though it is id
 ## Using them together
 
 Both strategies are compatible and used side by side. You can have a primary instance with multiple replicas to load balance, as well as a standby to ensure your database has high availability if the primary goes down.
-
-[diagram]
 
 ## Using your Standby as a read replica
 
