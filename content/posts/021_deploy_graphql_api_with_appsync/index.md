@@ -1,5 +1,5 @@
 ---
-title: '021_deploy_graphql_api_with_appsync'
+title: 'Building a GraphQL API with AWS AppSync and PostgreSQL Aurora'
 date: '2025-08-05T14:46:48+01:00'
 draft: true 
 summary: ''
@@ -12,17 +12,13 @@ cover:
 images: []
 ---
 
-# Building a GraphQL API with AWS AppSync and PostgreSQL Aurora
-
 ## Introduction
 
-In today's data-driven world, GraphQL has emerged as a powerful query language for APIs, providing clients with the exact data they need. AWS AppSync is a fully managed service that makes it easy to develop GraphQL APIs by handling the heavy lifting of securely connecting to data sources like AWS Aurora PostgreSQL.
-
-This post will guide you through building a production-ready GraphQL API using AWS AppSync connected to an Aurora PostgreSQL database. We'll use Infrastructure as Code with Terraform to ensure our setup is reproducible and maintainable.
+This is a guide to myself if I need to deploy an Appsync App in the future. Appsync is a Serverless AWS offering for implementing GraphQL APIs.
 
 ## Architecture Overview
 
-Our architecture consists of the following components:
+Compontents
 
 1. **AWS AppSync**: The managed GraphQL service that processes API requests
 2. **Aurora PostgreSQL**: Serverless relational database for data storage
@@ -63,7 +59,7 @@ resource "aws_appsync_api_key" "test_key" {
 
 This creates our GraphQL API with API key authentication. For production environments, you should consider using IAM authentication instead. The API also has logging configured to send logs to CloudWatch.
 
-## Configuring Aurora PostgreSQL Connection
+### Configuring Aurora PostgreSQL Connection
 
 Next, we need to configure the connection between AppSync and our Aurora PostgreSQL database:
 
@@ -87,7 +83,7 @@ resource "aws_appsync_datasource" "postgres_datasource" {
 
 Here we're creating a datasource of type `RELATIONAL_DATABASE` that connects to our Aurora PostgreSQL cluster through the RDS Data API. The connection uses credentials stored in AWS Secrets Manager and references the Aurora cluster ARN.
 
-## Securing Database Credentials
+### Securing Database Credentials
 
 Security is paramount when dealing with database credentials. We use AWS Secrets Manager to securely store and rotate our credentials:
 
@@ -106,7 +102,7 @@ resource "aws_secretsmanager_secret_version" "rds_credentials" {
 }
 ```
 
-## IAM Roles and Permissions
+### IAM Roles and Permissions
 
 To ensure proper security and access control, we need to create IAM roles and policies for AppSync to interact with other AWS services:
 
@@ -164,13 +160,13 @@ These resources establish the necessary permissions for AppSync to:
 1. Execute SQL statements against our Aurora PostgreSQL database
 2. Retrieve database credentials from Secrets Manager
 
-## Defining the GraphQL Schema
+### Defining the GraphQL Schema
 
 The GraphQL schema defines the API contract between clients and your service. Here's our schema:
 
 ```graphql
 type Query {
-    getTransactions(state: String!): [Transaction!]!
+    getTransactions(provider: String!): [Transaction!]!
 }
 
 type Transaction {
@@ -179,35 +175,34 @@ type Transaction {
 }
 ```
 
-This simple schema defines a single query to retrieve transactions filtered by state, returning an array of Transaction objects.
+This simple schema defines a single query to retrieve transactions filtered by provider, returning an array of Transaction objects.
 
-## Implementing Resolvers with VTL Templates
+### Implementing Resolvers with VTL Templates
 
 Resolvers are the connective tissue that translate between GraphQL operations and your data sources. AWS AppSync uses Apache Velocity Template Language (VTL) for resolver mapping templates:
 
-### Request Mapping Template
+#### Request Mapping Template
 
 ```json
 {
   "version": "2018-05-29",
   "statements": [
     $util.toJson(
-      "SELECT rt.\"transaction\"  AS transaction_id,
-              rt.\"amount\"
-       FROM casino_transactions.raw_transactions AS rt
-       WHERE rt.state = :state
-       OFFSET 0 LIMIT 10"
+      "SELECT table.\"transaction\" 
+              table.\"amount\"
+       FROM mytable.purchases AS table
+       WHERE table.provider = :provider"
     )
   ],
   "variableMap": {
-    ":state": $util.toJson($ctx.arguments.state)
+    ":provider": $util.toJson($ctx.arguments.provider)
   }
 }
 ```
 
-This template takes the `state` argument from the GraphQL query and constructs a SQL query to fetch transactions matching that state. Note how we're using parameter binding (`:state`) to prevent SQL injection attacks.
+This template takes the `provider` argument from the GraphQL query and constructs a SQL query to fetch transactions matching that provider. Note how we're using parameter binding (`:provider`) to prevent SQL injection attacks.
 
-### Response Mapping Template
+#### Response Mapping Template
 
 ```
 $utils.toJson($utils.rds.toJsonObject($ctx.result)[0])
@@ -215,7 +210,7 @@ $utils.toJson($utils.rds.toJsonObject($ctx.result)[0])
 
 This template handles error conditions and transforms the RDS Data API response into the JSON structure expected by GraphQL. The `$utils.rds.toJsonObject()` utility function helps parse the RDS response into a format that can be returned to the client.
 
-## Connecting the Resolver to the Schema
+### Connecting the Resolver to the Schema
 
 Finally, we connect our resolver to the appropriate field in our GraphQL schema:
 
@@ -233,7 +228,7 @@ resource "aws_appsync_resolver" "get_transactions" {
 
 This configures the resolver to use our request and response templates when handling the `getTransactions` query.
 
-## Using the AppSync Module
+### Using the AppSync Module
 
 To use our AppSync module in a larger infrastructure, we simply include it as follows:
 
@@ -259,20 +254,14 @@ Once deployed, you can test your API using the AWS AppSync console or any GraphQ
 
 ```graphql
 query GetTransactions {
-  getTransactions(state: "completed") {
-    transactionid
-    roundid
+  getTransactions(provider: "myprovider") {
+    transaction_id
+    amount
+    
   }
 }
 ```
 
 ## Conclusion
 
-In this guide, we've built a robust GraphQL API using AWS AppSync connected to Aurora PostgreSQL. This architecture provides several benefits:
-
-1. **Scalability**: AWS AppSync and Aurora PostgreSQL are both fully managed services that scale with your workload.
-2. **Security**: IAM roles and policies ensure fine-grained access control, while Secrets Manager handles credential management.
-3. **Performance**: The RDS Data API provides efficient connectivity without managing database connections.
-4. **Maintainability**: Using Infrastructure as Code with Terraform makes our setup reproducible and version-controlled.
-
-By leveraging these AWS services together, you can quickly build production-ready GraphQL APIs that connect to your existing PostgreSQL data.
+In this guide, we've built a robust GraphQL API using AWS AppSync connected to Aurora PostgreSQL.
