@@ -1,6 +1,6 @@
 ---
 title: 'What do Postgres Tables Actually look like?'
-date: '2025-10-10T19:49:37+01:00'
+date: '2025-10-04T19:49:37+01:00'
 draft: true 
 summary: ''
 tags: ['Postgres']
@@ -87,7 +87,7 @@ Now we have a `films` table inside the `public` schema in the `mydb` database.
 
 ## Finding the Location of the Table in the Filesystem 
 
-A postgres database is basically a single directory containing all its data inside it. In this section we'll find where the `films` table is stored within our filesystem.
+A postgres database is basically a single directory containing all its data inside it. In this section I'll find where the `films` table is stored within our filesystem.
 
 We can find the base directory where the Postgres cluster lives in our machine by running this command:
 
@@ -226,7 +226,7 @@ Drama���%
 
 We get some gibbrish output because the file is in binary format.
 
-Since the data file is encoded in binary format, we'll use some helper SQL commands to visualise the different components of the table. We'll need to install the `pageinspect` extension within the database.
+Since the data file is encoded in binary format, I'll use some helper SQL commands to visualise the different components of the table. I'll need to install the `pageinspect` extension within the database.
 
 ```sql
 psql> CREATE EXTENSION pageinspect;
