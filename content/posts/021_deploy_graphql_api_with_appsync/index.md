@@ -1,7 +1,7 @@
 ---
 title: 'Building a GraphQL API with AWS AppSync and PostgreSQL Aurora'
 date: '2025-08-05T14:46:48+01:00'
-draft: true 
+draft: false 
 summary: ''
 tags: []
 categories: []
@@ -14,7 +14,7 @@ images: []
 
 ## Introduction
 
-This is a guide to myself if I need to deploy an Appsync App in the future. Appsync is a Serverless AWS offering for implementing GraphQL APIs.
+This is a guide to myself if I need to deploy an Appsync App in the future. Appsync is a Serverless AWS offering for implementing GraphQL APIs. It integrates nicely with Aurora and DynamoDB. Other integrations are done via Lambdas.
 
 ## Architecture Overview
 
