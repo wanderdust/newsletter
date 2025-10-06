@@ -1,7 +1,7 @@
 ---
 title: 'Interviewing Makes you More Competent at your Job'
-date: '2025-06-26T08:01:22+01:00'
-draft: true 
+date: '2025-10-06T08:01:22+01:00'
+draft: false 
 summary: ''
 tags: ['interwiews', 'reflections']
 categories: []
