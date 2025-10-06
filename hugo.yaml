@@ -58,8 +58,6 @@ params:
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
-    - name: linkedin
-      url: "https://www.linkedin.com/in/lopezsantoripablo/"
     - name: buymeacoffee
       url: "https://buymeacoffee.com/pablolopeza"
   analytics:
