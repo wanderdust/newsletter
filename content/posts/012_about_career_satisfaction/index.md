@@ -39,4 +39,4 @@ I'm really looking forward to read this at some point in the future where I've e
 
 ---
 
-PS: I am aware of my privilege, and the fact I have the luxury to think about such problems when other people struggle to make ends meet. Knowing this doesn't help me feel less like there is something wrong about we live our lives, and being hopeful that there is a better future out there.
+PS: I am aware of my privilege, and the fact I have the luxury to think about such problems when other people struggle to make ends meet. Knowing this doesn't help me feel less like there is something wrong about how we currencly live our lives, and being hopeful that there is a better future out there.
