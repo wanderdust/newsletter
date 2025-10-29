@@ -20,17 +20,17 @@ Let me show you an example.
 
 Let's say my source table in the CRM system keeps track of user information, their name, last name, country, address and favorite colour. When building the ELT pipeline, we maintain an exact copy of the source table in our warehouse.
 
-[Example Pipeline -> Copy Paste]
+![Example Tables](./scd_intro.png)
 
 But what happens when the data in the source updates? We have two options: we can update our destination data in place, which means we can update the destination rows that have changed in place; or for every change we can add a new row with the changes, and keeping the original row intact.
 
 Let's see an example of implementing option one, where we update in place. This is also known as the Slowly Changing Dimension 1 (Don't ask me why). In this example, the destination table is an exact copy of the source table.
 
-[Example of SCD1 -> User Fred ANderson has changed their country]
+![SCD1](./scd_1.png)
 
 The main disadvantage of this approach is that you don't keep track of the data history. We won't know that Fred Anderson used to live in Mexico, and now lives in the Bahamas. The question here is whether keeping track of this historical data makes sense for us. If this is not useful, then this approach is absolutely fine. If keeping track of history is useful, then we can do this by appending new changes rather than updating data in place. This is what is know as the Slowly Changing Dimension 2 (again, don't ask me why).
 
-[Example of SCD2 -> We add a new row instead of upserting. We add start_at, end_at metadata columns.]
+![SCD2](./scd_2.png)
 
 In this other approach we append a new row every time there is an update in the source table. See how we have added two additional metadata columns `_start_at` and `_end_at`, which we need to keep track of when this change was introduced, and when it was "overriden" by a new change.
 
@@ -47,6 +47,6 @@ On the other hand, the machine learning team might want to build a model on this
 
 Finally, we may have some other use case, where the marketing team wants to see user information combined with behavioural user data that is tracked in a different table in the warehouse. Following the medallion architecture, we can take our cleaned table and combine it with this other table to create a final table ready for the marketing department to use.
 
-[Image with made up example]
+![Warehouse Example](./scd_warehouse.png)
 
 These are made up examples of how the data may be used in the company that showcase how the same data may be useful for different teams. Keeping the historical data depends on your use case, and whether this is something that may be useful to you. It is important to keep in mind that while it may not be useful now, it may be useful in the future, so sometimes it is better to be safe than sorry. After all, dumping all your data is what the data warehouse is for. Just keep an eye on your S3 storage costs.
