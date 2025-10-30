@@ -41,14 +41,14 @@ One of the biggest disadvantages of the history tracking approach (SCD2) is that
 
 ## Fictional Business Use Case
 
-Let's make up a fake business case to illustrate the usefulness of history tracking. For this fake business use case, a company wants to move data from an outside system that tracks user information into their data warehouse so it can serve some business use cases.
+Let's make up some fake business use cases to illustrate the usefulness of history tracking. For this fake business use case, a company has built a pipeline to move data from an outside system that tracks user information into their data warehouse so they can use it to enhance their products. They have decided to enable history tracking.
 
-For example, when the data lands in the warehouse, the analysts want to build some dashboards that show the geographic spread of their users. For this use case we don't care about history, so we create a table where we remove any duplicates to keep only the latest records. 
+For example, when the data lands in the warehouse, the analysts want to build some dashboards that show the geographic spread of their users. This might be useful for analyists to understand if there are any opportunities for refining the company products based on country. For this use case we don't care about history, so we create a new table where we remove any duplicates to keep only the latest records. 
 
-You may be thinking, what's the point of keeping history if we are then removing it? The idea of the data warehouse is that data may serve multiple use cases down the line. For example, the machine learning team might want to build a model on this data, for which they want to have the historical data. In this case they can access the raw data directly to train their machine learning models.
+You may be thinking, what's the point of keeping history if we are then removing it? The idea of the data warehouse is that data may serve multiple use cases down the line. For example, some months down the line, the machine learning team might want to build a model on this data, for which they need the full history to train their models. In this case they can access the raw data directly.
 
-Finally, we may have some other use case, where the marketing team wants to see user information combined with other user data that is tracked in a different table in the warehouse. We can take the cleaned table that created for the analysts, and combine it with the other table to create a final table ready for the marketing department to use.
+Finally, we may have some other use case, where the marketing team wants to see user information combined with other user data that is tracked in a different table in the warehouse. We can take the cleaned table that created for the analysts, and combine it with an existing table to create a final table ready for the marketing department to use.
 
 ![Warehouse Example](./scd_warehouse.png)
 
-These made up examples showcase how one table may support multiple use cases. More often than not, it is a good idea to enable history tracking on your tables to make sure you are not losing any data that may become useful in the future. After all dumping large amounts of data is what the warehouse is for. But of course, everything depends on your specific use case. Just keep an eye on your S3 costs.
+These made up examples showcase how one table may support multiple use cases. More often than not, it is a good idea to enable history tracking on your tables to make sure you are not losing any data that may become useful in the future. After all, dumping large amounts of data is what the warehouse is for. But of course, everything depends on your specific use case. Just keep an eye on your S3 costs.
