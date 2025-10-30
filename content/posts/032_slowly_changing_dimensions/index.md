@@ -1,7 +1,7 @@
 ---
 title: 'Slowly Changing Dimensions'
-date: '2025-10-29T08:11:11Z'
-draft: true 
+date: '2025-10-30T08:11:11Z'
+draft: false
 summary: ''
 tags: ["data", "warehouse"]
 categories: []
