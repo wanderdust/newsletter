@@ -47,7 +47,7 @@ For example, when the data lands in the warehouse, the analysts want to build so
 
 You may be thinking, what's the point of keeping history if we are then removing it? The idea of the data warehouse is that data may serve multiple use cases down the line. For example, the machine learning team might want to build a model on this data, for which they want to have the historical data. In this case they can access the raw data directly to train their machine learning models.
 
-Finally, we may have some other use case, where the marketing team wants to see user information combined with other user data that is tracked in a different table in the warehouse. Following the medallion architecture, we can take our cleaned table and combine it with this other table to create a final table ready for the marketing department to use.
+Finally, we may have some other use case, where the marketing team wants to see user information combined with other user data that is tracked in a different table in the warehouse. We can take the cleaned table that created for the analysts, and combine it with the other table to create a final table ready for the marketing department to use.
 
 ![Warehouse Example](./scd_warehouse.png)
 
