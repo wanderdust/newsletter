@@ -1,5 +1,5 @@
 ---
-title: 'Asking the question gives me an answer'
+title: 'Asking the question gives me the answer'
 date: '2025-11-03T14:17:51Z'
 draft: true 
 summary: ''
