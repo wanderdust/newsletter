@@ -20,7 +20,7 @@ The funny thing is that this happens to me all the time. I usually spend a few h
 
 I've always found this quite annoying, why can't I be more thorough from the very beggining? Why do solutions come to me only after I've reached for help?
 
-I think the answer to this is very simple: I will look very stupid if the answer to my question is something really simple that I should have been spotted in the first place. It is this pressure to make sure I've covered all bases in my investigation that forces my brain to review the checklist of things I should have checked for before hitting _send_. It is at this point where a solution to my problem, or at least a new idea on how to solve it, pops into my head.
+I think the answer to this is very simple: I will look very stupid if the answer to my question is something really simple that I should have spotted in the first place. It is this pressure to make sure I've covered all bases in my investigation that forces my brain to review the checklist of things I should have checked for before hitting _send_. It is at this point where a solution to my problem, or at least a new idea on how to solve it, pops into my head.
 
 On top of that, I think forcing to put my troubleshooting process in writing helps me identify obvious steps me may have missed.
 
