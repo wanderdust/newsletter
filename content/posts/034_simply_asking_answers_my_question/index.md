@@ -1,7 +1,7 @@
 ---
 title: 'Asking the question gives me the answer'
 date: '2025-11-03T14:17:51Z'
-draft: true 
+draft: false
 summary: ''
 tags: ["reflections"]
 categories: []
