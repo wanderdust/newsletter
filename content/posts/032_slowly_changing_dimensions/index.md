@@ -12,7 +12,7 @@ cover:
 images: []
 ---
 
-Slowly changing dimensions, what a confusing name. This is the sort of term I've been hearing for a while now, but never really bothered to properly look up what it actually means. As it turns out, all at it means is how you handle row updates/deletes in your data pipelines. Whether you decide to maintain historical data in your tables by appending new rows when a change happens, or you decide to update in place instead.
+Slowly changing dimensions, what a confusing name. This is the sort of term I've been hearing for a while now, but never really bothered to properly look up what it actually means. As it turns out, all it means is how you handle row updates/deletes in your data pipelines. Whether you decide to maintain historical data in your tables by appending new rows when a change happens, or you decide to update in place instead.
 
 Over the last few weeks I've had to work on a migration project where I needed to create a data pipeline to move data from an outside system into the data warehouse. After working on the project for a few weeks, and once the pipeline was more or less in place, a new question came up. Do we want our data in the warehouse to keep a history of row changes? Or do we simply want to update any changes in place?
 
