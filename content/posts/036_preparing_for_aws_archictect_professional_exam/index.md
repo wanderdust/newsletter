@@ -1,5 +1,5 @@
 ---
-title: 'Preparing for the AWS Architech Professional Exam'
+title: 'Preparing for the AWS Architect Professional Exam'
 date: '2025-11-12T12:06:38Z'
 draft: false
 summary: ''
