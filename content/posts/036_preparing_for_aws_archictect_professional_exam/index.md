@@ -12,6 +12,8 @@ cover:
 images: []
 ---
 
+![AWS Architect Professional Certificate](./aws-pro-cert.png)
+
 I have passed the AWS Architect Professional exam with a score of 791/1000!
 
 ## Preparing for the AWS exam
