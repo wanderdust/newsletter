@@ -1,7 +1,7 @@
 ---
 title: "Things I've learned in 2025"
 date: '2025-11-27T08:15:55Z'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []
