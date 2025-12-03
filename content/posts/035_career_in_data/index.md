@@ -42,16 +42,15 @@ Machine learning engineers are software engineers whose job is to deploy and mon
 **Example**: The company wants to add a new section on their website which recommends registered users producs based on their purchase history. THe data science team has developed a model that uses the user purchase history to reccomend new products. The job of the machine learning team is to deploy this model to run once a day and store the reccomendations in a table. The have to build an API service that fetches the data from this table so it can be populated in the website for each user when they log in. THey need build monitoring and observability systems to ensure models are healthy and running.
 
 
-[Skills Diagram]
+![Skills](./data-skills.png)
 
 ## Tooling
 
-In terms of tooling some technologies are common across roles, but each role has its own specialty, meaning they end up with more expertise on some tools as compared to others.
+I won't get into too much details about the different technologies required for each role because there are too many. When you are first starting in the data world focus on becoming good at python and the relevant libraries for each role (data viz, ml, data transforms etc). Depending on the role you may want to spend more time in developing some skills or others. Each of these skills might require developing expertise in different tooling.
 
-For example, all three roles require knowledge or SQL. However, the data engineer will require high expertise on SQL to read and write from/to the warehouse efficiently, whereas the Data Scientist might only need basic knowledge, enough to run analytical queries to get the data they need for building the machine Learning Models.
+The important part here, is that you will learn most of these as part of your job, and each company will use a different mix of tools and technologies. It is more important to know the fundamentals (ML model lifecycle; Data Warehousing; Model Training and Validation). If you master that then you will find many different tools that you can use achieve those.
 
-
-[Diagram]
+If you really want to know specific tooling for each role you can simply ask ChatGPT and go from there.
 
 ## Career Progression
 
@@ -71,7 +70,7 @@ A staff engineer is an experienced developer whose work impacts not just the tea
 
 In terms of pay, this is a rough guide of what Data professionals can expect (as of 2025/2026) in Scotland.
 
-[Diagram with pay]
+![Data Salaries](./data_salaries.png)
 
 
 ### People management
@@ -83,3 +82,6 @@ To become a manager you usually need to have some technical knowledge which usua
 When you go the management route you have a little bit more room for growth, and how much you can grow depends on the type and size of your company. An example career progression for a manager can be manager, senior manager, director, senior director, vice president, senior vice president, CTO.
 
 
+## Final tips
+
+- Get good at using AI tools
