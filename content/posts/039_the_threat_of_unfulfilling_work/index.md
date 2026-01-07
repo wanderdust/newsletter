@@ -26,7 +26,7 @@ The main difference between software engineers and authors is that code is a mea
 
 Despite this big difference, I believe there is a lot in common between writers and software engineers. In both diciplines there is a process of thought, reflection and ultimately choosing the right words or code to express, in the case of the book the story or idea, and in the case of the software engineer the answer to the problem. You can go as far as saying that cade can be "beautiful", something that many of us have strived for, however this is not always practical and not serve any real purpose in our jobs besides feeling good about it ourselves.
 
-I do see a world in the future where AI will be capable of independently handling more of the coding work, and this poses a threat to all of us who made a career from something that probably started as a hobby. The fear that our jobs will lose the main part that makes our jobs tollerable for many of us.
+I do see a world in the future where AI will be capable of independently handling more of the coding work, and this poses a threat to all of us who made a career from something that probably started as a hobby. The fear that our jobs will become all about the business side, and none about the coding side, which can be fullfilling in itself, but not the reason we got into it in the first part.
 
 ----
 
