@@ -10,15 +10,18 @@ cover:
   alt: ''
   caption: ''
 images: []
+params:
+  showtoc: true
+  tocOpen: false
 ---
 
-In this post I wanted to describe the different options if you are considering a data role. All of the information in this blog post is based on my own work experience as an Engineer in Scotland. I have worked in different data roles over the years, and this blog post I'll try to make it clear the different data roles that are out there, what skills are required, career path options and ballpark salaries for each. My goal is to help you get an idea of the different data roles so it can make you more informed when entering the Professional Data landscape.
+In this post I wanted to describe the different options if you are considering a data role. All of the information in this blog post is based on my own work experience working in different data roles over the last five years in Scotland. The goal is to help you get a better idea of the data landscape so you can make more informed decisions coming out of university and getting a job.
 
-## Roles
+I am going to describe three of the main roles in Data: Data Science, Data Engineering and Machine Learning Engineering.
 
-I am going to describe three of the main roles in Data: Data Science, Data Engineering and Machine Learning Engineering. There are other roles that I won't be discussing such as Data Analyst, AI engineer and so on mainly because I don't have experience on those, so I wouldn't be able to give a legitimate description.
+There are other roles that I won't be discussing such as Data Analyst, AI engineer and so on mainly because I don't have experience on those, so I wouldn't be able to give a legitimate description.
 
-## Responsibilites
+## Roles & Responsibilites
 
 Let's start with a brief description for each of these roles to understand what each is responsible for.
 
@@ -54,19 +57,32 @@ If you really want to know specific tooling for each role you can simply ask Cha
 
 ## Career Progression
 
-In tech there are two main ways to progress which most companies follow: you can either stay in the individual contributor track, which means you always stay close to the tech; or you can go into the people managemnt route, which means your job becomes more about managing the team rather than hands on programming. Both options are great and whether you decide to go one way or another depends completely on you like most. To become a manager, you usually need to have some previous experience working as an individual contributor. These levels remain the same across different roles.
+There are two main pathways for career progession which is standard across most tech companies: you can either stay in the individual contributor track, which means you always stay close to the tech; or you can go into the people managemnt route, which means your job becomes more about managing the team rather than hands on programming. Both options are great and whether you decide to go one way or another depends completely on you like most. To become a manager, you usually need to have some previous experience working as an individual contributor. These levels remain the same across different roles.
+
+
 
 ### Individual Contributor
 
-As an individual contributor your progression goes from junior, to mid level, to senior, staff and principal. The levels might change for different companies, but the responsabilities usually remain the same.
+As an individual contributor, as you progess in your career, you always stay close to the technology. When you first start in your career you spend most of your time completing programming tasks. As you move up in your career you start being more involved in strategic planning and having more impact across multiple teams.
 
-A junior developer is someone with no previous experience. They need mentoring from more senior engineers to be able to complete their work.
+As an individual contributor your progression usually goes like this:
 
-A mid level develper usually has at least 2 years of experience. They are more or less independent, meaning they can complete their work without much help, but they still need mentoring from more senior members for some tasks.
+```
+junior -> mid level -> senior -> staff -> principal
+```
 
-A senior developer can work independently and will usually mentor less experienced developers in the team. They are able to lead bigger projects and make technical decisions. A senior developer usually has 4 or 5 years of previous experience.
+The levels and names change for different companies, but the responsabilities usually remain the same.
+
+A junior developer is someone with no previous work experience. They need mentoring from more senior engineers to be able to complete their work.
+
+A mid level develper usually has at least two years of experience. They are more or less independent, meaning they can complete their work without much help, but they still need mentoring from more senior members for some tasks.
+
+A senior developer can work independently and will usually mentor less experienced developers in the team. They are able to lead bigger projects and make technical decisions. A senior developer usually has at least four to five years experience.
 
 A staff engineer is an experienced developer whose work impacts not just the team, but potentially other teams in the organisation. Staff engineers are more involved in shaping the roadmap of work the team's going to be focusing on. Becoming a staff engineer does not necessarily need to be more knowledgable than a senior engineer (although a lot of the times they are), but rather it is more about delivering projects that have a broader impact in the organisation.
+
+#### Pay for Individual Contributors
+
 
 In terms of pay, this is a rough guide of what Data professionals can expect (as of 2025/2026) in Scotland.
 
@@ -84,4 +100,21 @@ When you go the management route you have a little bit more room for growth, and
 
 ## Final tips
 
-- Get good at using AI tools
+The data landscape has changed a lot since I first started. With the arrival of AI models into the workplace the ways we work have changed considerably. Now we rely on LLMs for so many tasks during our day to day by helping us write documents or assisting with generating code.
+
+I get the impression that at the moment there is a slight decrease in hiring junior developers because there is a but uncertainty about much value they bring to the team, now that we have all of these AI tools. Companies are also worried that junior developers will blindly use AI without really understanding the code behind it, risking introducing security issues, bugs, and creating bloated code.
+
+Organisations are spending a lot of money in making these AI tools available for developers, which means they really want you to use them. But at the same time they expect you to be knowledgable and responsible for any generated AI code.
+
+I believe that if you are a junior developer today, you need to embrace AI tools as a key skill to be competitive in the job market, but you need to know how to use them responsibly. You need to be able to show maturity of how you use AI: learn the times when it is okay to copy/paste vs when deeper understanding is required; use it to learn faster, to increase your understanding, to make you more competent. 
+
+When you go to an interview show that you can embrace AI tools to make you more productive, but also be sure that you show you know what you are talking about, and you understand the boundaries when using AI.
+
+
+----
+
+
+Ideas
+
+- Remote Roles vs In-Person vs Hybrid
+- Jobs - Glasgow & Edinburgh manily
