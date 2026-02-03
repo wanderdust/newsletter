@@ -14,6 +14,69 @@ images: []
 
 GOAL: Lessons from a Retired Self-Serve Data API
 TARGET AUDIENCE: General Audience interested in data applications
+
+---
+
+While working at Fanduel I have spent nearly two years building Data Apis to enable different teams to access data programatically from different data sources. When I say Data Api, I am referring to APIs whose purpose is to serve data from a data source, such as Database, a Data Warehouse.
+
+Data APIs are important because they give your applications access to the data they need in a secure and scalable way. When you build an API in front of your database, you are adding an additional layer of security to protect both your data and your database. It protects your Database infrastructure from going down from potential mis-use of the clients, as well as only giving access to the clients to the data they need, enforcing Least Priviledge access best practices. On top of that, APIs can help you optimise the speed and efficiency to which your data is queried.
+
+These are some of the lessons I've learned, which I'll carry with me when building new APIs from scratch.
+
+## Your API is only as fast as your queries
+
+If your query is slow, your API response will be slow. If I had to take asnigle lesson from building good Data APIs, it would be that the most essential thing is that the data in the Database needs to be precomputed. What this means, is that when I'm querying the database from the API, it should always be a simple SELECT query, which will always be fast, and it is super easy to optimise.
+
+On the other hand, if you run queries with complex transforms logic or JOINs, you can expect your API responses to be slow. You may be thinking this is very obvious, however this can easily happen when you add your data in your database before thinking about the use case. When your use caso comes, you may find yourseld having to join data from different tables te get the data you need. Which can end up in disaster.
+
+The right approach is to understand the use case first, and do your transformations before you land your tables in the database. 
+
+## Real time is hard
+
+Having said all that in the previous section, this can become a challenge when building Real Time APIs. When I say Real Time, I mean APIs in which the data is accessible within a second or less of it being produced. For example, a bank may want to build an fraud API in which they can query any transactions as soon as they occor so that can catch fraudulent transactions in real time. In such use cases, transforming the data before landing it to the database can add some latency to how soon a transaction is ready to be queried, which depending on the use case, it may be critical to have it as soon as possible.
+
+In this case , there is a tradeoff between transforming your data before you land it in your database, vs transforming your data on the fly when a client queries the data. Here is about considering the risk of slower arrivinng data vs the risk of scaling an API where data is pre-computed on the fly.
+
+This should only really be an issue when working with real time APIs. If you don't have real time considerations, data should always be precomputed.
+
+## Know your indexes
+
+Learn the database you are working with, and make use of whatever indexes it can offer. Understand which indexes work better for different situations. Understand whether you should use composite indexes vs single column indexes. The difference between a query taking 3 seconds and 20ms can be a well placed index. It is not that hard.
+
+## Partitions are hard to maintain
+
+I worked mainly with Postgres. In Postgres you can use partitions, in which you split the your large tables into smaller chunks which can be benefitial for things like making it easy to drop tables, reducing the amount of data your query reads if the data is contained in a single partition, and making indexes faster to create because they operate on a single partition rather than on the whole table.
+
+The problem with partitions, is that they are hard to maintain. You need to have a separate process, such a cron job to create new partitions, as well as dropping old partitions if that's something you need to do. THis is the sort of thing that ends up growing arms and legs, and can become hard to maintain.
+
+At the same time, partitions come in handy when queries filter by the partition key. But query patterns change over time, and you may find yourself in a situation where you are not using the partition key in your query filter, which means you need to scan accross many partitions making your queries potentially really slow. Remembre, that when working with partitions in postgres, and many simiilar databases, indexes are created at the partition level not at the table level, so you can end up with very inefficient queries later down the line.
+
+Partitions are great, but make sure you understand the risks of partitioning too early, the cost of maintenance, and the potential for query patterns to change down the line.
+
+## Self serving = slow queries
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----
 # Lessons from a Self Service Data API
 
 Over the past 2 years I've been building a self serving data API platform. Different teams in the org needed programmatic access the the data in the warehouse. There was no standardised way to access the data, which meant each time teams would need to figure out how to build APIs from scratch with. There were no set best practices, or reusability across teams.
