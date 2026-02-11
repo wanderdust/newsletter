@@ -5,12 +5,12 @@ import re
 import subprocess
 from pathlib import Path
 
-def get_next_post_number():
+def get_next_post_number(section="drafts"):
     """
     Determines the next post number by finding the highest existing post number
     and incrementing it by 1.
     """
-    posts_dir = Path("content/posts")
+    posts_dir = Path(f"content/{section}")
     
     # Ensure the posts directory exists
     if not posts_dir.exists():
@@ -42,14 +42,14 @@ def slugify(text):
     slug = re.sub(r'\s+', '_', slug)
     return slug
 
-def create_new_post(post_name):
+def create_new_post(post_name, section="drafts"):
     """
     Creates a new Hugo post with the provided name and the next sequential number.
     """
-    next_number = get_next_post_number()
+    next_number = get_next_post_number(section)
     slug = slugify(post_name)
     post_dir_name = f"{next_number}_{slug}"
-    post_path = f"content/posts/{post_dir_name}"
+    post_path = f"content/{section}/{post_dir_name}"
     
     # Create the post using uv and Hugo
     command = ["uv", "run", "hugo", "new", "content", f"{post_path}/index.md"]
@@ -65,8 +65,9 @@ def create_new_post(post_name):
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print("Usage: python create_post.py <post-name>")
+        print("Usage: python create_post.py <post-name> [section]")
         sys.exit(1)
     
     post_name = sys.argv[1]
-    create_new_post(post_name)
+    section = sys.argv[2] if len(sys.argv) > 2 else "drafts"
+    create_new_post(post_name, section)
