@@ -1,7 +1,7 @@
 ---
 title: '041_im_bad_at_my_job_because_i_hate_it'
 date: '2026-02-11T08:28:05Z'
-draft: true
+draft: false
 summary: ''
 tags: []
 categories: []

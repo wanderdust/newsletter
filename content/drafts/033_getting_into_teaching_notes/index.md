@@ -1,7 +1,7 @@
 ---
 title: 'Teaching in University without a PhD'
 date: '2025-11-03T10:42:44Z'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []

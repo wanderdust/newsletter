@@ -1,7 +1,7 @@
 ---
 title: '039_the_threat_of_unfulfilling_work'
 date: '2026-01-07T18:58:19Z'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []

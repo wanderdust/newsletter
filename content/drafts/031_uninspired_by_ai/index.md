@@ -1,7 +1,7 @@
 ---
 title: 'Unpublished Confessions: Uninspired by AI'
 date: '2025-10-09T08:05:18+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: ['productivity', 'AI']
 categories: []

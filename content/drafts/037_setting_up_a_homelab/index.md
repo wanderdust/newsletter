@@ -1,7 +1,7 @@
 ---
 title: '037_setting_up_a_homelab'
 date: '2025-11-26T19:48:55Z'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []

@@ -1,7 +1,7 @@
 ---
 title: 'Book Reviews 2025'
 date: '2025-05-22T08:17:31+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: ["books"]
 categories: []

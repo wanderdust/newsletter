@@ -1,7 +1,7 @@
 ---
 title: 'On Career Satisfaction'
 date: '2025-06-10T12:01:54+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: ['essay', 'reflection']
 categories: []

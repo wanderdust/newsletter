@@ -1,7 +1,7 @@
 ---
 title: 'What do Postgres Tables Actually look like?'
 date: '2025-10-04T19:49:37+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: ['Postgres']
 categories: []

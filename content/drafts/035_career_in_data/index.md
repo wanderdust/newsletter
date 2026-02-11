@@ -1,7 +1,7 @@
 ---
 title: 'Entering the Data landscape in Scotland (2025)'
 date: '2025-11-06T08:17:42Z'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []

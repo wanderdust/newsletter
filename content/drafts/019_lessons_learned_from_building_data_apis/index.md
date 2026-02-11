@@ -1,7 +1,7 @@
 ---
 title: 'Lessons Learned from building Data APIs'
 date: '2025-08-02T10:41:15+01:00'
-draft: true 
+draft: false
 summary: ''
 tags: []
 categories: []
