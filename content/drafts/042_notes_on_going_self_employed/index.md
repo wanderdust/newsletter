@@ -19,20 +19,17 @@ images: []
 
 **Flexibility**
 
-* Control over projects and time between contracts.
-* Ability to choose clients and negotiate rates.
-* Less internal politics.
-* Intensity depends on client and engagement.
+* Outside IR35 means you are not tied to company working schedule. Very flexible
+
 
 **Work Type**
 
-* Typically delivery focused.
-* Less long term ownership than permanent roles.
-* Clear objectives tied to contract scope.
+* Normally not very exciting work.
+* Fixed term.
 
 **Finding Roles**
 
-* Primarily via recruiters and LinkedIn.
+* Primarily via recruiters and LinkedIn (least preferred method)
 * Contracts commonly 3 to 12 months.
 
 ---
