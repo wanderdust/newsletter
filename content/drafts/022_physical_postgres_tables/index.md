@@ -12,13 +12,13 @@ cover:
 images: []
 ---
 
-I am a baby of the cloud. I started my professional career deploying things in AWS, thinking cloud first. 
+I am a baby of the cloud. I started my professional career deploying things in AWS, thinking cloud first.
 
 This creates a problem, because the "cloud" can be so abstracted that you start to imagine some services are just magic. I don't think about how they work, they just do, and the technology behind it must be some black magic that is beyond my understanding.
 
 It is not until you actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like yourself, that you can break down everything to very basics.
 
-Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is, is Postgres running on a server. Over time they have built improvements to this postgres instance to add all the cool features you can use today, but at the end of the day, Postgres is just Postgres. 
+Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is, is Postgres running on a server. Over time they have built improvements to this postgres instance to add all the cool features you can use today, but at the end of the day, Postgres is just Postgres.
 
 Anyway, I feel like I'm deviating a bit from the purpose of this post. THe point I'm trying to make is that like everything else, Postgres is not ran by magic. Databases are not magic either. Postgres is essentially a program that writes files to your filesystem and lets you read the files using SQL query language.
 
@@ -40,7 +40,7 @@ Use `psql` to connect to the `postgres` database.
 ```bash
 psql postgres
 ```
-As a refresher, remember that within a Postgres cluster, we can have different databases. `postgres` is the default database, but we could easily create many other databases. 
+As a refresher, remember that within a Postgres cluster, we can have different databases. `postgres` is the default database, but we could easily create many other databases.
 
 Lets create our own database. From within the `pysql` console run
 
@@ -85,7 +85,7 @@ psql> INSERT INTO films (code, title, did, date_prod, kind, len) VALUES
 Now we have a `films` table inside the `public` schema in the `mydb` database.
 
 
-## Finding the Location of the Table in the Filesystem 
+## Finding the Location of the Table in the Filesystem
 
 A postgres database is basically a single directory containing all its data inside it. In this section I'll find where the `films` table is stored within our filesystem.
 
@@ -128,7 +128,7 @@ Each of these numbers is the object id (OID) referencing a database. We can find
 psql> SELECT oid, datname
 FROM pg_database;
 
-  oid  |  datname  
+  oid  |  datname
 -------+-----------
      5 | postgres
  16438 | mydb
@@ -137,7 +137,7 @@ FROM pg_database;
 (4 rows)
 ```
 
-As we can see `mydb` folder is OID number `16438`. Let's run `ls` on this directory to see the contents: 
+As we can see `mydb` folder is OID number `16438`. Let's run `ls` on this directory to see the contents:
 
 ```shell
 ls -lh /opt/homebrew/var/postgresql@17/base/16438/
@@ -159,7 +159,7 @@ We are interested in finding the location of the `films` table, which we can fin
 ```sql
 psql> SELECT pg_relation_filepath('films');
 
- pg_relation_filepath 
+ pg_relation_filepath
 ----------------------
  base/16438/16439
 (1 row)
@@ -170,7 +170,7 @@ In this case `16439` refers to the table's `relfilenode` and not the Object ID. 
 ```sql
 psql> SELECT relname, oid, relfilenode FROM pg_class WHERE relname = 'films';
 
-relname |  oid  | relfilenode 
+relname |  oid  | relfilenode
 ---------+-------+-------------
  films   | 16439 |       16439
 ```
@@ -193,7 +193,7 @@ When we query the table using SQL, it looks like this:
 
 ```sql
 psql> select * from films;
- code  |          title           | did | date_prod  |   kind   |   len    
+ code  |          title           | did | date_prod  |   kind   |   len
 -------+--------------------------+-----+------------+----------+----------
  B6717 | The Shawshank Redemption | 101 | 1994-09-23 | Drama    | 02:22:00
  C8874 | Inception                | 102 | 2010-07-16 | Sci-Fi   | 02:28:00
@@ -203,7 +203,7 @@ psql> select * from films;
 (5 rows)
 ```
 
-In reality, Postgres structures the table files into `pages`. Pages have fixed lenght which is 8192 bytes (8 KB) by default. The internal layout of pages depends on the data file type (table, indexes, etc). 
+In reality, Postgres structures the table files into `pages`. Pages have fixed lenght which is 8192 bytes (8 KB) by default. The internal layout of pages depends on the data file type (table, indexes, etc).
 
 ![](./pg-table.png)
 
@@ -221,7 +221,7 @@ We can try to verify this table structure by peeking inside the actual table fil
 cat /opt/homebrew/var/postgresql@17/base/16438/16439
 
 C8874InceptionfhSci-Fi�id\�
-Drama���%      
+Drama���%
 ```
 
 We get some gibbrish output because the file is in binary format.
@@ -239,7 +239,7 @@ To view the page headers we can run the following command. The `0` parameter rep
 ```sql
 psql> SELECT * FROM page_header(get_raw_page('films', 0));
 
-    lsn    | checksum | flags | lower | upper | special | pagesize | version | prune_xid 
+    lsn    | checksum | flags | lower | upper | special | pagesize | version | prune_xid
 -----------+----------+-------+-------+-------+---------+----------+---------+-----------
  0/1A24320 |        0 |     0 |    44 |  7792 |    8192 |     8192 |       4 |         0
 (1 row)
@@ -289,26 +289,12 @@ The items prefixed with `t` refers to transaction information:
 
 Now that we know the structure of a table, we can look into how rows are retrieved when a SQL query is executed.
 
-## Reading the data - Reading
+## The End
 
-How does postgres find the tuples when a read query is exected. Lets take a sequential scan as an example. In a sequential scan, each page in the data file (heap table) is scanned and all the tuples in the scanned are checked.
-
-Lets take this example query
-
-```sql
-psql> SELECT * FROM films
-WHERE title = 'Inception';
-```
-
-THis is the process to find the tuples.
-1. Read the first page header to find the line pointer ids, and offsets
-2. For each tuple, 
-  - Use the line pointer to find the tuple in the page
-  - Check transaction visibility (t_xmin, t_xmax, t_infomask) to see if the tuple is visible to your transaction (MVCC rules) (Out of scope - point to docs)
-  - If visible decode the tuple's data columns and evaluate the WHERE condition
-3. If condition is not met continue to end of page. Move on to next page afterwards
-4. Stop when all pages have been scanned or a limit condition is met.
+Postgres Tables look very different from when you actually see the table results in your SQL queries. In this blog post I've gone through the steps to find where tables are actually stored and what they actually look like. My goal was to demistify a small part of postgres to prove to myself that databases are not magic, but rather files stored in an instance, all done in a very clever way.
 
 # Resources
 
-https://www.interdb.jp/pg/pgsql01/03.html
+- https://www.interdb.jp/pg/pgsql01/03.html
+
+- https://www.nan.fyi/database
