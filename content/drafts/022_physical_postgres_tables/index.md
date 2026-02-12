@@ -1,6 +1,6 @@
 ---
 title: 'What do Postgres Tables Actually look like?'
-date: '2025-10-04T19:49:37+01:00'
+date: '2026-02-11T19:49:37+01:00'
 draft: false
 summary: ''
 tags: ['Postgres']
@@ -16,11 +16,11 @@ I am a baby of the cloud. I started my professional career deploying things in A
 
 This creates a problem, because the "cloud" can be so abstracted that you start to imagine some services are just magic. I don't think about how they work, they just do, and the technology behind it must be some black magic that is beyond my understanding.
 
-It is not until you actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like yourself, that you can break down everything to very basics.
+It is not until I actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like myself, that I can break down everything to the very basics.
 
-Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is, is Postgres running on a server. Over time they have built improvements to this postgres instance to add all the cool features you can use today, but at the end of the day, Postgres is just Postgres.
+Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is just Postgres running on a server. Over time they have built improvements to this postgres instance to add all the cool features you can use today, but at the end of the day, it is just running a fancy version of Postgres in their own private machines.
 
-Anyway, I feel like I'm deviating a bit from the purpose of this post. THe point I'm trying to make is that like everything else, Postgres is not ran by magic. Databases are not magic either. Postgres is essentially a program that writes files to your filesystem and lets you read the files using SQL query language.
+The point I'm trying to make is that like everything else, Postgres is not ran by magic. Databases are not magic either. Postgres is essentially a program that writes files to your filesystem and lets you read the files using SQL query language. This might be obvious to some, but I sometimes forget, so it is good to remind myself.
 
 In this post I look inside postgres to understand how tables are stored in the filesystem. The goal of this post is nothing more than to understand a small part of the whole Postgres ecosystem to demistify things a bit. More as a learning process to myself than anything else.
 
