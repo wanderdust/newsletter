@@ -12,9 +12,9 @@ cover:
 images: []
 ---
 
-I am a baby of the cloud. I started my professional career deploying things in AWS, thinking cloud first.
+I started my professional career deploying in the cloud, always thinking cloud first.
 
-This creates a problem, because the "cloud" can be so abstracted that you start to imagine some services are just magic. I don't think about how they work, they just do, and the technology behind it must be some black magic that is beyond my understanding.
+This creates a problem, because the "cloud" can be so abstracted that you start to imagine some services are just magic. I wouldn't think about how they work, they just do, and the technology behind it must be some black magic.
 
 It is not until I actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like myself, that I can break down everything to the very basics.
 
@@ -287,11 +287,9 @@ The items prefixed with `t` refers to transaction information:
 - t_ctid: physical location of this tuple as (block_number, offset_number).
 - t_data: Raw tuple data bytes (hex-encoded)
 
-Now that we know the structure of a table, we can look into how rows are retrieved when a SQL query is executed.
+## Conclusion
 
-## The End
-
-Postgres Tables look very different from when you actually see the table results in your SQL queries. In this blog post I've gone through the steps to find where tables are actually stored and what they actually look like. My goal was to demistify a small part of postgres to prove to myself that databases are not magic, but rather files stored in an instance, all done in a very clever way.
+Postgres tables look nothing like the neat rows and columns we see in a SELECT * query. In this blog post I've gone through the steps to find where tables are actually stored in the filesystem and what they actually look like. My goal was to demistify a small part of postgres to prove to myself that databases are not magic, but rather files stored in an instance, all done in a very clever way.
 
 # Resources
 
