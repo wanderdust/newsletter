@@ -1,6 +1,6 @@
 ---
-title: 'Lessons Learned from building Data APIs'
-date: '2025-08-02T10:41:15+01:00'
+title: 'Building Performant Data APIs'
+date: '2026-02-15T10:41:15+01:00'
 draft: false
 summary: ''
 tags: []
@@ -12,117 +12,59 @@ cover:
 images: []
 ---
 
-GOAL: Lessons from a Retired Self-Serve Data API
-TARGET AUDIENCE: General Audience interested in data applications
+How to build a robust Data API with Postgres
 
----
+## Know your Indexes
 
-While working at Fanduel I have spent nearly two years building Data Apis to enable different teams to access data programatically from different data sources. When I say Data Api, I am referring to APIs whose purpose is to serve data from a data source, such as Database, a Data Warehouse.
+When you are building a Data API, you need to know the database you are working with. I've worked a lot with Postgres to build Data APIs, and one of the most critical things to make your API queries performant, is to have the correct indexes in your database. Having a good index in your data can be the difference between a query taking seconds to execute to milliseconds.
 
-Data APIs are important because they give your applications access to the data they need in a secure and scalable way. When you build an API in front of your database, you are adding an additional layer of security to protect both your data and your database. It protects your Database infrastructure from going down from potential mis-use of the clients, as well as only giving access to the clients to the data they need, enforcing Least Priviledge access best practices. On top of that, APIs can help you optimise the speed and efficiency to which your data is queried.
 
-These are some of the lessons I've learned, which I'll carry with me when building new APIs from scratch.
+## Careful with partitions
 
-## Your API is only as fast as your queries
+Partitioning the data can be a great way to optimase how you query your data and how you handle your data. Partitioning can be super useful if you need to regularly drop "old" or stale data from your database. You can easily partition by a key, and simply drop those partitions when it comes to it, rather than having to do complex filter queries and dropping rows individually. Partitioning is more effective.
 
-If your query is slow, your API response will be slow. If I had to take asnigle lesson from building good Data APIs, it would be that the most essential thing is that the data in the Database needs to be precomputed. What this means, is that when I'm querying the database from the API, it should always be a simple SELECT query, which will always be fast, and it is super easy to optimise.
+Partitioning your tables can also be very useful if the queries only need to query a subset of the data. For example, if your queries always filter by date, you may want to partition by the date key, so when a query comes, it can go to the right partition and look at a subset of the data rather than having to scan the whole table. This usually becomes useful when you are dealing with very large tables, and the cost of creating indexes becomes too high, because they take too long to create. Partitioning is a way to make indexes create faster, since indexes in postgres are created at the partition level.
 
-On the other hand, if you run queries with complex transforms logic or JOINs, you can expect your API responses to be slow. You may be thinking this is very obvious, however this can easily happen when you add your data in your database before thinking about the use case. When your use caso comes, you may find yourseld having to join data from different tables te get the data you need. Which can end up in disaster.
+The problem with partitioning is if the query patterns change, and let's say you've partitioned by date, but now the queries pattern has change and we need to filter by user id instead. If your data is partitioned by date, your query may need to look at all partitions individually to find all the user ids. This is very inefficient, because indexes are created at the partition level, so your query does not know which partitions contain a user id or not.
 
-The right approach is to understand the use case first, and do your transformations before you land your tables in the database. 
+If this happens you will have to think about re-modelling your data to fit this new pattern, which is a lot of work.
 
-## Real time is hard
+Additionally, partitioning in postgres requires constant maintenance. It is not done by default, so you need to create a cron job (internally or externally) that creates new partitions on a daily or weekly basis. This means that there is something else to monitor.
 
-Having said all that in the previous section, this can become a challenge when building Real Time APIs. When I say Real Time, I mean APIs in which the data is accessible within a second or less of it being produced. For example, a bank may want to build an fraud API in which they can query any transactions as soon as they occor so that can catch fraudulent transactions in real time. In such use cases, transforming the data before landing it to the database can add some latency to how soon a transaction is ready to be queried, which depending on the use case, it may be critical to have it as soon as possible.
+## Use separate replicas for read and write
 
-In this case , there is a tradeoff between transforming your data before you land it in your database, vs transforming your data on the fly when a client queries the data. Here is about considering the risk of slower arrivinng data vs the risk of scaling an API where data is pre-computed on the fly.
+In postgres you can use replicas to load balance the load. Depending on your use case, you may have a lot of data being written to your database. This could be data arriving to your database via data pipelines, or data being written via API calls. In postgres you can only have one writer, but you can have many read replicas. You want to avoid overwhelming the writer replica as much as possible, so it is a good idea to create one or more replicas to handle the read operations. This will help with load when traffic is high and avoid putting your writer replica under pressure.
 
-This should only really be an issue when working with real time APIs. If you don't have real time considerations, data should always be precomputed.
+Using read replicas is also a good way to load balance requests and ensure you can easily scale if you have a heavy read load in your db.
 
-## Know your indexes
 
-Learn the database you are working with, and make use of whatever indexes it can offer. Understand which indexes work better for different situations. Understand whether you should use composite indexes vs single column indexes. The difference between a query taking 3 seconds and 20ms can be a well placed index. It is not that hard.
+## Model your data first!
 
-## Partitions are hard to maintain
+One of our biggest mistakes in the early stages of building data APIs was to not have modelled data before it arrived to the database. In our case this involved planning ahead with different data teams owning the different datasets that needed to be served, and it would not always be modelled to the query patterns that our users needed. THis meant, that when users were making calls to the API, the API was then having to do complex operations, such as joining multiple tables to produce the desired output, which make API response times slow, which made users complain.
 
-I worked mainly with Postgres. In Postgres you can use partitions, in which you split the your large tables into smaller chunks which can be benefitial for things like making it easy to drop tables, reducing the amount of data your query reads if the data is contained in a single partition, and making indexes faster to create because they operate on a single partition rather than on the whole table.
+If you are building a data API, the best thing you can do is to model your data first, so that when the user hits the API, the API simply needs to do a simple SELECT query because the data is already in the right shape. If you are using indexes effectively, you will get results in single digt milliseconds. SUper fast!
 
-The problem with partitions, is that they are hard to maintain. You need to have a separate process, such a cron job to create new partitions, as well as dropping old partitions if that's something you need to do. THis is the sort of thing that ends up growing arms and legs, and can become hard to maintain.
+## Real time Data APIs have tradeoffs
 
-At the same time, partitions come in handy when queries filter by the partition key. But query patterns change over time, and you may find yourself in a situation where you are not using the partition key in your query filter, which means you need to scan accross many partitions making your queries potentially really slow. Remembre, that when working with partitions in postgres, and many simiilar databases, indexes are created at the partition level not at the table level, so you can end up with very inefficient queries later down the line.
+There are many different types of Data APIs. The type of APIs I worked with were mainly read only APIs (GET requests), whose purpose was to provide programatic access to applications that were user facing. One such case was building an API to provide real time player information to customer support teams so they can handle support queries and have access to data in real time. For this use case there was a streaming pipeline writing data to postgres, which added user transaction information as soon as it happened, so customer support could have access to it via their Support Interface which called our API.
 
-Partitions are great, but make sure you understand the risks of partitioning too early, the cost of maintenance, and the potential for query patterns to change down the line.
+As I mentioned in the previous post, it is always a good idea to model your data first to ensure your queries are super fast! However, when it comes to to real time considerations you are very likely going to have to tradeoff data freshness vs query speed. In real time applications where you need you data available in your API (database) within a second of the data being produced (ie user transaction), trying to model your data beforehand might take too much time and slow you down. So you may end up putting your raw data in the database. However keep in mind that by doing this you will put this sacrifice on the end user, who will experience slower query times if every time they call the API, it needs to run complex joins and aggregations to get the data in the right shape.
 
-## Self serving = slow queries
+The tradeoff depends on your project, and what works best for your team.
 
 
+## Rate limiting and Caching.
 
+As with any good data API, make sure you include rate limiting. Databases can be fragile, and one bad user making millions of calls to your API could ovewhelm the database and bring it down. Caching can help with this as well, if the underlying data being returned by the API does not change that often (ie it updates hourly), then you may improve query response speed by caching some of the results. However do not cache responses if your underlying data changes constantly, for example if you work with real time APIs. The same API call, with the same parameters may return different results which include the newest records. You do not want to cache those.
 
 
+## Self service? Great idea, harder to maintain
 
+One of the API platforms I worked with was a self serving Data API, where internal teams could create their own APIs to access different datasets or different datasources (redshift, Databricks, Postgres etc.). The idea is great, we provide the platform and the connectors to different datasources, and they simply provide the SQL queries to query those datasources. Each SQL query corresponds to an endpoint they own.
 
+The biggest challenge we hit with this appraoch was not owning the underlying data. THis meant that by users creating the queries, they were not always optimised, which meant that when the APIs were slow we would get complaints, and we would have to look into issues such as bad query patterns or lack of indexes in the underlying tables. Self serving is a great idea to programatically give your company access to data, but it means you are not always able to optimise your data as much as if you have full control of it.
 
 
+## Load testing
 
-
-
-
-
-
-
-
-
-
-
-
-
------
-# Lessons from a Self Service Data API
-
-Over the past 2 years I've been building a self serving data API platform. Different teams in the org needed programmatic access the the data in the warehouse. There was no standardised way to access the data, which meant each time teams would need to figure out how to build APIs from scratch with. There were no set best practices, or reusability across teams.
-
-There was a need for a solution, which is where this platform was born. THe platform was a plug and play where users defined the datasource and a SQL query and an API was created for them with authentication, authorisation, rate limiting, caching, pagination etc.
-
-I've worked in this platform since the very beggining, having contributed to shape it what it is today. After two years I am moving to a new team, and I thought it would be a good time to reflect on the platform and collect some of the lessons learned.
-
-## Users should only be able to serve data from modelled tables
-
-Self serving can be a double edge sword. On the one hand, it gives users freedom to build their own APIs without the bottleneck of the platform team having to be involved so we can focus on developing new features. On the other hand, without the correct guardrails, users will create APIs over raw, unmodelled data. By unmoddeled, it either means tables that require complex and expensive queries to find the information you need, or tables without the correct indexes or partitions to ensure queries are fast.
-
-This can be an issue for two reasons. First, slow APIs create poor API experiences. When working with APIs, the users usually expect sub-second latency. If the API call takes over 10s because it's querying an unmoddeled table, it will make everyone unhappy. Secondly, an unmoddelled table will add more load to the database every time it is queried because it needs to do a lot of heavy lifting execute the query. If the load is high it will consume a lot of resources, adding additional cost for needing to scale. 
-
-This was a lesson learned early on, and one which became very hard to backtrack. Once the APIs querying these tables were "locked in" and serving business use cases, it was hard to go back and ask the users to do the extra work to model the source tables further.
-
-## Ensuring performance comes at the cost of Freedom
-
-This one is a continuation of the previous lesson. Our APIs allowed users to define the SQL query that was getting executed every time the endpoint was hit. Nothing would stop the users from defining very complex queries with JOINs or other queries that were not making use of the existing indexes already created on the tables.
-
-APIs are expected to be performant, and a SQL query can make or break the API. Rather than allowing users the freedom to provide parametrised queries, we could have removed that completely and only allow users to query by primary key, where select page limit and the columns they want. This way we could have easily created indexes on the tables on a known column, and have a simple and standard select query hardcoded in the background for all APIs. An added benefit of this approach is that it forces users to model the tables to fit the API.
-
-Alternatively, if being able to create your own SQL is a requirement for more complex business use cases, I've seen companies like Tinybird enforce a 10s timeout. Any queries hitting that threshold gets killed. This could have also been a suitable and less rigid solution.
-
-## Perfect architectures don't exist 
-
-This was one of the lessons that I found most dissapointing as an engineer. I had always imagined software platforms to have been built using the perfect desing patters and perfect architectures. In the real world, business use cases require to add new "patches" or features to accomodate for things like "last minute data protection requirements", regulatory needs or simply new business needs that were not orignally anticipated. More and more you start moving away from that "clean" architecture. What you can focus on, is to try and build a great platform that users really want to use, and that solves a real business need, which takes me to the next lesson.
-
-## It's up to you to build a good user experience
-
-Something is very clear to me now, a platform that serves a real business need does not mean that it is a platform that users will want to use. If you are not careful, you can end up building a platform that leadership loves, but the developers to use.
-
-User experience should not be neglected. By this I mean not only the user interface (config, cli, website), but also things like documentation or the ability to test APIs easily and quickly.
-
-The tricky thing is, that as long as the platform is doing its job, no one is going to come asking for better UI/UX features. Asking users directly is a good way, although I found that the can tend to try and be nice to you. It can be hard to setup a good round of questions to gather valuable feedbock.
-
-A better approach is to spot the user complaints. Sometimes this can be in Slack or in a Zoom meeting. For example, a user was once complaining that to test a change in the API it took about 10 minutes for the changes to be deployed to the dev environment. Unfortunately I won't be around for long enough to improve that experience.
-
-## Bonus: To build a scalabe Self Serving data API, you need a managed reverse ETL Solution
-
-As I mentioned at the beggining of the post, the goal of the API is enable users to create APIs that need to query data from the Warehouse. In order to achieve this in a scalable and performant manner, the data had to be moved from Databricks into a Postgres Database, also known as the "Operational Store".
-
-Although we provided a template for how to create both streaming and batch pipelines to move the data across, this was an extra step required for the users who wanted to create an API, which usually needed to involve additional teams. This process was very slow and not scalable, because each data pipeline required to go through a PR review process. 
-
-In order to build a scalable data API, a managed solution is needed to move data from the warehouse into the operational Store with minimal user interaction, perhaps a few clicks here and there. This soultion should be able to create the necessary indexes and roles on the operational store to ensure good performance. Databricks already offers some similar solutions for this such as "online tables" or their new product "Lakebase", which can be useful if you are already using Databricks.
-
-## Summary
-
-I have shared some of the lessons learned from working on a self serving Data API platform. Although I've only spoken about the things I would have liked to improve, I also feel incredibly proud of the platform, and I believe that many things were done well, thanks to being part of an excellent team. Hopefully some of these lessons can help the someone build the next Data API.
+In my time building APIs, I used the locust framework to run all sorts of load tests. You want to make sure your APIs and your databases can handle different loads before you put them in production. You may also have spikes of traffic during the year, wether it is black friday if you are an ecommerce company, or sporting events like superbolw if you are in the sports or entertaniment industry. You want to have a platform to ensure your APIs can cope with the level of lead. Start by creating simple tests and eventually devolop a re-usable load testing platform you can re-use whenever you need to teast different levels of load in your API.
