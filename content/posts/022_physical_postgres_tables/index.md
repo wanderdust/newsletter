@@ -18,31 +18,31 @@ This creates a problem, because the "cloud" can be so abstracted that you start 
 
 It is not until I actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like myself, that I can break down everything to the very basics.
 
-Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is just Postgres running on a server. Over time they have built improvements to this postgres instance to add all the cool features you can use today, but at the end of the day, it is just running a fancy version of Postgres in their own private machines.
+Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is just Postgres running on a server. Over time they have built improvements to this Postgres instance to add all the cool features you can use today, but at the end of the day, it is just running a fancy version of Postgres in their own private machines.
 
 The point I'm trying to make is that like everything else, Postgres is not ran by magic. Databases are not magic either. Postgres is essentially a program that writes files to your filesystem and lets you read the files using SQL query language. This might be obvious to some, but I sometimes forget, so it is good to remind myself.
 
-In this post I look inside postgres to understand how tables are stored in the filesystem. The goal of this post is nothing more than to understand a small part of the whole Postgres ecosystem to demistify things a bit. More as a learning process to myself than anything else.
+In this post I look inside Postgres to understand how tables are stored in the filesystem. The goal of this post is nothing more than to understand a small part of the whole Postgres ecosystem to demystify things a bit. More as a learning process to myself than anything else.
 
 Let's begin.
 
 
 ## Installation
 
-Install postgres in your machine using brew, and start the service
+Install Postgres in your machine using brew, and start the service
 ```bash
 brew install postgresql@17
 brew services start postgresql@17
 ```
 
-Use `psql` to connect to the `postgres` database.
+Use `psql` to connect to the `Postgres` database.
 
 ```bash
 psql postgres
 ```
 As a refresher, remember that within a Postgres cluster, we can have different databases. `postgres` is the default database, but we could easily create many other databases.
 
-Lets create our own database. From within the `pysql` console run
+Let's create our own database. From within the `psql` console run
 
 ```sql
 psql>  CREATE DATABASE mydb;
@@ -51,7 +51,7 @@ psql>  CREATE DATABASE mydb;
 And then exit the `postgres` database using the `\q` command. Then connect to the newly created database using
 
 ```sql
-pysql mydb
+psql mydb
 ```
 
 From this point on, any shell command prefixed by `psql>` is ran inside the `psql` console connected to `mydb`.
@@ -87,7 +87,7 @@ Now we have a `films` table inside the `public` schema in the `mydb` database.
 
 ## Finding the Location of the Table in the Filesystem
 
-A postgres database is basically a single directory containing all its data inside it. In this section I'll find where the `films` table is stored within our filesystem.
+A Postgres database is basically a single directory containing all its data inside it. In this section I'll find where the `films` table is stored within our filesystem.
 
 We can find the base directory where the Postgres cluster lives in our machine by running this command:
 
@@ -109,9 +109,9 @@ drwx------@  2 pablolopez  admin    64B Aug 11 19:39 pg_dynshmem
 ...
 ```
 
-Here you get a bunch of directories. They all do different things in postgres, but that's outside the scope of this blog. In this case we will focus on the `base` directory which is the one containing the database directories.
+Here you get a bunch of directories. They all do different things in Postgres, but that's outside the scope of this blog. In this case we will focus on the `base` directory which is the one containing the database directories.
 
-When we look into the `base` directory we get a list of folders representing the different postgres databases.
+When we look into the `base` directory we get a list of folders representing the different Postgres databases.
 
 ```shell
 ls -lh /opt/homebrew/var/postgresql@17/base
@@ -165,7 +165,7 @@ psql> SELECT pg_relation_filepath('films');
 (1 row)
 ```
 
-In this case `16439` refers to the table's `relfilenode` and not the Object ID. If we run this query, we can check that `relfilenode` and `oid` are two differnt things:
+In this case `16439` refers to the table's `relfilenode` and not the Object ID. If we run this query, we can check that `relfilenode` and `oid` are two different things:
 
 ```sql
 psql> SELECT relname, oid, relfilenode FROM pg_class WHERE relname = 'films';
@@ -175,7 +175,7 @@ relname |  oid  | relfilenode
  films   | 16439 |       16439
 ```
 
-In this case, the OID and the `relfilenode` are exactly the same. Hoewever this may not always be the case.
+In this case, the OID and the `relfilenode` are exactly the same. However this may not always be the case.
 
 Once more, we can verify this table exists in our machine by checking the path
 
@@ -185,7 +185,7 @@ ls -lh /opt/homebrew/var/postgresql@17/base/16438/16439
 -rw-------@ 1 pablolopez  admin   8.0K Aug 19 20:24 /opt/homebrew/var/postgresql@17/base/16438/16439
 ```
 
-Now that we know where the physical Postgres table actually lives, lets see how data is stored within it.
+Now that we know where the physical Postgres table actually lives, let's see how data is stored within it.
 
 ## Looking Inside the Table Files
 
@@ -203,7 +203,7 @@ psql> select * from films;
 (5 rows)
 ```
 
-In reality, Postgres structures the table files into `pages`. Pages have fixed lenght which is 8192 bytes (8 KB) by default. The internal layout of pages depends on the data file type (table, indexes, etc).
+In reality, Postgres structures the table files into `pages`. Pages have fixed length which is 8192 bytes (8 KB) by default. The internal layout of pages depends on the data file type (table, indexes, etc).
 
 ![](./pg-table.png)
 
@@ -224,7 +224,7 @@ C8874InceptionfhSci-Fi�id\�
 Drama���%
 ```
 
-We get some gibbrish output because the file is in binary format.
+We get some gibberish output because the file is in binary format.
 
 Since the data file is encoded in binary format, I'll use some helper SQL commands to visualise the different components of the table. I'll need to install the `pageinspect` extension within the database.
 
@@ -279,7 +279,7 @@ The items prefixed with the letter `l` refers to line pointers:
 - lp: the position of the tuple
 - lp_off: line pointer offset in bytes where the data tuple begins
 - lp_flags:  1 = normal tuple, others indicate dead, redirected, etc.
-- lp_len: lenght in bytes of the tuple
+- lp_len: length in bytes of the tuple
 
 The items prefixed with `t` refers to transaction information:
 - t_xmin: transaction id that inserted this tuple
@@ -289,7 +289,7 @@ The items prefixed with `t` refers to transaction information:
 
 ## Conclusion
 
-Postgres tables look nothing like the neat rows and columns we see in a SELECT * query. In this blog post I've gone through the steps to find where tables are actually stored in the filesystem and what they actually look like. My goal was to demistify a small part of postgres to prove to myself that databases are not magic, but rather files stored in an instance, all done in a very clever way.
+Postgres tables look nothing like the neat rows and columns we see in a SELECT * query. In this blog post I've gone through the steps to find where tables are actually stored in the filesystem and what they actually look like. My goal was to demystify a small part of Postgres to prove to myself that databases are not magic, but rather files stored in an instance, all done in a very clever way.
 
 # Resources
 
