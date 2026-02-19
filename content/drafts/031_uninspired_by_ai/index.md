@@ -1,7 +1,7 @@
 ---
 title: 'Unpublished Confessions: Uninspired by AI'
 date: '2025-10-09T08:05:18+01:00'
-draft: false
+draft: true
 summary: ''
 tags: ['productivity', 'AI']
 categories: []
@@ -14,7 +14,7 @@ images: []
 
 I am so uninspired by how AI can improve my productivity as a data engineer.
 
-I am not going to deny that these tools can increase your productivity in some tasks that would otherwise take a much more longer time to do. The thing is, that the tasks that it can automate are usually the very boring ones. 
+I am not going to deny that these tools can increase your productivity in some tasks that would otherwise take a much more longer time to do. The thing is, that the tasks that it can automate are usually the very boring ones.
 
 Lately I've been working on doing some migration work. I needed to migrate dozens of tables from one warehouse to another, having to create new airflow DAGs, ETL pipelines etc. If I had to do this job manually for all tables it would have been hell, and it would have taken months. Instead I was able to use windsurf with a re-usable prompt to duplicate the same steps for all pipelines, freeing me from having to type thousands of column names, data types and descriptions manually. All I need is to copy paste into a re-usable prompt.
 

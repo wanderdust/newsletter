@@ -1,7 +1,7 @@
 ---
 title: '030_values'
 date: '2025-09-26T11:29:35+01:00'
-draft: false
+draft: true
 summary: ''
 tags: []
 categories: []

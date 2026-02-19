@@ -1,7 +1,7 @@
 ---
 title: 'Can You Use Databricks SQL Warehouse in Production APIs?'
 date: '2025-08-20T09:42:44+01:00'
-draft: false
+draft: true
 summary: ''
 tags: [data warehouse, data engineering, databricks]
 categories: []
@@ -16,7 +16,7 @@ Our team needed to create a Data API to integrate in a downstream user facing sy
 
 The data that we needed to serve lived in Databricks, and we needed to find a way to make it available to the API in a secure, cost efficient and scalable manner.
 
-The response time for the API didn't need to be too fast, with up to 5 seconds being acceptable performance, so we decided to test serving the data directly from the Databricks SQL warehouse. 
+The response time for the API didn't need to be too fast, with up to 5 seconds being acceptable performance, so we decided to test serving the data directly from the Databricks SQL warehouse.
 
 This post shares our findings from load testing Databricks SQL Warehouse with concurrent queries, analysing whether it can scale cost-effectively for our API use case.
 
@@ -53,7 +53,7 @@ The table size for `activity_events` is 3 TB.
 
 ```sql
 WITH ranked_events AS (
-    SELECT *, ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY created_date DESC) 
+    SELECT *, ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY created_date DESC)
     FROM public.analytics.activity_events
     WHERE start_time BETWEEN '2024-11-08' AND '2024-11-10'
         AND user_id = ?
@@ -62,7 +62,7 @@ deduped_events AS (
     SELECT * FROM ranked_events WHERE row_num = 1
 ),
 formatted_data AS (
-    SELECT 
+    SELECT
         start_events.reference_id,
         start_events.session_token,
         start_events.product_id,
@@ -245,7 +245,7 @@ Databricks SQL warehouse screenshot showing details about the running queries, q
 {{< /details >}}
 
 #### Key Observations
-- Autoscaling is relatively fast. 1 to 10 cluster within 4 minutes  
+- Autoscaling is relatively fast. 1 to 10 cluster within 4 minutes
 - P95 is a bit inconsistent (spikes) while autoscaling is happening, then it stabilises
 - Queries queue at a linear rate faster than they can execute after ~ 180 users
 - Similar to the previous test, max execution times remained problematic
@@ -283,7 +283,7 @@ Now we can clearly see that query A has a much worse relative performance than q
 
 This indicates that the slower the query, the worse it scales as we add more load.
 
-Based on the [queuing documentation](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing), the reason the queue prioritises the faster queries is that it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster. 
+Based on the [queuing documentation](https://docs.databricks.com/aws/en/compute/sql-warehouse/warehouse-behavior#serverless-autoscaling-and-query-queuing), the reason the queue prioritises the faster queries is that it is easier to find free available capacity in the cluster for queries that are less resource intensive. The queue does not work in a FIFO format but based on available capacity in the cluster.
 
 Queries in the queue that best fit the resource capacity at a given time get prioritised.
 
@@ -299,7 +299,7 @@ Of course, it may be the case where you have a few clusters running most of the 
 
 ### Cost and Performance
 
-Running 10 clusters in serverless mode is very expensive, while only handling a maximum of 40 requests per second. 
+Running 10 clusters in serverless mode is very expensive, while only handling a maximum of 40 requests per second.
 
 This performance and cost structure doesn't cut it for our use case. For this type of workload, OLTP databases can offer far better throughput at a lower cost.
 
@@ -307,7 +307,7 @@ The only issue is the need to move data out of Databricks into the external data
 
 ### Query Complexity Determines Viability
 
-As we have seen in the results, the more resource intensive queries are, the worse they scale under load. 
+As we have seen in the results, the more resource intensive queries are, the worse they scale under load.
 
 You could justify creating an API hitting the SQL Warehouse directly if the query is simple and you don't mind the cost.
 
