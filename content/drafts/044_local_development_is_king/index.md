@@ -1,7 +1,7 @@
 ---
 title: 'In the Age of coding agents local development is King'
 date: '2026-02-19T08:27:51Z'
-draft: true
+draft: false
 summary: ''
 tags: []
 categories: []
