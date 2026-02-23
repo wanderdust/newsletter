@@ -24,13 +24,17 @@ In the age of coding agents, having a local environment can no longer be an afte
 
 ## What is a "good" development setup
 
-Earlier I gave a description of what my ideal setup is when I'm doing web development, but I'm not doing web development most of the time. At my work I have to work with complex platforms, some of them have multiple microservices that interact with each other, others might need to run data pipelines to build tables in the data warehouse. Depending on the application, it may be easier or harder to setup a local environment you can use. Also, as your application or platform becomes more complex, the more time you need to spend "protecting" your local environment when introducing new features. You'll have to find yourself asking, "If I implement this new feature X, how do I make sure I can run this locally?".
+Earlier I gave a description of what my ideal setup is. At my work I work with complex platforms, some of them have multiple microservices that interact with each other, others might need to run data pipelines to build tables in the data warehouse.
+Depending on the application, it may be easier or harder to setup a local environment you can use. As your application or platform becomes more complex, the more time you need to spend "protecting" your local environment when introducing new features. You'll have to find yourself asking, "If I implement this new feature X, how do I make sure I can run this locally?".
 
-A "good" local environment has two things. First, you should easily be able to run unit tests locally. You should have a command, perhaps in your makefile, that runs all the tests. You should have all of the necessary environment variables and mock functions to ensure you don't depend on "deployed" systems to ensure your code runs.
 
-The second one, you should be able to spin up a local version of your application and platform where you can manually test things. For example, if you are building an API, you should be able to run a localhost server to send some calls with 'curl'. If you are building Airflow DAGs, you should be able to run Airflow locally and be able to validate your DAG code runs. As I said, depending on the complexity of the application or platform, it may require more effort or setup to maintain a working local environment.
+A “good” local environment has two things.
 
-With those two things, you have everything you need to get feedback in real time of any changes you make, making your development experience a lot better, and also reducing the amount of time to build new features.
+First, you should easily be able to run unit tests locally. You should have a command, perhaps in your makefile, that runs all the tests, along with all the necessary environment variables and mock functions so you don’t depend on deployed systems to ensure your code runs.
+
+Second, you should be able to spin up a local version of your application and platform where you can manually test things. If you are building an API, you should be able to run a localhost server, send calls with `curl` and get a response. If you are building Airflow DAGs, you should be able to run Airflow locally and validate that your DAG code runs. Depending on the complexity of the application or platform, it may require more effort or setup to maintain a working local environment.
+
+With those two things, you have everything you need to get feedback in real time making the development experience a lot better and reducing the amount of time to ship new features.
 
 ## In the Age of Coding Agents local development is King
 
