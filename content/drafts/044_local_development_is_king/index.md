@@ -87,3 +87,8 @@ To use agents effectively and securely, you need to own the code they generate a
 Having a solid local development environment is essential if you want to make the most of your coding agents. If you pair that with a good specification document, your agent will have all the tools to autonomously develop full features without any assistance from the human.
 
 However, this doesn't mean this approach is completely hands free. As a developer you still need to own the code the agent has created, and be able to defend it if you get challenged about it in the PR review process. I believe this is going to be one of the biggest challenges for developers in the coming years as we automate more and more of our work to the agents.
+
+
+## Acknowledgments
+
+Thanks to Oleksandr for providing feedback on earlier versions of this post!
