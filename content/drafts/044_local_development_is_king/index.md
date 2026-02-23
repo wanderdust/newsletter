@@ -18,9 +18,9 @@ My first experience with software development was javascript and building websit
 
 Having a solid local development is not the norm, at least in the data ecosystem. This is usually because data applications require high memory and compute resources or access to data warehouse environments, which means it can take a lot of engineering effort to setup one.
 
-Even in my earlier days I was the one pushing for local environments for our applications. I have seen many senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
+Even in my earlier days I found myself pushing for local environments for our applications. I have seen many senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
 
-In the age of coding agents, having a local environment can no longer be an afterthought, but rather the foundation that determines whether AI actually makes teams more productive.
+In the age of coding agents, having a local environment can no longer be an afterthought, but rather the foundation that determines whether AI can actually make you more productive.
 
 ## What is a "good" development setup
 
