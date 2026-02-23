@@ -11,20 +11,16 @@ cover:
   caption: ''
 images: []
 ---
-TODO
-- ADD URLS
 
-My first experience with software development was javascript and building websites using frameworks like React. One of the first things I learned was the importance of having a good local development setup. First you would have a local server always running and showing your webapp in one screen, and every time you made a code change, the server would automatically refresh to show the new changes. If anything broke, you would know in real time, and you could easily go back and fix whatever was causing the webapp to fail.
+Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment, LLMs quickly become a time sink, rather than a potentially time saver.
 
-I would also have my unit tests, and one of the things I loved the most was able to run my tests constantly and see the results in real time. I would have a local server that would run all the unit tests every time a new change was introduced, which gave me feedback in real time to see if I unexpectedly broke something when introducing my new change. This approach would work best when doing test driven development, where you would see your new test failing until you fully implemented your change and it finally went green.
+My first experience with software development was javascript and building websites using frameworks like React. One of the first things I learned was the importance of having a good local development setup. I would always have a local server, automaticall refreshing on every change. If anything broke, I would instantly find out and fix the issue right away.
 
-This approach was really good to get feedback in real time about any potential bugs or breaking changes in real time.
+I would also have have my unit tests [running constantly](https://martinfowler.com/bliki/SelfTestingCode.html) catching bugs in near real time.
 
-My professional experience has shown me that having a solid local  development is not the norm, at least in the data ecosystem. I have worked as a Machine Learning Engineer, Data Platform Engineer and Data Engineer, and in all the teams I've been in, I have always been the one pushing for better local development environments for our applications and platforms, even during my junior engineer days. This is not to say that no one cared, I have met some very good engineers who made the effort to prioritise building good local environments, but from my experience this has not been the norm.
+Having a solid local development is not the norm, at least in the data ecosystem. Even in my earlier days I was the one pushing for local environments for our applications. I have seen many senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
 
-I have seen a lot of developers, including senior engineers happily develop without a local environment to easily get feedback on. These developers seemed more than happy to have to wait for the CI/CD pipelines to deploy to the dev environments before being able to test their changes. Perhaps these developers were so confident in their programming skills that they knew they were going to get it right first time. In my case, when I have to work in such applications where I need to wait 15 minutes or more (sometimes as much as 30 minutes or more) I start to go crazy to the point of tearing out my hair.
-
-So, a good local environment is not only essential to get rapid feedback on any changes you've implemented, but it is also essential if you want to make the most of your coding agents.
+In the age of coding agents, having a local environment can no longer be an afterthought, but rather the foundation that determines whether AI actually makes teams more productive.
 
 ## What is a "good" development setup
 
