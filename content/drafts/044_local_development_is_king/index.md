@@ -40,8 +40,6 @@ With those two things, you have everything you need to get feedback in real time
 
 When I talk about coding agents, I'm not referring to AI autocomplete, or interacting with an LLM via the chat window. I am referring to giving the "agent" access to my code and terminal so that it can autonously write code and exeecute the commands in needs to run and validate code without any assistance from me.
 
-After experimenting a lot with coding agents, I have found they work best when they have a good feedback loop they can use to validate their changes, and you can only do that if you have a local environment.
-
 If I ask a coding agent to build something without a feedback loop, I become the feedback loop. Every change it makes, I have to review, run, and validate myself. When it breaks, I have to paste stack traces and explain what went wrong. It is exhausting and quickly turns into a time sink.
 
 Agents are not good at cleaning up after themselves. The more prompts it takes to ship a feature, the more bloated and messy the codebase becomes.
@@ -49,7 +47,6 @@ Agents are not good at cleaning up after themselves. The more prompts it takes t
 The best results I’ve had with coding agents came when I showed them how to use the local environment to validate their own changes. Once they can run the app and the tests themselves, they can get feedback and fix issues without relying on me.
 
 For this to work, the specs need to be detailed and unambiguous so the agent knows exactly what to build and what to validate. Having unit tests in place beforehand also helps a lot, since they give the agent a clear target to work against.
-
 
 ## Spec Driven Development
 
@@ -61,17 +58,18 @@ Now you can go ahead and start the implementation. The agent will have a clear u
 
 If you have a good local setup and well defined specs, then your agent may be able to implement this in the first attempt, without you having to manually provide feedback. Your implementation will only be as good your specifications.
 
-
 ## Use the MCPs
 
-MCP servers are the bridge between your local enviornment and external systems. You should use them to provide additional context to your agents. For example, you can give your agents access to JIRA, so you can point to the ticket and it can start building the specs document without you having to copy paste. Or a more useful one, you can give your agents read only access to your dev and qa deployments, for example, to validate schemas and tables if you are working with data. MCPs give your agents the additional context to help them implement tasks more precisely by being more aware of the context the systems they are building are deployed in.
+MCP servers are the bridge between your local environment and external systems. Use them to improve the feedback in the feedback loop.
 
-Addittionally, MCP servers are useful beyond spec driven development. You can use them to speed up daily debugging or valiadation tasks. For example, if you are doing a large migration or deployment at scale, you can use MCP servers to validate the deployments (the logs, the errors, the data created) and help you automate the process on task that otherwise you would have to do manually.
+Giving your agent read only access to dev & qa environments, it can get any additional information it needs during planning or implementation to get the features right first time. For example, if your application needs to read or write data, having direct access to the system, will ensure the agent gets the implementation right first time.
+
+MCP servers are useful beyond spec driven development. You can use them to speed up daily debugging or valiadation tasks. For example, if you are doing a large migration or deployment at scale, you can use MCP servers to validate the deployments (the logs, the errors, the data created) and help you automate the process on task that otherwise you would have to do manually.
 
 
 ## Have you had success with this approach?
 
-I have had moderately good success with this approach. After using LLMs and agents for the past year or so, this has been the first time I can see that this may actually be a way to automate some development work. But as I said, it requires a good development setup first, without that, LLMs quickly become a time sink, rather than a potentially time saver.
+I’ve had good success with this approach. After a year of using LLMs and agents, this is the first time it feels like a real way to automate some development work. But it only works if you have a good development setup. Without that, LLMs quickly become a time sink instead of a time saver.
 
 ## The 95%-5% Principle
 
