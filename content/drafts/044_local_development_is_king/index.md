@@ -27,7 +27,6 @@ In the age of coding agents, having a local environment can no longer be an afte
 Earlier I gave a description of what my ideal setup is. At my work I work with complex platforms, some of them have multiple microservices that interact with each other, others might need to run data pipelines to build tables in the data warehouse.
 Depending on the application, it may be easier or harder to setup a local environment you can use. As your application or platform becomes more complex, the more time you need to spend "protecting" your local environment when introducing new features. You'll have to find yourself asking, "If I implement this new feature X, how do I make sure I can run this locally?".
 
-
 A “good” local environment has two things.
 
 First, you should easily be able to run unit tests locally. You should have a command, perhaps in your makefile, that runs all the tests, along with all the necessary environment variables and mock functions so you don’t depend on deployed systems to ensure your code runs.
