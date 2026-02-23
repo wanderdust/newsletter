@@ -14,11 +14,11 @@ images: []
 
 Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment, LLMs quickly become a time sink, rather than a time saver.
 
-My first experience with software development was javascript and building websites using frameworks like React. One of the first things I learned was the importance of having a good local development setup. I would always have a local server, automatically refreshing on every change. If anything broke, I would instantly find out and fix the issue right away.
+My first experience with software development was javascript and building websites using frameworks like React. One of the first things I learned was the importance of having a good local development setup. I would always have a local server, automatically refreshing on every change. If anything broke, I would instantly find out and fix the issue right away. I would also have have my unit tests [running constantly](https://martinfowler.com/bliki/SelfTestingCode.html) catching bugs in near real time.
 
-I would also have have my unit tests [running constantly](https://martinfowler.com/bliki/SelfTestingCode.html) catching bugs in near real time.
+Having a solid local development is not the norm, at least in the data ecosystem. This is usually because data applications require high memory and compute resources or access to data warehouse environments, which means it can take a lot of engineering effort to setup one.
 
-Having a solid local development is not the norm, at least in the data ecosystem. This is usually because data applications require high memory and compute resources or access to data warehouse environments. Even in my earlier days I was the one pushing for local environments for our applications. I have seen many senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
+Even in my earlier days I was the one pushing for local environments for our applications. I have seen many senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
 
 In the age of coding agents, having a local environment can no longer be an afterthought, but rather the foundation that determines whether AI actually makes teams more productive.
 
