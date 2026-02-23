@@ -12,7 +12,7 @@ cover:
 images: []
 ---
 
-Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment, LLMs quickly become a time sink, rather than a potentially time saver.
+Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment, LLMs quickly become a time sink, rather than a time saver.
 
 My first experience with software development was javascript and building websites using frameworks like React. One of the first things I learned was the importance of having a good local development setup. I would always have a local server, automatically refreshing on every change. If anything broke, I would instantly find out and fix the issue right away.
 
