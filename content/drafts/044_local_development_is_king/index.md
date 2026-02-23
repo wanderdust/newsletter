@@ -34,11 +34,17 @@ With those two things, you have everything you need to get feedback in real time
 
 ## In the Age of Coding Agents local development is King
 
-I have recently been experimenting with coding agents a lot. My main finding is that coding agents work best when they have a good feedback loop they can use to verify their changes. And surprise, surprise, you need a good local environment to do that.
+When I talk about coding agents, I'm not referring to AI autocomplete, or interacting with an LLM via the chat window. I am referring to giving the "agent" access to my code and terminal so that it can autonously write code and exeecute the commands in needs to run and validate code without any assistance from me.
 
-If I simply ask a coding agent to implement a task, without any feedback loop, I then become the feedback loop. Every time the agent changes something, I need to check the changes and see that they work. If they don't I need to provide feedback to the agent, such as stacktrace or whatever feedback it is to make the feature how I need it. This is a really exhausting process that quickly becomes into a waste of time.
+After experimenting a lot with coding agents, I have found they work best when they have a good feedback loop they can use to validate their changes, and you can only do that if you have a local environment.
 
-On the other hand, the most success I've had with coding agents, is where I show them how use the local environment, and how they can use it to validate their changes. With this approach, the agent will have autonomy to get its own feedback and fix any issues on its own. For this to work well though, you need to make sure you prompt the agent with detailed and non ambiguous specifications, so it knows exactly what to validate and how. It can also help if you create unit tests beforehand that it can use to easily validate the code.
+If I ask a coding agent to build something without a feedback loop, I become the feedback loop. Every change it makes, I have to review, run, and validate myself. When it breaks, I have to paste stack traces and explain what went wrong. It is exhausting and quickly turns into a time sink.
+
+Agents are not good at cleaning up after themselves. The more prompts it takes to ship a feature, the more bloated and messy the codebase becomes.
+
+The best results I’ve had with coding agents came when I showed them how to use the local environment to validate their own changes. Once they can run the app and the tests themselves, they can get feedback and fix issues without relying on me.
+
+For this to work, the specs need to be detailed and unambiguous so the agent knows exactly what to build and what to validate. Having unit tests in place beforehand also helps a lot, since they give the agent a clear target to work against.
 
 
 ## Spec Driven Development
