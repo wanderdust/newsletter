@@ -42,7 +42,7 @@ When I talk about coding agents, I'm not referring to AI autocomplete, or intera
 
 If I ask a coding agent to build something without a feedback loop, I become the feedback loop. Every change it makes, I have to review, run, and validate myself. When it breaks, I have to paste stack traces and explain what went wrong. It is exhausting and quickly turns into a time sink.
 
-Agents are not good at cleaning up after themselves. The more prompts it takes to ship a feature, the more bloated and messy the codebase becomes.
+Agents are not good at cleaning up after themselves. The more iterations it takes, the messier your codebase becomes.
 
 The best results I’ve had with coding agents came when I showed them how to use the local environment to validate their own changes. Once they can run the app and the tests themselves, they can get feedback and fix issues without relying on me.
 
@@ -60,9 +60,9 @@ If you have a good local setup and well defined specs, then your agent may be ab
 
 ## Use the MCPs
 
-MCP servers are the bridge between your local environment and external systems. Use them to improve the feedback in the feedback loop.
+MCP servers are the bridge between your local environment and external systems. Local development gives agents a feedback loop framework. MCPs extend that loop to the rest of your system.
 
-Giving your agent read only access to dev & qa environments, it can get any additional information it needs during planning or implementation to get the features right first time. For example, if your application needs to read or write data, having direct access to the system, will ensure the agent gets the implementation right first time.
+Giving your agent read only access to dev & qa environments will give it additional information it needs during planning or implementation to get the features right first time. For example, if your application needs to read or write data, having direct access to the system, will ensure the agent gets the implementation right first time.
 
 MCP servers are useful beyond spec driven development. You can use them to speed up daily debugging or validation tasks. For example, if you are doing a large migration or deployment at scale, you can use MCP servers to validate the deployments (the logs, the errors, the data created) and help you automate the process on task that otherwise you would have to do manually.
 
