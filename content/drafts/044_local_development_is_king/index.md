@@ -78,7 +78,9 @@ The last 5% is the most important and perhaps the most difficult. That 5% is whe
 
 I say this 5% is the most difficult because you need to take ownership of code you didn't write. You need to spend time going through the changes and ensure everything was implemented like you wanted to. If you get challenged about any code, you should be able to provide an answer, and not simply _"I don't know, the LLM wrote that part"_.
 
-Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will implement something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. This is a rather subtle security issue, that may seem fine at first glance, but if someone gets hold of the token, and the permissions are too broad, someone can easily get access to your account. This can only be avoided if you know what the code is doing and its implications.
+Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will implement something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. If you are not paying attention, your agent may even commit your .env files to your [PR changes](https://github.com/GreatScott/enveil).
+
+Exposing .env secrets aside, these can be subtle security issues that may seem fine at first glance, but can have severe consequences down the line. For example, if someone gets hold of the token, and the permissions are too broad, someone can easily access your cloud account and potentially access your private user data. This can only be avoided if you know what the code is doing and its implications.
 
 To use agents effectively and securely, you need to own the code they generate and understand the tradeoffs behind it.
 
