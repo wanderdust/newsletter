@@ -52,36 +52,44 @@ That said, for this to work, the implementation specs or prompt needs to be deta
 
 The approach that I've described above works particularly well if you have all the specifications well defined and completed before starting the agentic process. This means that all the requirements, features and even the implementation steps are well defined beforehand. It also means you know exactly is expected, so you know what to validate.
 
-With spec driven development, you create a document with all the specs, for example if you are building a data pipeline, you clearly define the source tables and destination table. You also clearly define schemas, columns and transformations. Before you start any development, you clarify any questions with your stakeholders, and you add all this information into a spec document. You can use a framework like [spec-kit](https://speckit.org/) or simply [create a spec.md document where you add all of this information](https://boristane.com/blog/how-i-use-claude-code/). If you are using the help of LLMs to build this spec doc, you can even use different models (claude, gpt, codex) to validate each others responses and ensure you get something more robust.
+With spec driven development, you create a document with all the specs, for example if you are building a data pipeline, you clearly define the source tables and destination table. You also clearly define schemas, columns and transformations. Before you start any development, you clarify any questions with your stakeholders, and you add all this information into a spec document. You can use a framework like [spec-kit](https://speckit.org/) or simply [create a spec.md document where you add all of this information](https://boristane.com/blog/how-i-use-claude-code/). If you are using the help of LLMs to build the spec doc, you can use different models (claude, gpt, codex) to validate each others responses and ensure you get something more robust.
 
-Once you have a well defined spec, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. To do this, you can either create an [agents.md](https://agents.md/) file to create an agent with full instructions on how to use your local setup. It will also help to use specialised agents, one for code generation, and one for code validation.
+Once you have a well defined spec document, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. You can either create an [agents.md](https://agents.md/) file to create an agent with full instructions on how to use your local setup or specify this information somewhere in the specs file. It can also help to use split tasks using specialised agents, one for code generation, and one for code validation.
 
 Now you can go ahead and start the implementation. The agent will have a clear understanding of what needs to be implemented, and more importantly what needs to be validated and how. It can then use the local environment to implement, test and validate any changes.
 
-If you have a good local setup and well defined specs, then your agent may be able to implement this in the first attempt, without you having to manually provide feedback. Your implementation will only be as good your specifications.
+If you have a good local setup and well defined specs, then your agent may be able to implement this in the first attempt, without you having to manually provide feedback.
+
+Your results will only be as good your specs document.
 
 ## Use the MCPs
 
 MCP servers are the bridge between your local environment and external systems. Local development gives agents a feedback loop framework. MCPs extend that loop to the rest of your system.
 
-Giving your agent read only access to dev & qa environments will give it additional information it needs during planning or implementation to get the features right first time. For example, if your application needs to read or write data, having direct access to the system, will ensure the agent gets the implementation right first time.
+For example, using MCP servers to give your agent read only access to dev & qa environments will provide additional information it needs during planning or implementation to get the features right first time. Additionally, if your application needs to read or write data having direct access to a Database, will ensure your agent is aware of data and schemas required to implement the features correctly.
 
 MCP servers are useful beyond spec driven development. You can use them to speed up daily debugging or validation tasks. For example, if you are doing a large migration or deployment at scale, you can use MCP servers to validate the deployments (the logs, the errors, the data created) and help you automate the process on task that otherwise you would have to do manually.
 
 
 ## Have you had success with this approach?
 
-I’ve had good success with this approach. After a year of using LLMs and agents, this is the first time it feels like a real way to automate some development work. But it only works if you have a good development setup. Without that, LLMs quickly become a time sink instead of a time saver.
+I’ve had good success with this approach. After a year of using LLMs and agents, this is the first time I was able to automate some development work. But it only works if you have a good development setup. Without that, agents quickly become a time sink instead of a time saver.
 
-## The 95%-5% Principle
+## The 95-5 Principle
 
-With this approach, we have been able to go from spec to PR without having to write any code. Building, testing and validating end to end using agents. But this will only gets you 95% of the way. As much as you can try to have a clear spec document, the agent can still misinterpret some of it. Most of the things can be small, but still things that needed to be checked and corrected.
+With this approach, you can go from spec to PR without having to write any code - building, testing and validating end to end using agents.
+
+But this only gets you 95% of the way.
+
+As much as you can try to have a clear spec document, the agent will misinterpret some of it. It can be small issues, but still things that needed to be checked and corrected.
 
 The last 5% is the most important and perhaps the most difficult. That 5% is where you need to take [ownership of the generated code](https://antirez.com/news/159). It doesn't just work to simply create the PR and hope for the best, because you trust your agent has implemented the right things. No matter how detailed your spec was, there can be room for ambiguity, and this needs to be checked.
 
 I say this 5% is the most difficult because you need to take ownership of code you didn't write. You need to spend time going through the changes and ensure everything was implemented like you wanted to. If you get challenged about any code, you should be able to provide an answer, and not simply _"I don't know, the LLM wrote that part"_.
 
-Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will implement something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. If you are not paying attention, your agent may even commit your .env files to your [PR changes](https://github.com/GreatScott/enveil).
+It’s not the reviewer’s responsibility to untangle code you have not personally checked or understand.
+
+Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will suggest something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. If you are not paying attention, your agent may even commit your .env files to your [PR changes](https://github.com/GreatScott/enveil).
 
 Exposing .env secrets aside, these can be subtle security issues that may seem fine at first glance, but can have severe consequences down the line. For example, if someone gets hold of the token, and the permissions are too broad, someone can easily access your cloud account and potentially access your private user data. This can only be avoided if you know what the code is doing and its implications.
 
