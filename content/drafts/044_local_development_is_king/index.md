@@ -18,7 +18,7 @@ My first experience with software development was javascript, building websites 
 
 Having a local development setup is not the norm, at least in the data ecosystem. This is because data applications can be resource intensive, need access to databases or warehouse environments, which means it can take a lot of engineering effort to setup.
 
-Even in my earlier days I found myself pushing for better local environments for our applications. I have seen senior developers being content about using CI/CD pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
+Even in my earlier days I found myself pushing for better local environments for our applications. I have seen senior developers being content about using CI pipelines to validate their changes, having to wait up to 30 minutes or more to validate their code.
 
 In the age of coding agents, having a local environment can no longer be an afterthought.
 
@@ -82,19 +82,19 @@ I’ve had success with this approach. After a year of using LLMs and agents, th
 
 ## The 95-5 Principle
 
-With this approach, you can go from spec to PR without having to write any code - building, testing and validating end to end using agents.
+With this approach, you can go from spec to pull request without having to write any code - building, testing and validating end to end using agents.
 
 But this only gets you 95% of the way.
 
 As much as you can try to have a clear spec document, the agent will misinterpret some of it. It can be small issues, but still things that needed to be checked and corrected.
 
-The last 5% is the most important and perhaps the most difficult. That 5% is where you need to take [ownership of the generated code](https://antirez.com/news/159). It doesn't just work to simply create the PR and hope for the best, because you trust your agent has implemented the right things. No matter how detailed your spec was, there can be room for ambiguity, and this needs to be checked.
+The last 5% is the most important and perhaps the most difficult. That 5% is where you need to take [ownership of the generated code](https://antirez.com/news/159). It doesn't just work to simply create the pull request and hope for the best, because you trust your agent has implemented the right things. No matter how detailed your spec was, there can be room for ambiguity, and this needs to be checked.
 
 I say this 5% is the most difficult because you need to take ownership of code you didn't write. You need to spend time going through the changes and ensure everything was implemented like you wanted to. If you get challenged about any code, you should be able to provide an answer, and not simply _"I don't know, the LLM wrote that part"_.
 
 It’s not the reviewer’s responsibility to untangle code you have not personally checked or understand.
 
-Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will suggest something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. If you are not paying attention, your agent may even commit your .env files to your [PR changes](https://github.com/GreatScott/enveil).
+Ownership is also very important when it comes to avoiding security issues. You can't trust LLMs to follow best security practices. A lot of the times they will suggest something in a way that is mainstream, but not necessarily secure. I've seen agents happily encourage long lived tokens for 3rd party authentication to AWS on public CI/CD pipelines. If you are not paying attention, your agent may even commit your .env files to your pull request.
 
 Security issues can come in many shapes and sizes, and the only way they can be avoided is if you understand what the code is doing and its implications.
 
@@ -104,7 +104,7 @@ To use agents effectively and securely, you need to own the code they generate a
 
 Having a solid local development environment is essential if you want to make the most of your coding agents. If you pair that with a solid feedback loop and a detailed specification document, your agent will have all the tools to autonomously develop full features without any assistance from the human.
 
-However, this doesn't mean this approach is completely hands free. As a developer you still need to own the code the agent has created, and be able to defend it if you get challenged about it in the PR review process. I believe this is going to be one of the biggest challenges for developers in the coming years as we automate more and more of our work to the agents.
+However, this doesn't mean this approach is completely hands free. As a developer you still need to own the code the agent has created, and be able to defend it if you get challenged about it in the pull request review process. I believe this is going to be one of the biggest challenges for developers in the coming years as we automate more and more of our work to the agents.
 
 
 ## Acknowledgments
