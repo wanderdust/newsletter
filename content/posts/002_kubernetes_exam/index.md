@@ -3,7 +3,7 @@ title: 'Preparing for the Kubernetes Application Developer Exam'
 date: '2024-09-10T15:37:39+01:00'
 draft: false
 summary: ''
-tags: ["kubernetes"]
+tags: ["certifications", "kubernetes"]
 categories: []
 cover:
   image: './kubernetes-cert.jpg'

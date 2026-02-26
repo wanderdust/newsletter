@@ -3,7 +3,7 @@ title: 'Making Friends With Postgres: Replication'
 date: '2025-06-09T12:00:55+01:00'
 draft: false 
 summary: ''
-tags: ['postgres', 'replication']
+tags: ["postgres"]
 categories: []
 cover:
   image: ''

@@ -3,7 +3,7 @@ title: 'What do Postgres Tables Actually look like?'
 date: '2026-02-11T19:49:37+01:00'
 draft: false
 summary: ''
-tags: ['Postgres']
+tags: ["postgres"]
 categories: []
 cover:
   image: ''

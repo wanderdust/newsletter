@@ -3,7 +3,7 @@ title: 'We Need to Talk about Partitions'
 date: '2025-03-16T14:46:55+01:00'
 draft: false
 summary: ''
-tags: ['postgres', 'partitions']
+tags: ["postgres"]
 categories: []
 cover:
   image: ''

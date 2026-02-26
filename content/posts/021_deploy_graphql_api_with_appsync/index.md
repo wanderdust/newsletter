@@ -3,7 +3,7 @@ title: 'Building a GraphQL API with AWS AppSync and PostgreSQL Aurora'
 date: '2025-08-05T14:46:48+01:00'
 draft: false 
 summary: ''
-tags: []
+tags: ["aws", "serverless", "postgres"]
 categories: []
 cover:
   image: ''

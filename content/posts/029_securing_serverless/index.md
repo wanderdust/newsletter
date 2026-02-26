@@ -3,7 +3,7 @@ title: "Don't let Serverless Costs Give You a Heart Attack"
 date: '2025-09-18T20:04:11+01:00'
 draft: false 
 summary: 'Practical strategies to protect your serverless applications from runaway AWS bills, including caching, rate limiting, WAF rules, and DynamoDB safeguards.'
-tags: ['aws', 'serverless', 'security']
+tags: ["aws", "serverless", "security"]
 categories: []
 cover:
   image: ''

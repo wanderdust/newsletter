@@ -3,7 +3,7 @@ title: 'From LLM to Agent'
 date: '2025-09-02T09:55:49+01:00'
 draft: false 
 summary: ''
-tags: ["agents", "llm"]
+tags: ["ai"]
 categories: []
 cover:
   image: ''

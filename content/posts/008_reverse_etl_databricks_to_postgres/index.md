@@ -3,7 +3,7 @@ title: "Building a Reverse ETL Pipeline: Upserting Delta Lake Data into Postgres
 date: '2025-05-08T13:21:30+01:00'
 draft: false
 summary: ''
-tags: ["postgres", "databricks"]
+tags: ["postgres", "data-engineering"]
 categories: []
 cover:
   image: ''

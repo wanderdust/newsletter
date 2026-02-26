@@ -3,7 +3,7 @@ title: 'Replicas vs Standby'
 date: '2025-10-05T10:11:56+01:00'
 draft: false 
 summary: ''
-tags: ['replication', 'standby', 'databases']
+tags: ["postgres"]
 categories: []
 cover:
   image: ''

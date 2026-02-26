@@ -3,7 +3,7 @@ title: 'Load Testing PostgeSQL using Locust'
 date: '2025-01-10T15:09:39+01:00'
 draft: false
 summary: ''
-tags: ['postgres', 'test']
+tags: ["postgres", "testing"]
 categories: []
 cover:
   image: ''

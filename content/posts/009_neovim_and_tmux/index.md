@@ -3,7 +3,7 @@ title: 'tmux + NeoVim ❤️'
 date: '2025-05-20T12:09:22+01:00'
 draft: false 
 summary: ''
-tags: ['tmux', 'terminal', 'vim']
+tags: ["tooling"]
 categories: []
 cover:
   image: ''

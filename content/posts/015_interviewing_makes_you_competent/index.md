@@ -3,7 +3,7 @@ title: 'Interviewing Makes you More Competent at your Job'
 date: '2025-10-06T08:01:22+01:00'
 draft: false 
 summary: ''
-tags: ['interwiews', 'reflections']
+tags: ["career", "reflections"]
 categories: []
 cover:
   image: ''
