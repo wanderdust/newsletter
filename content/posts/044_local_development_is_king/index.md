@@ -78,7 +78,7 @@ MCP servers are useful beyond spec driven development. You can use them to speed
 
 ## Have you had success with this approach?
 
-I’ve had success with this approach. After a year of using LLMs and agents, using this framework is the first time I was able to automate some development work. But it only works if you have a good development setup and good specs. Without them, agents quickly become a time sink. Using agents has also also helped me create more robust and thorough solutions earlier on.
+Yes, I’ve had success with this approach. After a year of using LLMs and agents, using this framework is the first time I was able to automate some development work. But it only works if you have a good development setup and good specs. Without them, agents quickly become a time sink. Using agents has also also helped me create more robust and thorough solutions earlier on.
 
 ## The 95-5 Principle
 
