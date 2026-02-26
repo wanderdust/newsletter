@@ -46,22 +46,26 @@ If I ask a coding agent to build something without a feedback loop, I become the
 
 The best results I’ve had with coding agents came when I showed them how to use the local environment to validate their own changes. Once they can run the application and the tests themselves, they can get feedback and fix issues without relying on me.
 
-The local environment is the foundation for the agent to be able to run and test code to build, run and validate code to build a feedback loop. The feedback loop is what gives you the automation the automation part. In the feedback loop you provide your agent a target to validate with, this can be anything you want, such as a unit test or validating an output table. With a good feedback loop, [even your dog can write code](https://www.calebleak.com/posts/dog-game/).
+The local environment is the foundation for the agent to run and validate code, which you can use to create a feedback loop. The feedback loop is what gives you automation. In the feedback loop you provide your agent a target to validate with, this can be anything you want, such as a unit tests, output artifacts, or simply validating that the code runs without errors.
 
 
 ## Spec Driven Development
 
-So far this setup is enough to automate building features end to end. But this is not enough. If the feedback loop is not validating the right things and giving the correct feedback, you may end up with a feature completely different from what you orignally wanted. To ensure your agent builds exactly what you need, you need to provide clear specifications. This means that all the requirements, specifications, and even success criteria (needed to know what to validate) are well defined beforehand.
+So far this setup is enough to automate building features end to end. But this is not enough. If the feedback loop is not validating the right things and giving the correct feedback, [you may end up with a feature completely different from what you orignally wanted](https://www.calebleak.com/posts/dog-game/). To ensure your agent builds exactly what you need, you need to provide clear specifications. This means that all the requirements, specifications, and even success criteria (needed to know what to validate) are well defined beforehand.
 
-With spec driven development, you create a document with all the specs, for example if you are building a data pipeline, you clearly define the source tables and destination table. You also clearly define schemas, columns and transformations. Before you start any development, you clarify any questions with your stakeholders, and you add all this information into a spec document. You can use a framework like [spec-kit](https://speckit.org/) or simply [create your own spec.md, plan.md and tasks.md documents to track all of this information](https://boristane.com/blog/how-i-use-claude-code/). An important part here is to carefully read through the specifications, and have a back an forth with you agent to correct any misinterpretations or ambuguity. You can even ask it to refer back to the spec document and highlight any potential issues.
+With spec driven development, you create a document with all the specs, for example if you are building a data pipeline, you clearly define the source tables, destination table, data size, schemas and what the transforms the pipeline needs to do.
 
-Once you have a well defined spec document, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. You can either create an [agents.md](https://agents.md/) file to create an agent with full instructions on how to use your local setup or specify this information somewhere in the specs file. It can also help to use split tasks using specialised agents, one for code generation, and one for code validation.
+Before you start any development, you clarify any questions with your stakeholders, and you add all this information into a spec document. You can use a framework like [spec-kit](https://speckit.org/) or simply [create your own spec.md and plan.md files](https://boristane.com/blog/how-i-use-claude-code/).
 
-Now you can go ahead and start the implementation. The agent will have a clear understanding of what needs to be implemented, how to execute it, and how to validate to mark something as done.
+An important part here is to carefully read through the specifications, and have a back an forth with you agent to correct any misinterpretations or ambuguity. You should know exactly what is written in that doc like you wrote it youlself, and you don't give the agent the go ahead until everything in the specs looks correct. To be more thorough,you can even ask the agent to highlight any potential issues in the document that need further clarifying.
 
-If you have a good local setup and well defined specs, then your agent may be able to implement this in the first attempt, without you having to manually provide feedback. It can alo be helpful to breat down the implementation into different phases, such as implementation, execution and validation. You can have a specialised agent which specialises in each of these.
+Once you have a well defined spec document, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. You can either create an [agents.md](https://agents.md/) file to create an agent with full instructions on how to it, or specify this information somewhere in the specs or plan file. It can also help to use split tasks using specialised agents, one for code generation, and one for code execution and validation.
 
-Remember, that the results will only be as good as your specification document.
+Now you can go ahead and start the implementation. The agent will have a clear understanding of what needs to be implemented, how to execute it, and how to validate it to mark something as complete.
+
+If you have a good local setup and well defined specs, then your agent may be able to implement this in the first attempt, without you having to manually provide feedback. It can also be helpful to break down the implementation into different phases, such as implementation, execution and validation.
+
+The final code will only be as good as your specification document.
 
 ## Use the MCPs
 
