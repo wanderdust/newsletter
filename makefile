@@ -1,4 +1,4 @@
-.PHONY: help serve post ready
+.PHONY: help serve post ready tags
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -6,8 +6,20 @@ help: ## Show this help message
 	@echo "  make serve        - Start Hugo development server with drafts"
 	@echo "  make post name=X  - Create a new post in drafts/ (e.g., make post name=my-post)"
 	@echo "  make ready post=X - Move a post from drafts/ to posts/ (e.g., make ready post=001)"
+	@echo "  make tags         - List all tags in use and their counts"
 	@echo "  make help         - Show this help message"
 	@echo ""
+
+tags: ## List all tags in use across posts and drafts
+	@grep -rh '^tags:' content/posts/*/index.md content/drafts/*/index.md 2>/dev/null \
+		| sed 's/tags: *\[//;s/\]//;s/"//g;s/'"'"'//g' \
+		| tr ',' '\n' \
+		| sed 's/^ *//;s/ *$$//' \
+		| grep -v '^$$' \
+		| sort \
+		| uniq -c \
+		| sort -rn \
+		| awk '{printf "  %2d  %s\n", $$1, $$2}'
 
 serve: ## Start Hugo development server
 	uv run hugo server --buildDrafts --disableFastRender --cleanDestinationDir --ignoreCache

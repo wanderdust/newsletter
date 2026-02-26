@@ -1,8 +1,41 @@
 #!/usr/bin/env python3
 import os
 import sys
+import re
 import shutil
 from pathlib import Path
+
+VALID_TAGS = {
+    "ai", "aws", "career", "certifications", "data-engineering",
+    "kubernetes", "postgres", "reflections", "security", "serverless",
+    "testing", "tooling",
+}
+
+def validate_tags(post_dir):
+    """Warn about unknown or missing tags in a post."""
+    index_file = post_dir / "index.md"
+    if not index_file.exists():
+        return
+
+    content = index_file.read_text()
+    match = re.search(r'^tags:\s*\[([^\]]*)\]', content, re.MULTILINE)
+    if not match:
+        return
+
+    raw = match.group(1)
+    tags = [t.strip().strip("'\"") for t in raw.split(",") if t.strip()]
+
+    if not tags:
+        print(f"⚠️  Warning: Post has no tags. Valid tags: {', '.join(sorted(VALID_TAGS))}")
+        return
+
+    unknown = [t for t in tags if t not in VALID_TAGS]
+    if unknown:
+        print(f"⚠️  Warning: Unknown tag(s): {', '.join(unknown)}")
+        print(f"   Valid tags: {', '.join(sorted(VALID_TAGS))}")
+
+    if len(tags) > 4:
+        print(f"⚠️  Warning: Post has {len(tags)} tags (max 4 recommended)")
 
 def move_post(post_identifier, from_section="drafts", to_section="posts"):
     """
@@ -46,6 +79,7 @@ def move_post(post_identifier, from_section="drafts", to_section="posts"):
         sys.exit(1)
     
     try:
+        validate_tags(matching_dir)
         shutil.move(str(matching_dir), str(destination))
         print(f"Successfully moved: {matching_dir.name}")
         print(f"From: {from_section}/")
