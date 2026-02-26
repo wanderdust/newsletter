@@ -12,9 +12,9 @@ cover:
 images: []
 ---
 
-Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment and feedback loop, agentic development quickly become a waste of time.
+Coding agents work best when they have a good feedback loop they can use to verify their changes. Without a good local environment and feedback loop, agentic development quickly becomes a waste of time.
 
-My first experience with software development was javascript, building websites using frameworks like React. I loved my development setup back then. I would always have a local server, automatically refreshing on every change. If anything broke, I would instantly find out and fix the issue right away. I would also have have my unit tests [running constantly](https://martinfowler.com/bliki/SelfTestingCode.html) catching bugs in near real time.
+My first experience with software development was javascript, building websites using frameworks like React. I loved my development setup back then. I would always have a local server, automatically refreshing on every change. If anything broke, I would instantly find out and fix the issue right away. I would also have my unit tests [running constantly](https://martinfowler.com/bliki/SelfTestingCode.html) catching bugs in near real time.
 
 Having a local development setup is not the norm, at least in the data ecosystem. This is because data applications can be resource intensive, need access to databases or warehouse environments, which means it can take a lot of engineering effort to setup.
 
@@ -42,7 +42,7 @@ With those two things, you have everything you need to get feedback in real time
 
 When I talk about coding agents, I'm not referring to AI autocomplete or interacting with an LLM via the chat window. I am referring to giving the "agent" [[1](https://claude.com/product/claude-code), [2](https://github.com/features/copilot/cli/)] access to my code and terminal so that it can autonomously write code and execute commands without any assistance from me.
 
-If I ask a coding agent to build something without a feedback loop, I become the feedback loop. Every change it makes, I have to review, run, and validate myself. If I don't have a local environment, I may need to wait for my development enviroment to build before I can check the changes. When it breaks, I have to paste stack traces back to the agent and start again. It is not only exhausting but it can quickly turn into a time sink. What's more, with agents, the more iterations it takes the messier your codebase becomes.
+If I ask a coding agent to build something without a feedback loop, I become the feedback loop. Every change it makes, I have to review, run, and validate myself. If I don't have a local environment, I may need to wait for my development environment to build before I can check the changes. When it breaks, I have to paste stack traces back to the agent and start again. It is not only exhausting but it can quickly turn into a time sink. What's more, with agents, the more iterations it takes the messier your codebase becomes.
 
 The best results I’ve had with coding agents came when I showed them how to use the local environment to validate their own changes. Once they can run the application and the test their code themselves, they can get their own feedback and fix issues without relying on me.
 
@@ -51,15 +51,15 @@ The local environment is the foundation for the agent to run and validate code w
 
 ## Spec Driven Development
 
-So far this setup is enough to automate building features end to end. But this is not enough. If the feedback loop is not validating the right things and giving the correct feedback, [you may end up with a feature completely different from what you orignally wanted](https://www.calebleak.com/posts/dog-game/). To ensure your agent builds exactly what you need, you need to provide clear specifications. This means that all the requirements, specifications, and even success criteria (needed to know what to validate) are well defined beforehand.
+So far this setup is enough to automate building features end to end. But this is not enough. If the feedback loop is not validating the right things and giving the correct feedback, [you may end up with a feature completely different from what you originally wanted](https://www.calebleak.com/posts/dog-game/). To ensure your agent builds exactly what you need, you need to provide clear specifications. This means that all the requirements, specifications, and even success criteria (needed to know what to validate) are well defined beforehand.
 
 With spec driven development, you create a document with all the specs, for example if you are building a data pipeline, you clearly define the source tables, destination table, data size, schemas and what the transforms the pipeline needs to do.
 
 Before you start any development, you clarify any questions with your stakeholders, and you add all this information into a spec document. You can use a framework like [spec-kit](https://speckit.org/) or simply [create your own spec.md and plan.md files](https://boristane.com/blog/how-i-use-claude-code/).
 
-An important part here is to carefully read through the specifications and have a back an forth with you agent to correct any misinterpretations or ambuguity. You should know exactly what is written in that doc like you wrote it youlself, and you don't give the agent the go ahead until everything in the specs looks correct. To be more thorough, you can even ask the agent to highlight any potential issues in the document that need further clarifying. This process might go for hours or days, depending on how well defined your requirements are.
+An important part here is to carefully read through the specifications and have a back and forth with your agent to correct any misinterpretations or ambiguity. You should know exactly what is written in that doc like you wrote it yourself, and you don't give the agent the go ahead until everything in the specs looks correct. To be more thorough, you can even ask the agent to highlight any potential issues in the document that need further clarifying. This process might go for hours or days, depending on how well defined your requirements are.
 
-Once you have a well defined spec document, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. You can either create an [agents.md](https://agents.md/) file to contain this information, or you can specify it somewhere in the specs or plan file. It can also help to use split tasks using specialised agents, one for code generation, and one for code execution and validation.
+Once you have a well defined spec document, you need to make sure your agent knows how to spin up the local environment. It is no use to have it setup, if your agent doesn't know it can use it. You can either create an [agents.md](https://agents.md/) file to contain this information, or you can specify it somewhere in the specs or plan file. It can also help to split tasks using specialised agents, one for code generation, and one for code execution and validation.
 
 Now you can go ahead and start the implementation. The agent will have a clear understanding of what needs to be implemented, how to execute it, and how to validate it to mark something as complete.
 
@@ -78,7 +78,7 @@ MCP servers are useful beyond spec driven development. You can use them to speed
 
 ## Have you had success with this approach?
 
-Yes, I’ve had success with this approach. After a year of using LLMs and agents, using this framework is the first time I was able to automate some development work. But it only works if you have a good development setup and good specs. Without them, agents quickly become a time sink. Using agents has also also helped me create more robust and thorough solutions earlier on.
+Yes, I’ve had success with this approach. After a year of using LLMs and agents, using this framework is the first time I was able to automate some development work. But it only works if you have a good development setup and good specs. Without them, agents quickly become a time sink. Using agents has also helped me create more robust and thorough solutions earlier on.
 
 ## The 95-5 Principle
 
