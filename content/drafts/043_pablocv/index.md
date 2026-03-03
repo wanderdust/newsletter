@@ -12,7 +12,6 @@ cover:
   caption: ''
 images: []
 ---
-
 # Pablo Lopez Santori
 
 Edinburgh, UK | [pablo.lopez.santori@gmail.com](mailto\:pablo.lopez.santori@gmail.com)
@@ -28,7 +27,7 @@ I am an engineer specialising in Data Platforms and MLOps, with experience leadi
 
 Sep 2025 to today | Edinburgh, UK (remote)
 
-As a Senior Data Engineer I worked on delivering timely data solutions to stakeholders.
+As a Senior Data Engineer I worked on delivering timely data solutions to stakeholders, building pipelines in Databricks and Spark.
 
 - Led the migration of data from Salesforce to Databricks to align with new Platform strategy. Collaborated with Stakeholders to gather requirements and documented the outcomes.
 
@@ -36,9 +35,8 @@ As a Senior Data Engineer I worked on delivering timely data solutions to stakeh
 
 Sep 2023 to Sep 2025 | Edinburgh, UK (remote)
 
-As a Platform Engineer I worked on a self serving Data API Platform to enable teams to access data in an easy and secure way.
+As a Platform Engineer I worked on a self serving Data API Platform to enable teams to access data in an easy and secure way. I engineered and supported distributed systems on Kubernetes, leveraging Trino and Aurora PostgreSQL to deliver high availability and horizontally scalable performance for terabyte scale data workloads.
 
-- Worked with highly distributed systems deployed in kubernetes (e.g Trino) and Aurora Postgres to ensure the platform had high availabilty and was capable to scale to handle load.
 - Reduced kubernetes costs by £60k a year by improving our resource monitoring in Datadog to ensure resources were assigned according to real usage.
 - Collaborated in the design of the platform since day 1, from early architecture decisions through production rollout. Tech stack included Databricks, Spark, Postgres, Trino, Python, AWS, Terraform, Kubernetes and Kong.
 - Streamlined Performance Testing on the APIs to ensure latency requirements were met under high load by creating a reusable Framework with Locust.
@@ -63,7 +61,7 @@ Nov 2020 to Jan 2022 | Glasgow, UK (remote)
 
 As a Machine Learning engineer, I worked on building and deploying Computer Vision Models to track construction activity via Satellite Imagery.
 
-- Built an object detection model to track the development of new homes via Satellite Imagery. The stack used was Pythorch, MLFlow, AWS Batch, Docker and Terraform.
+- Built an object detection model to track the development of new homes via Satellite Imagery. The stack used was Pytorch, MLFlow, AWS Batch, Docker and Terraform.
 - Came up with a novel approach to predict construction progerss using time series data with KNN and data embeddings using Scikit Learn, and FastAPI to deploy the final model.
 - Collaborated with non technical stakeholders to gather requirements, and keep in touch about ongoing progess to ensure requirements were met.
 
@@ -73,7 +71,8 @@ Apr 2023 to May 2023 | Remote
 
 As a Consultant, I helped KLU understand the performance of State of the Art LLMs,
 
-- Fine tuned and deployed Alpaca 7B and 13B on a custom dataset and benchmarked models to support data driven deployment choices.
+- Fine tuned Alpaca 7B and 13B on a custom dataset using GPU accelerated distributed training.
+- Deployed and benchmarked the models to enable data driven deployment decisions.
 - Established best practices for model training and deployment on AWS using S3, DVC, Weights and Biases, Terraform, and SageMaker, with clear documentation for handover.
 
 
