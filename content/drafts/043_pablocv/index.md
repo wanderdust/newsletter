@@ -29,7 +29,7 @@ Sep 2025 to today | Edinburgh, UK (remote)
 
 As a Senior Data Engineer at FanDuel, I deliver timely and reliable data solutions in a highly regulated environment handling sensitive PII. I build and maintain data pipelines using Databricks, Spark, and DBT.
 
-- Led the migration of data from Salesforce to Databricks to align with the new platform strategy, partnering with internal and expternal stakeholders to gather requirements and document outcomes.
+- Led the migration of data from Salesforce to Databricks to align with the new platform strategy, partnering with stakeholders to gather requirements and document outcomes.
 - Designed and built batch and streaming data pipelines in Spark, ensuring data quality, compliance, and scalability.
 
 ### FanDuel: Data Platform Engineer
@@ -40,6 +40,7 @@ As a Platform Engineer I worked on a self serving Data API Platform to enable te
 
 - Reduced kubernetes costs by £60k a year by improving our resource monitoring in Datadog to ensure resources were assigned according to real usage.
 - Collaborated in the design of the platform since day 1, from early architecture decisions through production rollout. Tech stack included Databricks, Spark, Postgres, Trino, Python, AWS, Terraform, Kubernetes and Kong.
+- Optimised PostgreSQL performance through partitioning strategies, data modelling, index design, and read versus write replica management, reducing critical API query latency to millisecond response times.
 - Streamlined Performance Testing on the APIs to ensure latency requirements were met under high load by creating a reusable Framework with Locust.
 - Created Platfrom wide documentation for our customers. This creates a single place for knowledge, reduces support burden and encouraged team members to keep docs up to date.
 - Led Projects such as the Reverse ETL strategy from Databricks to Postgres, or GraphQL adoption for the Platform. Collaborated with technical and non technical stakeholders to gather requirements and ensure expectations were met.
