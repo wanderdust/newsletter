@@ -12,20 +12,11 @@ cover:
 images: []
 ---
 
-I started my professional career deploying in the cloud, always thinking cloud first.
+If you were to peek inside Postgres and see how the tables are stored, you'd be surprised they look nothing like the outuput you get when you do a SELECT query.
 
-This creates a problem, because the "cloud" can be so abstracted that you start to imagine some services are just magic. I wouldn't think about how they work, they just do, and the technology behind it must be some black magic.
-
-It is not until I actually remember that the cloud is simply a program running on a server somewhere, built by a bunch of engineers like myself, that I can break down everything to the very basics.
-
-Take Aurora RDS for example. It can do some truly amazing stuff with replication, load balancing, failover and so on. But all Aurora is just Postgres running on a server. Over time they have built improvements to this Postgres instance to add all the cool features you can use today, but at the end of the day, it is just running a fancy version of Postgres in their own private machines.
-
-The point I'm trying to make is that like everything else, Postgres is not ran by magic. Databases are not magic either. Postgres is essentially a program that writes files to your filesystem and lets you read the files using SQL query language. This might be obvious to some, but I sometimes forget, so it is good to remind myself.
-
-In this post I look inside Postgres to understand how tables are stored in the filesystem. The goal of this post is nothing more than to understand a small part of the whole Postgres ecosystem to demystify things a bit. More as a learning process to myself than anything else.
+In this post I look inside Postgres to understand how tables are stored in the filesystem. The goal of this post is nothing more than to understand a small part of the whole Postgres ecosystem to demystify things a bit. It is a step by step process to find out where tables actually live in the filesystem and their structure.
 
 Let's begin.
-
 
 ## Installation
 
