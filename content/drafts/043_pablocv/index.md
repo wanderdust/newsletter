@@ -27,9 +27,10 @@ I am an engineer specialising in Data Platforms and MLOps, with experience leadi
 
 Sep 2025 to today | Edinburgh, UK (remote)
 
-As a Senior Data Engineer I worked on delivering timely data solutions to stakeholders, building pipelines in Databricks and Spark.
+As a Senior Data Engineer at FanDuel, I deliver timely and reliable data solutions in a highly regulated environment handling sensitive PII. I build and maintain data pipelines using Databricks, Spark, and DBT.
 
-- Led the migration of data from Salesforce to Databricks to align with new Platform strategy. Collaborated with Stakeholders to gather requirements and documented the outcomes.
+- Led the migration of data from Salesforce to Databricks to align with the new platform strategy, partnering with internal and expternal stakeholders to gather requirements and document outcomes.
+- Designed and built batch and streaming data pipelines in Spark, ensuring data quality, compliance, and scalability.
 
 ### FanDuel: Data Platform Engineer
 
@@ -51,6 +52,7 @@ Jan 2022 to Sep 2023 | Glasgow, UK (remote)
 As an MLOps Engineer I deployed Data Science Models to provide insights on the construction landscape in the United States.
 
 - Led the development of a model to find similar properties in an area in real time via an API. The stack used was Snowflake, dbt, terraform, AWS (Batch), MongoDB, AWS Lambda and API Gateway.
+- Implemented the DBT framework to improve the MLOps workflow to create more consistent data transformation pipelines. Used AWS Batch to create a reverse ETL pipeline to make data available in MongoDB to support models in production.
 - Created a re-usable MLOps framework to facilitate deployment of machine learning models using AWS Sagemaker and MLFlow reducing time to deploy.
 - Introduced Grafana based monitoring for API performance and pipeline execution with alerting, improving time to detect and resolve issues.
 - Mentored an intern on a project using Generative AI models (GANs and Stable Diffusion) for 3D object generation and collaborated closely with Product and stakeholders to keep delivery on track.
