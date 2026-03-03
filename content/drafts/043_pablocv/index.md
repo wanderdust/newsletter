@@ -38,6 +38,8 @@ Sep 2023 to Sep 2025 | Edinburgh, UK (remote)
 
 As a Platform Engineer I worked on a self serving Data API Platform to enable teams to access data in an easy and secure way.
 
+- Worked with highly distributed systems deployed in kubernetes (e.g Trino) and Aurora Postgres to ensure the platform had high availabilty and was capable to scale to handle load.
+- Reduced kubernetes costs by £60k a year by improving our resource monitoring in Datadog to ensure resources were assigned according to real usage.
 - Collaborated in the design of the platform since day 1, from early architecture decisions through production rollout. Tech stack included Databricks, Spark, Postgres, Trino, Python, AWS, Terraform, Kubernetes and Kong.
 - Streamlined Performance Testing on the APIs to ensure latency requirements were met under high load by creating a reusable Framework with Locust.
 - Created Platfrom wide documentation for our customers. This creates a single place for knowledge, reduces support burden and encouraged team members to keep docs up to date.
