@@ -141,13 +141,13 @@ If your agent does not have the tools to run its own changes locally, then you w
 
 With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) Run unit tests to ensure nothing else has broken and 3) Create its own scripts to spin things up locally and run some integration tests end to end. With all of these things you can ensure the feature has been tested, validated and that it actually works.
 
-### Types of feedback
-
-*TODO: Write about the different levels of feedback: code execution, unit tests, smoke tests, artifact validation — and how to choose which to enable.*
-
 ### Local development is essential
 
 *TODO: Write about why a working local dev environment is a prerequisite for effective agentic development.*
+
+### Types of feedback
+
+*TODO: Write about the different levels of feedback: code execution, unit tests, smoke tests, artifact validation — and how to choose which to enable.*
 
 ## Agents & skills
 
@@ -177,7 +177,7 @@ With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) R
 
 ---
 
-*[LAB — Real use case: spec driven dev using a framework, agents + MCP, step by step with screenshots]*
+*[LAB - Putting it all together — Real use case: spec driven dev using a framework, agents + MCP, step by step with screenshots]*
 
 ---
 
