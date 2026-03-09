@@ -177,6 +177,8 @@ With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) R
 
 ---
 
+## LAB
+
 *[LAB - Putting it all together — Real use case: spec driven dev using a framework, agents + MCP, step by step with screenshots]*
 
 ---
