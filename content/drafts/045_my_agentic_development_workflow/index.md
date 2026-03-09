@@ -57,18 +57,19 @@ TIMELINE
   - Are soft eng being obsolete - NO. We still need people to speak to stakeholders, find which features need built etc. This is the job of an Engineer. You still need to be good at Operational Excelense (desigining scalable systems, strong soft eng practcices, monitoring, alerting etc. ). These are things that agents are still not capable of handling all together. Humans need knowledge of the system.
 
 ---
+## Introduction
 
-Recently a friend of mine was telling me how they use AI in their development workflows. As soon as he told me he was using the copilot window I told him he was already doing it wrong. I do not need to hear the rest.
+### The copy-paste problem
 
-I started telling him to do spec driven development, and the workflow I use. I thought I'd document it here to share with others.
+*TODO: Write about how most devs are still using copy-paste chat as their AI workflow and why that's limiting.*
 
-## I'm no longer using the IDE
+### LLMs vs agents: what's the difference
 
-The first thing I told him is that if you really want to get into agentic development, an IDE is no longer necessary because you give the agent all the tools to autonomously build and test the features it builds end to end. All you really need to do is review the code and tests once it is done.
+*TODO: Write about the distinction between a chat LLM and an autonomous agent with tools.*
 
-Instead I use a CLI agent. In my case I work with github copilot cli. I tell the agent what it needs to build and how the repo works, and I let it crack on with the work. It then uses cli tools and shell commands to achieve my goals.
+### The evolution of development
 
-If you follow this workflow, you don't really need an IDE anymore.
+*TODO: Write about the timeline: manual coding → AI-assisted human coding → human-assisted AI coding.*
 
 ## Spec driven development
 
@@ -118,14 +119,21 @@ You don't really need to provide much more information on the prompt. As long as
 
 Once you have your tasks.md file finished you can start the implementation. Simply ask your agent to start implementing the tasks. It helps if you break down the implementation per phases (implement tasks 1 - 3), rather than trying to do a big bang.
 
+### Validation
 
-## Fixing forward
+*TODO: Write about adding validation as part of success criteria and enabling the agent to run validation scripts and tests as part of each task.*
+
+### A reusable prompts framework
+
+*TODO: Write about creating a reusable set of prompt templates (spec, plan, tasks) so you don't need to write them from scratch each time.*
+
+### Fixing forward
 
 I treat all the files as immutable. If I want to add something else to the spec.md file once I've already created the plan.md or the tasks.md files I won't go back and update the original spec because then I need to cascade all of these changes accordingly to the plan and tasks.
 
 Instead, once I am happy which each phase and I move forward (specs, plan or tasks) I treat each document as immutable. That means that rather than going back and make any changes, I add those as part of a new feature instead. If I missed something that should have been in the original spec, I would rather abandon the current workflow and start from the beginning, or I would implement what I already have and create a new spec.md document after I've implemented the current one. I fix forward, rather than going back on myself.
 
-## The feedback loop
+## Feedback loops
 
 Having a feedback loop for the agent is essential if you want the agent to 1) be able to build features autonomously end to end and 2) ensure the final code has been tested and verified. To have a feedback loop [you need to be able to run your code locally](https://wanderdust.github.io/newsletter/posts/044_local_development_is_king/). To be able to run your code locally you need to setup a good local development environment.
 
@@ -133,10 +141,103 @@ If your agent does not have the tools to run its own changes locally, then you w
 
 With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) Run unit tests to ensure nothing else has broken and 3) Create its own scripts to spin things up locally and run some integration tests end to end. With all of these things you can ensure the feature has been tested, validated and that it actually works.
 
+### Types of feedback
+
+*TODO: Write about the different levels of feedback: code execution, unit tests, smoke tests, artifact validation — and how to choose which to enable.*
+
+### Local development is essential
+
+*TODO: Write about why a working local dev environment is a prerequisite for effective agentic development.*
+
+## Agents & skills
+
+### Reusable agents
+
+*TODO: Write about using agents.md to store reusable agent definitions with repo context, coding conventions, and planning workflows.*
+
+### Skills
+
+*TODO: Write about skills and how they extend agent capabilities with reusable, composable actions.*
+
+## CLIs & MCPs
+
+### Using CLIs
+
+*TODO: Write about letting agents use CLIs to access external systems (Databricks, Kubernetes, AWS) and how useful they are during spec and planning sessions.*
+
+### MCPs
+
+*TODO: Write about MCPs as the agent-native equivalent of CLIs and how to use both interchangeably.*
+
+## Repo setup
+
+### What a well-configured repo looks like
+
+*TODO: Write about the anatomy of a repo set up for agentic development: agents.md, MCP config, spec/plan/tasks files, local dev setup, and coding conventions.*
+
+---
+
+*[LAB — Real use case: spec driven dev using a framework, agents + MCP, step by step with screenshots]*
+
+---
+
+## Ownership & security
+
+### You own the code
+
+*TODO: Write about human accountability for LLM-generated code — you should be able to vouch for every line in production.*
+
+### Small PRs, easy reviews
+
+*TODO: Write about delivering work in small increments and how that makes both your own review and your colleagues' PR reviews manageable.*
+
+### Security and the code you ship
+
+*TODO: Write about security risks from not reading generated code: auth method choices, hardcoded credentials, cloud permission scoping.*
+
+### Scope your environments properly
+
+*TODO: Write about ensuring dev/qa/prod systems have correct permissions before exposing them to agents — agents use your own credentials.*
+
 ## Reviewing changes
 
 You may be thinking, how do I review the markdown files or review the changes if I don't have an IDE? You can still use an IDE for these things if that's what you prefer to use. I personally use lazygit in the terminal to review code changes, and use a lightweight notepad to review the markdown files. Use whatever works best for you.
 
+## New ways of working
+
+### More upfront design
+
+*TODO: Write about how agentic dev revives the value of thorough upfront specs — you can go deeper earlier because the agent helps explore the codebase and surface edge cases.*
+
+### When not to use agents
+
+*TODO: Write about learning through doing things manually and knowing when to keep your hands on the keyboard — expertise comes from practice.*
+
+### Commit your spec, plan and tasks
+
+*TODO: Write about including spec/plan/tasks files in PRs as a record of intent and design decisions.*
+
+## Common questions
+
+### What does this cost?
+
+*TODO: Write about token/API costs and how to think about the ROI.*
+
+### Context window and context switching
+
+*TODO: Write about managing context limits, running one agent at a time, and the cognitive overhead of switching between tasks mid-session.*
+
+### How efficient is this vs working manually?
+
+*TODO: Write about how efficiency depends on spec quality and incremental implementation — but solutions can be more thorough from the first pass.*
+
+### How much can we automate?
+
+*TODO: Write about the realistic ceiling for automation and why human-in-the-loop remains essential.*
+
+### Are software engineers becoming obsolete?
+
+*TODO: Write about the evolving role of engineers — stakeholder communication, system design, operational excellence, monitoring and alerting are still deeply human skills.*
 
 ## Conclusion
 
