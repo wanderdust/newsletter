@@ -144,27 +144,44 @@ The key is learning to work with agents effectively. That starts with how you co
 
 ![workflow](./workflow.png)
 
-### The spec.md file
+The workflow I follow consists of 3 parts, planning phase, implementation phase and final code review phase.
 
-This is the workflow I follow.
+### The Planning Phase
 
-First I create a spec.md file in the repository. I tell the agent to create the file based on my initial specifications and let it create a detailed initial draft. The quality of the first draft will only be as good as your original specifications.
+The planning phase consists of an in depth set of documents that contian in deputh specifications of WHAT needs to built, WHY and HOW we are going to implement it. This is the most important part, and where we have to focus all of our attention to ensure we gather all of the correct requirements and make the correct decisions.
 
-> Example prompt: _Create a specs.md file with the specifications for this feature I want to build. Focus on the what and why, not tech stack. Here are my original specs <paste your JIRA ticket here>_
+During this psahe, we do not implement any code.
 
-The specs.md file will be your home. It is the most important part of the process to get right. With spec driven development, the specifications document is the ground truth that your agent uses to build the features you need, which is why you need to be thorough reviewing it, and adding any changes or clarifications to it.
+#### The spec.md file
 
-You may spend hours or days going through your spec file. You should make corrections and ask the agent to update the spec.md based on your corrections. You may also need to find out more information from your team or the stakeholders. Add all of this information here and ask the agent to update the document each time. Remember, any lack of detail or ambiguity might result in the final feature not turning out the way you wanted.
+First I create a spec.md file in the repository. I tell the agent to create the file based on my initial specifications and let it create a detailed initial draft. The specs file contains information about WHY we are building this feature and WHAT this feature is. At this point we do not specify technologies or anything related to HOW we are going to build this. This file needs to be a reflection of what we are building, agnostic of any technical decisions.
 
-A lot of times, I use chatgpt's text to speech feature to transcribe all the changes I want in the spec.md file, and then paste it into github copilot cli. I like to speak what I want to change rather than type it. Hopefully copilot adds a Speech to text feature soon.
+Some of the things you can include in this file are:
+- context around the purpose of the current repo
+- What is being implemented and why; User stories
+- Functional Requirements
+- Key Entities (ie data schemas)
+- Success Criteria.
 
-A bonus tip to create an even better spec is to make use any MCP servers available to you in order to get any additional information from your system. If you are building a feature that needs to write to a table in a database, perhaps you can make use of an MCP server that can access that database (in dev or qa) to understand the current database structure and get the queries right from the start.
+The quality of the first draft will only be as good as your original specifications.
 
-Once your spec.md file is watertight and you are ready to start implementing, there is a final tip to make sure the spec is solid: ask the agent to find any ambiguity in the specification or lack of detail and prompt it to ask you for clarifications on whatever it finds.
+> Example prompt: _Create a specs.md file for this feature. Focus on the what and why, no technical decisions. Include context about the repo, user stories, functional requirements, key entities, and success criteria. Here are my original specs: [paste your JIRA ticket here]_
 
-Once the spec file is ready, I move on to the planning phase.
+From this, the agent should have created an initial specs document ready for you to review and provide feedback on.
 
-### The plan.md file
+#### The annotation loop
+
+The specs.md file will be where you spend most of your time during the whole process. You need to carefully read the contents and ensure all of the information is correct. If the model made any assumptions, they need to be corrected. You can either annotate them directly in the spec file or propmt the model with the changes you want to make. The agent will then update the spec file to include all the new changes.
+
+You may spend hours or days going through your spec file. You should make corrections and ask the agent to update the spec.md based on your corrections. You may also need to find out more information from your team or the stakeholders. Add all of this information here and ask the agent to update the document each time. Remember, any lack of detail or ambiguity might result in the final feature not turning out the way you wanted. You may go through this annotation process multiple times.
+
+Once your spec.md is ready to go, ask the model to analyze the current state of the file to find any ambiguity or lack of clarification. This will help identify any ambiguity in the file that need clarifying from you, which will reduce any assumptions made by the model at implementation time, which is what we want to minimise as much as possible.
+
+> Example prompt: _Check the existing spec.md and identify any lack of detail or ambiguity. Ask me for further clarification on what you find._
+
+When the final clarifications are done, and the final spec is ready, I move on to the planning phase.
+
+#### The plan.md file
 
 The next step is to create a plan.md file. The plan.md file is where you specify architecture, frameworks, and technical decisions. If you are building an an existing repo, you may want the agent to scan the current repo to understand how to build the feature using the existing patterns. If you are creating something new, you may want to be more specific in the languages, tools and so on.
 
@@ -175,7 +192,7 @@ For the plan you can choose to either provide specific information about the fra
 
 Then we are ready to move on to the tasks file.
 
-### The tasks.md file
+#### The tasks.md file
 
 The tasks.md file is simply a breakdown of the plan into concrete tasks to achieve the goal. The tasks break down plan into executable steps. They help the agent have a clear action plan during implementation, as well as helping it track its own progress.
 
@@ -184,19 +201,22 @@ The tasks.md file is simply a breakdown of the plan into concrete tasks to achie
 You don't really need to provide much more information on the prompt. As long as your plan is solid, the tasks will generally not need any more context than that. Again, read through the tasks, and check they look good. I like to ensure that one of my first tasks is to create the validation script and tests to ensure the agent has a feedback loop when testing the feature, so I will sometimes ask it to add an initial task to set that up.
 
 
-### Implementation
+### Implementation Phase
 
 Once you have your tasks.md file finished you can start the implementation. Simply ask your agent to start implementing the tasks. It helps if you break down the implementation per phases (implement tasks 1 - 3), rather than trying to do a big bang.
 
-### Validation
+#### Validation
 
 *TODO: Write about adding validation as part of success criteria and enabling the agent to run validation scripts and tests as part of each task.*
 
-### A reusable prompts framework
+### Using this in practice
+#### A reusable prompts framework
 
 *TODO: Write about creating a reusable set of prompt templates (spec, plan, tasks) so you don't need to write them from scratch each time.*
 
-### Fixing forward
+#### Fixing forward
+ADD - How to avoid scope creep
+
 
 I treat all the files as immutable. If I want to add something else to the spec.md file once I've already created the plan.md or the tasks.md files I won't go back and update the original spec because then I need to cascade all of these changes accordingly to the plan and tasks.
 
@@ -237,6 +257,11 @@ With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) R
 ### MCPs
 
 *TODO: Write about MCPs as the agent-native equivalent of CLIs and how to use both interchangeably.*
+
+
+## Agentic Debugging
+
+- Use CLIs & MCPs to debug (Databricks, Kubernetes) more thoroughly. Use the results to implement a bug fix using spec driven development. We can call it Debugging with Spec Driven Development.
 
 ## Repo setup
 
