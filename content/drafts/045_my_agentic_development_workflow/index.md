@@ -162,6 +162,7 @@ Some of the things you can include in this file are:
 - Functional Requirements
 - Key Entities (ie data schemas)
 - Success Criteria.
+- Architecture (non-technical)
 
 The quality of the first draft will only be as good as your original specifications.
 
@@ -183,9 +184,11 @@ When the final clarifications are done, and the final spec is ready, I move on t
 
 #### The plan.md file
 
-The next step is to create a plan.md file. The plan.md file is where you specify architecture, frameworks, and technical decisions. If you are building an an existing repo, you may want the agent to scan the current repo to understand how to build the feature using the existing patterns. If you are creating something new, you may want to be more specific in the languages, tools and so on.
+The next step is to create a plan.md file. The plan contains the technical implementation details, such as architecture, frameworks and technical decisions. The plan should be aware of the structure of the current repository, and know which changes will be applied and where. In the plan we con specify which tests and validations we are going to run. It should know how to spin up a local environmont to run test things.
 
-> Example prompt: _Create a plan.md file. Specify architecture, frameworks, and technical decisions. Use python 3.12, terraform ..._
+If you are building an an existing repo, you may want the agent to scan the current repo to understand how to build the feature using the existing patterns. If you are creating something new, you may want to be more specific in the languages, tools and so on.
+
+> Example prompt: _Create a plan.md file with technical implementation details with chosen tech stack. Specify architecture, frameworks, and technical decisions. Use [specify your technical choices here]_ ...
 
 For the plan you can choose to either provide specific information about the frameworks, or let it do its own thing. That is up to you. Similarly to the spec.md, you need to spend time reviewing the plan and changing anything that does not look right.
 
@@ -194,25 +197,45 @@ Then we are ready to move on to the tasks file.
 
 #### The tasks.md file
 
-The tasks.md file is simply a breakdown of the plan into concrete tasks to achieve the goal. The tasks break down plan into executable steps. They help the agent have a clear action plan during implementation, as well as helping it track its own progress.
+The tasks.md file is a breakdown of the plan into executable steps. It is essentially a sequential TODO list of what needs to be implemented from the plan, broken down into small tasks. The tasks.md file is essential for you to know exactty what it is that will be implemented, and the model will follow these steps one by one. It makes the model run exactly what is there, rather that it making its own choices about implementation.
 
-> Example prompt: _Create a tasks.md file. Break down plan into executable steps._
+You can structurre the file into small TODOs that the model can update as it implements things.
 
-You don't really need to provide much more information on the prompt. As long as your plan is solid, the tasks will generally not need any more context than that. Again, read through the tasks, and check they look good. I like to ensure that one of my first tasks is to create the validation script and tests to ensure the agent has a feedback loop when testing the feature, so I will sometimes ask it to add an initial task to set that up.
+> Example prompt: _Create a tasks.md file as detailed todo list to the plan, with all the phases and individual tasks necessary to complete the plan - don’t implement yet._
 
+The most important thing in the tasks file, is ensuring there are validation steps for each task. These can be unit tests, or custom scripts the agent creates to test functionality. These validation tasks will serve the agent as a validation loop that it can use to verify functionality to ensure it meets the success criteria before marking it done.
 
 ### Implementation Phase
 
-Once you have your tasks.md file finished you can start the implementation. Simply ask your agent to start implementing the tasks. It helps if you break down the implementation per phases (implement tasks 1 - 3), rather than trying to do a big bang.
+Once you have reviewed the tasks.md file and you are happy to move forward with it, it is time to start implementing.
 
-#### Validation
+Ask your agent to start implement tasks. You can choose to implement all in one go, or implement the tasks into phases, for example by grouping similar tasks into one agent execution.
 
-*TODO: Write about adding validation as part of success criteria and enabling the agent to run validation scripts and tests as part of each task.*
+> Example prompt: _Implement tasks 1 - 3. When you are done with a task, mark it as completed in the tasks.md file. Do not stop until all tasks in this phase are completed. Do not add unnecessary comments. Do not use any or unknown types. Continuously run the unit tests to make sure you are not introducing new issues._
+
+### Validation Loops
+
+A validation loop is essential for the agent to properly verify if the changes it has made meet the success criteria defined in the specifications. A good validation process is what brings the real benefit of using agents, because they can write, run and validate code end to end with minimal human supervision. A good self validation process also gives you confidence as a developer that the code created meets the necessary standards, even before you review it.
+
+The validation you choose to use depends on the objective you are trying to achieve. For example, if building a website, the validation process might include passing unit tests, taking screenshots of the website to ensure it looks correct, and running simulated user journeys end to end to ensure functionality works as expected. These are all things agents can do for you, but require you specify this as a requirement during your planning.
+
+It is also worth mentioning that the validation loop is only possible if you have a local environment you can run your project on. If your application requires you to test in a deployed dev environment which the agent can't access, you are going to have a difficult time setting up a validation loop, and therefore any generated code might not be as trustworthy as it could be. A good local environment needs to be a requirement for every application we are building.
+
+#### Types of feedback
+
+There are different levels of feedback which are useful for the model to test and validate the code.
+1. Being able to run the code locally. THe agent can fix any runtime errors.
+2. Running unit tests. Possible using Test Driven Development, where we create the tests first.
+3. Testing user journeys. Ask the model to build scripts which test user journeys end to end, to ensure functionality.
+4. Any other criteria can be created using custom scripts, such as taking screenshots from the UI.
 
 ### Using this in practice
+
 #### A reusable prompts framework
 
-*TODO: Write about creating a reusable set of prompt templates (spec, plan, tasks) so you don't need to write them from scratch each time.*
+- Option 1: Create templates in your repo inside a templates folder. When prompting your agent, ask it to follow the template in templates/plan.template.md. The template can include the sections to populate and a brief description of the purpose of the file.
+- Option 2: Use spec-kit or similar tool and updates the provided templates.
+- Option 3: Create a planning agent that holdds this info
 
 #### Fixing forward
 ADD - How to avoid scope creep
@@ -221,22 +244,6 @@ ADD - How to avoid scope creep
 I treat all the files as immutable. If I want to add something else to the spec.md file once I've already created the plan.md or the tasks.md files I won't go back and update the original spec because then I need to cascade all of these changes accordingly to the plan and tasks.
 
 Instead, once I am happy which each phase and I move forward (specs, plan or tasks) I treat each document as immutable. That means that rather than going back and make any changes, I add those as part of a new feature instead. If I missed something that should have been in the original spec, I would rather abandon the current workflow and start from the beginning, or I would implement what I already have and create a new spec.md document after I've implemented the current one. I fix forward, rather than going back on myself.
-
-## Feedback loops
-
-Having a feedback loop for the agent is essential if you want the agent to 1) be able to build features autonomously end to end and 2) ensure the final code has been tested and verified. To have a feedback loop [you need to be able to run your code locally](https://wanderdust.github.io/newsletter/posts/044_local_development_is_king/). To be able to run your code locally you need to setup a good local development environment.
-
-If your agent does not have the tools to run its own changes locally, then you will be using the agents at 30% of their actual capacity.
-
-With a solid feedback loop, the agent can 1) run the code to ensure it runs 2) Run unit tests to ensure nothing else has broken and 3) Create its own scripts to spin things up locally and run some integration tests end to end. With all of these things you can ensure the feature has been tested, validated and that it actually works.
-
-### Local development is essential
-
-*TODO: Write about why a working local dev environment is a prerequisite for effective agentic development.*
-
-### Types of feedback
-
-*TODO: Write about the different levels of feedback: code execution, unit tests, smoke tests, artifact validation — and how to choose which to enable.*
 
 ## Agents & skills
 
