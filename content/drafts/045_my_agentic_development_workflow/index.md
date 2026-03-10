@@ -92,7 +92,7 @@ flowchart TD
     B --> C{Run tools?}
     C -- Yes --> D[Execute Tool]
     D --> B
-    C -- No --> E[Final Answer]
+  C -- No --> E[Final Answer]
     E --> F{Goal achieved?}
     F -- No --> B
     F -- Yes --> G[Done]
@@ -117,7 +117,7 @@ timeline
     2024 : Human-Assisted AI Coding
          : Claude Sonnet 3.5
          : Agentic dev workflows emerge
-    2025 : Human-Assisted AI Coding
+  2025 : Human-Assisted AI Coding
          : Claude Sonnet & Opus 4.6+
          : Fully agentic end-to-end development
 {{< /mermaid >}}
@@ -224,10 +224,12 @@ It is also worth mentioning that the validation loop is only possible if you hav
 #### Types of feedback
 
 There are different levels of feedback which are useful for the model to test and validate the code.
-1. Being able to run the code locally. THe agent can fix any runtime errors.
-2. Running unit tests. Possible using Test Driven Development, where we create the tests first.
-3. Testing user journeys. Ask the model to build scripts which test user journeys end to end, to ensure functionality.
+1. Being able to run the code locally. THe agent can fix any runtime errors. This is the most basic and the minimum you should aim to have.
+2. Running unit tests. Possible using Test Driven Development, where we create the tests first. It gives the model something more concrete that needs to be achieved.
+3. Testing user journeys. Ask the model to build scripts which test user journeys end to end, to ensure functionality. This gives the model the confidence that all features work together with each other, not just in individual blocks.
 4. Any other criteria can be created using custom scripts, such as taking screenshots from the UI.
+
+Basically anything that you would do yourself as part of your review process before making a Pull Request, you should be able to ask the agent to do as part of the development process.
 
 ### Using this in practice
 
