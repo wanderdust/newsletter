@@ -61,11 +61,45 @@ TIMELINE
 
 ### The copy-paste problem
 
-*TODO: Write about how most devs are still using copy-paste chat as their AI workflow and why that's limiting.*
+The user writes a prompt, and the LLM returns a response. The user copies the code provided into their code. This is pretty much how we've been interacting with ChatGPT over the past few years. However, this is a very manual process that requires a human in the middle finding files and updating code in the right places. THis is not onnly inconvenient, but also a recipe for introducing bugs.
+
+Another inconvenience is when the LLM doesn't have access to our codebase, which it needs to make the right decisions about how to implement new code. With tools like chatgpt, we need to provide this context manually each time. Wouldn't it be much more helpful if the agent lived inside our repository, and it could access all the same files we can, so it can find the information it needs without us having to provide it each time?
+
+What makes an LLM truly useful is when it can do things on its own. Give the LLM the right tools and the right environment, and it will solve any problems you have without minimal interaction.
 
 ### LLMs vs agents: what's the difference
 
-*TODO: Write about the distinction between a chat LLM and an autonomous agent with tools.*
+An LLM is the Large Language Model. WHen we send a propmt, and the model returns a response.
+
+{{< mermaid >}}
+flowchart LR
+    A[User Prompt] --> B[LLM] --> C[Response]
+{{< /mermaid >}}
+
+An agent is an LLM that interacts with the environment. An agent lives in an "environment", and in that environment it needs to achieve a goal. In this environment the agent has access to tools or actions it can use to achieve this goal.
+
+We can have different types of agents that need to achieve different types of goals. Here we are talking about coding agents. With coding agents, the agents's environment is our terminal. The goal of the agent is what we specify in the prompt, such as "Add this feature" or "Find and fix this bug". To achieve these goals, the agent has access to different tools, such as
+- Being able to modify files.
+- Being able to search
+- Being able to read files
+- Being able run commands in the terminal
+
+Essentially the coding agent now has all the same tools you have to write, run, validate and debug code. With the right instructions, the agent will have a goal to achieve and all the necessary tools to build any features end to end with minimal assistance. A feedback loop for the agent looks more like this
+
+{{< mermaid >}}
+flowchart TD
+    A[User Prompt] --> B[LLM]
+    B --> C{Run tools?}
+    C -- Yes --> D[Execute Tool]
+    D --> B
+    C -- No --> E[Final Answer]
+    E --> F{Goal achieved?}
+    F -- No --> B
+    F -- Yes --> G[Done]
+{{< /mermaid >}}
+
+
+
 
 ### The evolution of development
 
