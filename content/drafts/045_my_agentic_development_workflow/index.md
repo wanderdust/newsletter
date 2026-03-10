@@ -92,7 +92,7 @@ flowchart TD
     B --> C{Run tools?}
     C -- Yes --> D[Execute Tool]
     D --> B
-  C -- No --> E[Final Answer]
+    C -- No --> E[Final Answer]
     E --> F{Goal achieved?}
     F -- No --> B
     F -- Yes --> G[Done]
@@ -232,6 +232,8 @@ There are different levels of feedback which are useful for the model to test an
 Basically anything that you would do yourself as part of your review process before making a Pull Request, you should be able to ask the agent to do as part of the development process.
 
 ### Using this in practice
+
+These are some ways that you can standardise the process to easily make it repeatable and remove manual prompting as much as possible.
 
 #### A reusable prompts framework
 
