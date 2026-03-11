@@ -164,9 +164,9 @@ Some of the things you can include in this file are:
 - Success Criteria.
 - Architecture (non-technical)
 
-The quality of the first draft will only be as good as your original specifications.
+The quality of the first draft will only be as good as your original specifications. Example prompt:
 
-> Example prompt: _Create a specs.md file for this feature. Focus on the what and why, no technical decisions. Include context about the repo, user stories, functional requirements, key entities, and success criteria. Here are my original specs: [paste your JIRA ticket here]_
+> _Create a specs.md file for this feature. Focus on the what and why, no technical decisions. Include context about the repo, user stories, functional requirements, key entities, and success criteria. Here are my original specs: [paste your JIRA ticket here]_
 
 From this, the agent should have created an initial specs document ready for you to review and provide feedback on.
 
@@ -176,9 +176,9 @@ The specs.md file will be where you spend most of your time during the whole pro
 
 You may spend hours or days going through your spec file. You should make corrections and ask the agent to update the spec.md based on your corrections. You may also need to find out more information from your team or the stakeholders. Add all of this information here and ask the agent to update the document each time. Remember, any lack of detail or ambiguity might result in the final feature not turning out the way you wanted. You may go through this annotation process multiple times.
 
-Once your spec.md is ready to go, ask the model to analyze the current state of the file to find any ambiguity or lack of clarification. This will help identify any ambiguity in the file that need clarifying from you, which will reduce any assumptions made by the model at implementation time, which is what we want to minimise as much as possible.
+Once your spec.md is ready to go, ask the model to analyze the current state of the file to find any ambiguity or lack of clarification. This will help identify any ambiguity in the file that need clarifying from you, which will reduce any assumptions made by the model at implementation time, which is what we want to minimise as much as possible. Example prompt:
 
-> Example prompt: _Check the existing spec.md and identify any lack of detail or ambiguity. Ask me for further clarification on what you find._
+>: _Check the existing spec.md and identify any lack of detail or ambiguity. Ask me for further clarification on what you find._
 
 When the final clarifications are done, and the final spec is ready, I move on to the planning phase.
 
@@ -186,9 +186,10 @@ When the final clarifications are done, and the final spec is ready, I move on t
 
 The next step is to create a plan.md file. The plan contains the technical implementation details, such as architecture, frameworks and technical decisions. The plan should be aware of the structure of the current repository, and know which changes will be applied and where. In the plan we con specify which tests and validations we are going to run. It should know how to spin up a local environmont to run test things.
 
-If you are building an an existing repo, you may want the agent to scan the current repo to understand how to build the feature using the existing patterns. If you are creating something new, you may want to be more specific in the languages, tools and so on.
+If you are building an an existing repo, you may want the agent to scan the current repo to understand how to build the feature using the existing patterns. If you are creating something new, you may want to be more specific in the languages, tools and so on. Example prompt:
 
-> Example prompt: _Create a plan.md file with technical implementation details with chosen tech stack. Specify architecture, frameworks, and technical decisions. Use [specify your technical choices here]_ ...
+
+> _Create a plan.md file with technical implementation details and chosen tech stack. Specify technical decisions. Do a deep research of the relevant sections of the repo before suggesting how the changes will be made. Any decisions should be backed up by data, to ensure functionality is available and changes are based on existing practices and functionality. The plan does not need to be broken down into tasks (we will do that later). We want a detailed overview of the technical decisions and how we will implement the changes._
 
 For the plan you can choose to either provide specific information about the frameworks, or let it do its own thing. That is up to you. Similarly to the spec.md, you need to spend time reviewing the plan and changing anything that does not look right.
 
@@ -199,9 +200,9 @@ Then we are ready to move on to the tasks file.
 
 The tasks.md file is a breakdown of the plan into executable steps. It is essentially a sequential TODO list of what needs to be implemented from the plan, broken down into small tasks. The tasks.md file is essential for you to know exactty what it is that will be implemented, and the model will follow these steps one by one. It makes the model run exactly what is there, rather that it making its own choices about implementation.
 
-You can structurre the file into small TODOs that the model can update as it implements things.
+You can structurre the file into small TODOs that the model can update as it implements things. Example prompt:
 
-> Example prompt: _Create a tasks.md file as detailed todo list to the plan, with all the phases and individual tasks necessary to complete the plan - don’t implement yet._
+> _Create a tasks.md file as detailed todo list to the plan, with all the phases and individual tasks necessary to complete the plan - don’t implement yet._
 
 The most important thing in the tasks file, is ensuring there are validation steps for each task. These can be unit tests, or custom scripts the agent creates to test functionality. These validation tasks will serve the agent as a validation loop that it can use to verify functionality to ensure it meets the success criteria before marking it done.
 
@@ -209,9 +210,9 @@ The most important thing in the tasks file, is ensuring there are validation ste
 
 Once you have reviewed the tasks.md file and you are happy to move forward with it, it is time to start implementing.
 
-Ask your agent to start implement tasks. You can choose to implement all in one go, or implement the tasks into phases, for example by grouping similar tasks into one agent execution.
+Ask your agent to start implement tasks. You can choose to implement all in one go, or implement the tasks into phases, for example by grouping similar tasks into one agent execution. Example prompt:
 
-> Example prompt: _Implement tasks 1 - 3. When you are done with a task, mark it as completed in the tasks.md file. Do not stop until all tasks in this phase are completed. Do not add unnecessary comments. Do not use any or unknown types. Continuously run the unit tests to make sure you are not introducing new issues._
+> _Implement tasks 1 - 3. When you are done with a task, mark it as completed in the tasks.md file. Do not stop until all tasks in this phase are completed. Do not add unnecessary comments. Do not use any or unknown types. Continuously run the unit tests to make sure you are not introducing new issues._
 
 ### Validation Loops
 
@@ -281,6 +282,10 @@ Instead, once I am happy which each phase and I move forward (specs, plan or tas
 *TODO: Write about the anatomy of a repo set up for agentic development: agents.md, MCP config, spec/plan/tasks files, local dev setup, and coding conventions.*
 
 ---
+
+## Agents and IDEs
+
+ *TODO: CLI agents vs IDE agents (cursor, windsurf vs claude code or copilot)*
 
 ## LAB
 
