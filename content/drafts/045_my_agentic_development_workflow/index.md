@@ -232,23 +232,70 @@ There are different levels of feedback which are useful for the model to test an
 
 Basically anything that you would do yourself as part of your review process before making a Pull Request, you should be able to ask the agent to do as part of the development process.
 
+### Making Edits
+
+Sometimes, after implementation is finished, you notice that something was built incorrectly or not built at all. This is usually a symptom of one of two things: a poorly defined spec (the agent solved the wrong problem), or a weak feedback loop (the agent never got signal that something was wrong).
+
+When this happens, there is a temptation to start firing off quick fixes. "Just change this bit", "actually make it do this instead". This is where spec driven development quietly becomes vibe coding. Each prompt narrows the context a little more, the model loses track of the bigger picture, and the quality of the output degrades with each exchange.
+
+A useful rule of thumb: the fewer prompts it takes to implement something, the better the result. Quality and prompt count tend to move in opposite directions.
+
+{{< mermaid >}}
+xychart-beta
+    title "Code Quality vs Number of Prompts"
+    x-axis "Number of Prompts" ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+    y-axis "Code Quality" 0 --> 100
+    line [95, 85, 72, 60, 50, 42, 35, 28, 22, 18]
+{{< /mermaid >}}
+
+When you spot issues after implementation, you have two options depending on the severity.
+
+#### Manual edits
+
+If the issues are small and localised, a missed edge case or a minor behaviour that's slightly off, the pragmatic move is to review the code yourself and fix it by hand. This is faster than re-running the full workflow for something trivial, and it keeps you close to the code.
+
+#### Fixing forward
+
+If the issues are more significant, resist the urge to prompt your way out of them. Instead, treat it as a new iteration. Write a new spec that clearly describes the gap or the incorrect behaviour, go through the full spec → plan → tasks workflow, and implement the fix cleanly in one pass.
+
+The key principle here is that spec, plan, and tasks files are immutable once you have moved past them. You do not go back and edit an earlier document mid-flight, as that cascades changes unpredictably across the whole workflow. Once you are happy with a phase and move forward, it is locked. If something is missing, you either finish what you have and create a new spec for the next iteration, or you abandon the current cycle and start over from the spec.
+
+Fixing forward keeps the problem well-defined, gives the agent a clean starting point, and avoids the compounding drift that comes from patching a half-finished implementation.
+
 ### Using this in practice
+
+In your day to day, you may be using this framework multiple times. You may create several specs files for different features. You don't want to have to rewrite the same prompts each time. So here are some tricks to create a re-usable framework for you and your teams.
+
+#### Create templates
+First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
+
+Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
+
+#### Create an agents.md file
+
+The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
+
+#### Use specific agents for particular tasks
+
+Most coding agent tools let you define custom agents. Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
+
+For example, imagine you have a complex feature with a non-obvious testing process. You could create an agent that documents exactly how to test it: which scripts to run, what to check, and what a passing result looks like. Any time you want to test that feature, you invoke that agent instead of re-explaining the process from scratch.
+
+Custom agents are a way of encoding tribal knowledge into your workflow. Anything you find yourself explaining repeatedly to the agent is a good candidate for one.
+
+(example)
+
 
 These are some ways that you can standardise the process to easily make it repeatable and remove manual prompting as much as possible.
 
-#### A reusable prompts framework
-
-- Option 1: Create templates in your repo inside a templates folder. When prompting your agent, ask it to follow the template in templates/plan.template.md. The template can include the sections to populate and a brief description of the purpose of the file.
-- Option 2: Use spec-kit or similar tool and updates the provided templates.
-- Option 3: Create a planning agent that holdds this info
-
-#### Fixing forward
-ADD - How to avoid scope creep
 
 
-I treat all the files as immutable. If I want to add something else to the spec.md file once I've already created the plan.md or the tasks.md files I won't go back and update the original spec because then I need to cascade all of these changes accordingly to the plan and tasks.
+### Managing Context
 
-Instead, once I am happy which each phase and I move forward (specs, plan or tasks) I treat each document as immutable. That means that rather than going back and make any changes, I add those as part of a new feature instead. If I missed something that should have been in the original spec, I would rather abandon the current workflow and start from the beginning, or I would implement what I already have and create a new spec.md document after I've implemented the current one. I fix forward, rather than going back on myself.
+THere is a lot of context around repos (how to test, best practices etc.). You want to capture these into files so this knowledge is easily re-usable. Tricks
+- Use claude.md or equivalent to capture general context about the repo, such as best practices, structure or how tu setup the enviromnent. Information that is useful for ALL tasks.
+- Use agents.md to capture information which is useful for specific tasks (code creation agent, code execution agent.). Information that is useful for particular tasks.
+- Create templates that you can point to. for eample create templates for the spec, plan and tasks.
 
 ## Agents & skills
 
