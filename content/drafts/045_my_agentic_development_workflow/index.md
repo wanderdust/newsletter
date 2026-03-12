@@ -44,6 +44,7 @@ Sets the stage. No hands-on. By the end, attendees understand why this is happen
 - What is an LLM? What is an agent? — very short, no-jargon explanation; just enough to understand the rest of the course
 - LLMs vs agents: the key difference (tools, loops, autonomy)
 - The evolution of development — from copy-paste to agentic; the inflection point we are at
+- Agentic development vs Vibe coding
 
 **Module 2: Setting up for agentic development**
 Instructor-led demo. Attendees follow along passively. Show a working repo live before concepts are introduced. Consider a pre-work guide so no install time is spent on the day.
@@ -97,6 +98,44 @@ Closing section. Reflection and discussion. No hands-on needed. Leaves attendees
 - When not to use agents — learning through doing; knowing when to keep your hands on the keyboard
 - Your own knowledge is the limiting factor — why deep expertise matters more now, not less
 - Common questions — cost, context windows, efficiency, automation ceiling, are engineers obsolete
+
+---
+
+What if this was a book? — "Agentic Engineering Best Practices"
+Not spec-driven development specifically. The full picture of building software with agents, for engineers who want to do it properly.
+
+**Part I: The Shift**
+1. How we got here — from manual coding to AI-assisted to agentic; the inflection point and why it matters now
+2. Understanding agents — what they are, how they work, context windows, tool loops, hallucinations, and what agents genuinely cannot do yet
+3. The new role of the engineer — what changes, what stays the same, why expertise matters more not less
+
+**Part II: Setting Up for Success**
+4. Choosing your tools — CLI agents vs IDE agents; how to evaluate options without being locked in to one vendor; tool-agnostic principles
+5. Your agentic repo — agents.md, CLAUDE.md, templates, custom agents, folder structure; building an environment the agent can work in effectively
+6. Prompt engineering for engineers — not generic advice; precision, context, constraints, examples; how to iterate on a prompt the same way you iterate on code
+
+**Part III: Building with Agents**
+7. Spec driven development — why planning before implementing changes everything; spec → plan → tasks as a repeatable pipeline
+8. The annotation loop — using the agent to stress-test your own spec before a line of code is written
+9. The implementation loop — running tasks, validation loops, types of feedback, knowing when to stop
+10. Making edits — the quality decay curve; when to prompt vs when to edit by hand; fixing forward
+11. CLIs and MCPs in practice — giving the agent access to external systems; when to use them and when not to
+
+**Part IV: Quality, Security and Ownership**
+12. Testing in an agentic workflow — what changes about testing when agents write the code; validation scripts, test-first prompting, catching what tests miss
+13. Code review and ownership — the 95-5 principle; what to look for in AI-generated code; what you are signing off on
+14. Security — what agents get wrong by default; hardcoded credentials, overly broad permissions, environment scoping, things that pass tests but are not safe
+15. Cognitive debt — the hidden cost of shipping code you do not fully understand; how it compounds; how to guard against it
+
+**Part V: Teams and Scale**
+16. Rolling it out to a team — shared standards, guardrails, credential policies, who reviews what, how to introduce this without chaos
+17. Building reusable frameworks — templates, custom agents, encoding tribal knowledge, scaling what works
+18. Measuring the impact — how to think about ROI; what to track; honest numbers over hype
+
+**Part VI: The Bigger Picture**
+19. Comparing approaches — spec-driven vs prompt-and-iterate vs fully autonomous agents; when each makes sense; what the tradeoffs are (this is still evolving)
+20. What is not settled yet — emerging best practices, open questions, where the field is actively changing; what to treat as stable vs what to hold loosely
+21. The future of the profession — what engineering looks like in five years; what skills will matter; how to stay ahead of the shift
 
 ---
 
@@ -181,7 +220,8 @@ The key is learning to work with agents effectively. That starts with how you co
 
 > *This section was inspired by Tom Wojcik's excellent post [Finding the Right Amount of AI](https://tomwojcik.com/posts/2026-02-15/finding-the-right-amount-of-ai/).*
 
-
+### Agentic developmnent vs Vibe Coding
+TODO
 
 ## Module 2: Setting up for agentic development
 
