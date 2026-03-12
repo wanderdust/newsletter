@@ -413,16 +413,28 @@ TODO: lab will run in a sandbox environment hosted in github workspaces. They wi
 
 ### More upfront design
 
-- Waterfall design vs (forgat the name)
-*TODO: Write about how agentic dev revives the value of thorough upfront specs — you can go deeper earlier because the agent helps explore the codebase and surface edge cases.*
+Agentic development quietly brings back something that agile methodologies pushed aside: the value of thinking carefully before you start building. Waterfall gets a bad reputation, and rightly so in many contexts, but one thing it got right was investing time upfront to understand what you are building before you write a single line of code.
+
+With agents, that upfront investment pays off more than ever. The better your spec, the better the output. You now have a reason to go deep on requirements early, ask hard questions of your stakeholders, and use MCPs to validate your assumptions against real systems before implementation begins. The agent can even help you do it, by scanning the codebase, surfacing edge cases, and identifying gaps in the spec before you start.
+
+This is not waterfall. You are still working iteratively, one spec at a time. But each iteration starts with more rigour than before.
 
 ### When not to use agents
 
-*TODO: Write about learning through doing things manually and knowing when to keep your hands on the keyboard — expertise comes from practice.*
+Not everything should be delegated to an agent. If you are learning something new, working through a problem manually is often the point. Expertise comes from doing things yourself, making mistakes, and understanding why they happened. An agent that solves the problem for you does not give you that.
+
+Use agents for work you already understand well enough to review and own. If you are in unfamiliar territory and you cannot evaluate whether the output is correct, slow down and do it by hand first. Build the understanding, then bring the agent in.
 
 ### Commit your spec, plan and tasks
 
-*TODO: Write about including spec/plan/tasks files in PRs as a record of intent and design decisions.*
+Spec, plan, and tasks files are not just scaffolding to throw away after implementation. They are a record of the decisions you made and why. Commit them to the repo alongside your code changes.
+
+This gives your reviewers context they would not otherwise have. They can see what was intended, what tradeoffs were considered, and what the scope of the change was. It also gives you and your team a reference point when a feature needs to be revisited or extended in the future.
+
+
+### Your own knowledge is the limiting factor
+
+With coding agents you can build almost anything in no time. The only thing stopping you is having enough knowledge of the system you want to build to ensure you can build something robust and consistent. Now, it is more important than ever to keep learning.
 
 ## Common questions
 
@@ -451,7 +463,3 @@ The role is no longer primarily about writing code. It is about working with sta
 What has not changed is everything around the code. A software system is much more than a repository. It needs to be deployed, monitored, and maintained. When things go wrong in production, someone needs to understand the system well enough to diagnose the problem, coordinate across teams, and get things back to a stable state. That requires deep context that no agent currently has on its own.
 
 Good engineering practices matter more now, not less. It is easier than ever to ship something that looks right but is not built reliably. Engineers are the ones responsible for ensuring that what goes to production has been built, tested, and deployed in a way that holds up. That judgment still requires a human who knows what they are doing.
-
-## Conclusion
-
-If you follow this approach
