@@ -35,14 +35,68 @@ Module 6: Ownership, security and new ways of working
 - [ ] **Team guardrails** (Ownership & security subsection) — what to put in place before rolling this out to a team: shared credential policies, what should and should not be committed, audit considerations, who reviews AI-generated code at scale.
 - [ ] **Common questions** — write up proper answers to each question. These are the exact questions a sceptical developer will ask on the day.
 
-Course structure
-- **Module 1: How we got here** — intro, LLMs vs agents, evolution of dev
-- **Module 2: Setting up for agentic development** — getting started + repo setup + agents.md + CLAUDE.md + templates + custom agents. Instructor-led demo. Consider a pre-work guide so no time is spent on installs.
-- **Module 3: Spec driven development** — spec → plan → tasks, annotation loop, prompts framework
-- **Module 4: Implementation and feedback loops** — implementation, validation, types of feedback, making edits, fixing forward, PR review and ownership
-- **Module 5: CLIs, MCPs and debugging** — when to use them, debugging with spec driven dev, CLI agents vs IDEs
-- **LAB** — full end to end run through using all of the above
-- **Module 6: Ownership, security and new ways of working** — closing section, reflection and discussion
+Course structure — proposed module breakdown
+
+**Module 1: How we got here**
+Sets the stage. No hands-on. By the end, attendees understand why this is happening now and what an agent actually is.
+- Why this course? ROI framing — what changes for developers, teams, and organisations
+- The copy-paste problem — where most developers are today
+- What is an LLM? What is an agent? — very short, no-jargon explanation; just enough to understand the rest of the course
+- LLMs vs agents: the key difference (tools, loops, autonomy)
+- The evolution of development — from copy-paste to agentic; the inflection point we are at
+
+**Module 2: Setting up for agentic development**
+Instructor-led demo. Attendees follow along passively. Show a working repo live before concepts are introduced. Consider a pre-work guide so no install time is spent on the day.
+- Installing a CLI agent (GitHub Copilot CLI or Claude Code) — step by step, assume zero knowledge
+- Running your first prompt — what to expect, how the agent reads the repo
+- Understanding the workspace — where the agent reads and writes, what it can and cannot see
+- What is agents.md / CLAUDE.md? — with a real filled-in example
+- Creating templates — spec, plan, tasks skeleton files
+- Custom agents — what they are, when to use them, example agent file
+- Skills — what they are and how they differ from scripts (TODO: clarify)
+- Putting it all together — final repo structure walkthrough
+
+**Module 3: Spec driven development**
+First hands-on moment. Attendees write a spec for a real or dummy feature by the end of this module.
+- Why spec-first? — what changes when you plan before implementing
+- The planning phase overview — spec → plan → tasks as a pipeline, not a negotiation
+- The spec.md file — purpose, required sections, what good looks like vs what bad looks like
+- The annotation loop — how to use the agent to fill gaps and surface edge cases in the spec before implementation
+- The plan.md file — breaking the spec into ordered steps
+- The tasks.md file — granular tasks with validation criteria baked in
+
+**Module 4: Implementation and feedback loops**
+Hands-on: attendees run an implementation cycle on their spec from Module 3.
+- The implementation phase — how to prompt the agent to start, what to include in the prompt
+- Validation loops — why the agent needs a way to verify its own work
+- Types of feedback — tests, scripts, manual checks; when to use each
+- Making edits — when to prompt vs when to edit manually
+- Fixing forward — why you never edit the spec backwards; how to handle change
+- Ownership and the pull request — reviewing AI-generated code, the 95-5 principle, what to check, security
+- Committing spec, plan and tasks alongside code
+
+**Module 5: CLIs, MCPs and debugging**
+Hands-on: attendees connect a CLI or MCP to their agent and use it in a spec or debug session.
+- What is a CLI tool? — terminal access to external systems, examples
+- What is an MCP? — structured tool access, how it differs from a CLI, JSON config example
+- When to use them — three scenarios: spec validation, triggering external systems, debugging
+- MCP setup walkthrough — install, configure, verify with one concrete example (TODO: pick example)
+- Debugging with spec driven development — using CLIs and MCPs in the feedback loop
+- CLI agents and IDEs — does the IDE still matter? Getting comfortable with terminal-first workflows
+
+**LAB**
+Full end-to-end run through using everything from Modules 2-5. Attendees work in a sandboxed environment on a real feature using spec driven development, with agents.md, MCPs, and the full workflow.
+
+**Module 6: Ownership, security and new ways of working**
+Closing section. Reflection and discussion. No hands-on needed. Leaves attendees with the right mindset to take this back to their team.
+- Cognitive debt of using agents (TODO: write this up)
+- Security is part of ownership — what agents get wrong, what you are responsible for
+- Scope your environments properly — credentials, prod vs dev, worst-case thinking
+- Team guardrails — what to put in place before rolling this out to a team (TODO: write this up)
+- More upfront design — how agentic dev revives the value of thorough specs
+- When not to use agents — learning through doing; knowing when to keep your hands on the keyboard
+- Your own knowledge is the limiting factor — why deep expertise matters more now, not less
+- Common questions — cost, context windows, efficiency, automation ceiling, are engineers obsolete
 
 ---
 
@@ -443,6 +497,10 @@ Production systems should be read-only or off-limits entirely to your local agen
 Before you connect an agent to any external system, check what it has access to and make sure you are comfortable with the worst case if something goes wrong.
 
 ### New ways of working
+
+#### Cognitive debt of using agents
+
+*TODO: Write about the risk of shipping code you do not fully understand. When an agent writes the implementation, it is easy to end up with a codebase that works but that nobody on the team can confidently reason about. This is different from technical debt — it is a debt of understanding. Over time it compounds: features become harder to extend, bugs become harder to diagnose, and onboarding becomes harder because nobody really knows how things work. The antidote is the 95-5 principle and deep review. Write about what this looks like in practice and how to guard against it.*
 
 #### More upfront design
 
