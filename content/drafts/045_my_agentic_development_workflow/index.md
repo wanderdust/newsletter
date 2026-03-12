@@ -222,20 +222,46 @@ The key principle here is that spec, plan, and tasks files are immutable once yo
 
 Fixing forward keeps the problem well-defined, gives the agent a clean starting point, and avoids the compounding drift that comes from patching a half-finished implementation.
 
-### Using this in practice
+
+### Ownership and the Pull Request
+
+With a solid spec, a good feedback loop, and a capable agent, you can go from spec to pull request without writing a single line of code yourself. The agent builds it, tests it, and validates it end to end.
+
+But this only gets you 95% of the way there.
+
+No matter how detailed your spec is, the agent can and will misinterpret something. It can be small things, but they still need to be caught and corrected. That last 5% is where you come in, and it is arguably the most important part of the whole process.
+
+The agent writes the code. You own it. There is a difference.
+
+Owning the code means you can vouch for every line that goes to production. If someone asks you why a particular approach was taken, you should be able to answer. "The LLM wrote that part" is not an acceptable answer in a production system, and it is not fair to your reviewers to hand them code you have not personally understood. It is not the reviewer's responsibility to decypher code you have not checked.
+
+This is one of the biggest shifts in agentic development. That accountability is what separates professional engineering from vibe coding.
+
+**Do this:**
+- Go through every change before raising the PR. Read the diff. Understand what was built and why.
+- Check that the implementation matches the intent of the spec, not just that the tests pass.
+- Be able to explain any piece of the code if someone challenges it in review. If you cannot, that is a flag.
+- Keep PRs small. The smaller the change, the easier it is to review thoroughly and the easier it is for your colleagues to give useful feedback.
+
+**Do not do this:**
+- Do not raise a PR for code you have not personally read. It is not the reviewers job to be the gatekeeper of code.
+- Do not assume passing tests means the feature is correct. Tests validate what was written, not what was intended.
+- Do not trust the agent to catch its own security issues. Agents will suggest things that are common but not necessarily secure. Long-lived tokens, overly broad permissions, accidentally committed `.env` files. These get through if you are not paying attention.
+
+## Building a Reusable Framework
 
 In your day to day, you may be using this framework multiple times. You may create several specs files for different features. You don't want to have to rewrite the same prompts each time. So here are some tricks to create a re-usable framework for you and your teams.
 
-#### Create templates
+### Create templates
 First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
 
 Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
 
-#### Create an agents.md file
+### Create an agents.md file
 
 The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
 
-#### Use specific agents for particular tasks
+### Use specific agents for particular tasks
 
 Most coding agent tools let you define custom agents. Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
 
@@ -260,12 +286,14 @@ Focus on the following instructions:
 - Make links descriptive and add alt text to images
 ```
 
-#### Skills
+### Skills
 
 TODO - is this the same as having scripts in my scripts directory?
 
 
-#### Repo setup
+### Putting it all together
+
+The final repository might look like this
 
 ```
 my-project/
@@ -356,30 +384,28 @@ That said, it does not matter much which you use. The workflow described in this
 
 ## Ownership & security
 
-### You own the code
+### Security is part of ownership
 
-*TODO: Write about human accountability for LLM-generated code — you should be able to vouch for every line in production.*
+Agents are not security-aware by default. They will produce code that looks right and works, but may not be secure. I have seen agents happily suggest long-lived tokens for third-party authentication on public CI/CD pipelines. They will use overly broad IAM permissions, hardcode credentials, or accidentally include `.env` files in a commit. If you are not paying attention, these things get through.
 
-### Small PRs, easy reviews
+Security issues do not get caught by tests. They get caught by a developer who understands what the code is doing and knows what to look for. That developer is you.
 
-*TODO: Write about delivering work in small increments and how that makes both your own review and your colleagues' PR reviews manageable.*
-
-### Security and the code you ship
-
-*TODO: Write about security risks from not reading generated code: auth method choices, hardcoded credentials, cloud permission scoping.*
+You cannot trust an LLM to follow best security practices. The only way to avoid security issues is to understand what the code is doing and what the tradeoffs are.
 
 ### Scope your environments properly
 
-*TODO: Write about ensuring dev/qa/prod systems have correct permissions before exposing them to agents — agents use your own credentials.*
+Agents run with your credentials. Whatever access you have, the agent has. This makes proper environment scoping more important than ever.
 
-## Reviewing changes
+Production systems should be read-only or off-limits entirely to your local agent. Changes to production infrastructure should go through a controlled process, like Terraform with a PR review, not a CLI command the agent decided to run. Dev and QA environments can be more permissive, but they should still have boundaries.
 
-You may be thinking, how do I review the markdown files or review the changes if I don't have an IDE? You can still use an IDE for these things if that's what you prefer to use. I personally use lazygit in the terminal to review code changes, and use a lightweight notepad to review the markdown files. Use whatever works best for you.
+Before you connect an agent to any external system, check what it has access to and make sure you are comfortable with the worst case if something goes wrong.
 
 
+
+---
 ## LAB
 
-*[LAB - Putting it all together — Real use case: spec driven dev using a framework, agents + MCP, step by step with screenshots]*
+TODO: lab will run in a sandbox environment hosted in github workspaces. They will run qwen-code. I provide a real use case of adding a feature to an existing repo using spec driven development, which includes agents.md, MCPs and all the things mentioned above.
 
 ---
 
@@ -387,6 +413,7 @@ You may be thinking, how do I review the markdown files or review the changes if
 
 ### More upfront design
 
+- Waterfall design vs (forgat the name)
 *TODO: Write about how agentic dev revives the value of thorough upfront specs — you can go deeper earlier because the agent helps explore the codebase and surface edge cases.*
 
 ### When not to use agents
