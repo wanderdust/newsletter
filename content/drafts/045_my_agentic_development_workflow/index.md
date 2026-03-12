@@ -16,6 +16,26 @@ params:
   tocOpen: false
 
 ---
+
+---
+COURSE TODOS
+- [ ] **Getting started section** (add after Intro, before Spec Driven Dev) — step by step: how to install a CLI agent (e.g. GitHub Copilot CLI, Claude Code), initial config, how to run your first prompt. Assume zero prior knowledge. Developers need to be able to follow along from minute one.
+- [ ] **What is agents.md / CLAUDE.md in practice** (expand in Agents & Skills section) — show a real example of what these files look like with actual content, not just a description of what they are. A filled-in template would be ideal.
+- [ ] **MCP setup walkthrough** (expand in CLIs & MCPs section) — the JSON snippet is a start but not enough. Walk through installing an MCP server, configuring it, and verifying the agent can use it. Pick one concrete example (e.g. a database MCP).
+- [ ] **ROI framing** (add as a standalone section or early in Intro) — why is this worth a team's time? Even rough numbers from your own experience help. How much faster, what kinds of tasks got automated, what became more reliable. Aimed at the manager or CTO in the room, not just the developer.
+- [ ] **Team guardrails section** (expand Ownership & security) — what to put in place before rolling this out to a team: shared credential policies, what should and should not be committed, audit considerations, who reviews AI-generated code at scale.
+- [ ] **Common questions section** (currently just notes) — write up proper answers to each question. These are the exact questions a sceptical developer will ask on the day.
+- [ ] **Course structure and timeline** — the current structure front-loads too much into Spec Driven Development. Consider splitting it into more balanced standalone modules, each with a clear hands-on exercise or discussion moment. Suggested restructure:
+  - **Module 1: How we got here** (Intro + evolution of dev + LLMs vs agents) — sets the stage, no hands-on yet
+  - **Module 2: Setting up for agentic development** (Getting started + repo setup + agents.md + CLAUDE.md + MCPs) — hands-on: attendees set up their environment and configure their first agent
+  - **Module 3: Spec driven development** (spec → plan → tasks, annotation loop, prompts framework) — hands-on: attendees write a spec for a real or dummy feature
+  - **Module 4: Implementation and feedback loops** (implementation, validation, types of feedback, local dev, making edits, fixing forward) — hands-on: attendees run an implementation cycle
+  - **Module 5: CLIs, MCPs and debugging** (when to use them, debugging with spec driven dev) — hands-on: attendees connect a CLI or MCP and use it during a spec session
+  - **LAB** — full end to end run through using all of the above
+  - **Module 6: Ownership, security and new ways of working** — closing section, reflection and discussion, no hands-on needed
+
+---
+
 ## Introduction
 
 ### The copy-paste problem
