@@ -19,24 +19,34 @@ params:
 
 ---
 COURSE TODOS
-- [ ] **Getting started section** (add after Intro, before Spec Driven Dev) — step by step: how to install a CLI agent (e.g. GitHub Copilot CLI, Claude Code), initial config, how to run your first prompt. Assume zero prior knowledge. Developers need to be able to follow along from minute one.
-- [ ] **What is agents.md / CLAUDE.md in practice** (expand in Agents & Skills section) — show a real example of what these files look like with actual content, not just a description of what they are. A filled-in template would be ideal.
-- [ ] **MCP setup walkthrough** (expand in CLIs & MCPs section) — the JSON snippet is a start but not enough. Walk through installing an MCP server, configuring it, and verifying the agent can use it. Pick one concrete example (e.g. a database MCP).
-- [ ] **ROI framing** (add as a standalone section or early in Intro) — why is this worth a team's time? Even rough numbers from your own experience help. How much faster, what kinds of tasks got automated, what became more reliable. Aimed at the manager or CTO in the room, not just the developer.
-- [ ] **Team guardrails section** (expand Ownership & security) — what to put in place before rolling this out to a team: shared credential policies, what should and should not be committed, audit considerations, who reviews AI-generated code at scale.
-- [ ] **Common questions section** (currently just notes) — write up proper answers to each question. These are the exact questions a sceptical developer will ask on the day.
-- [ ] **Course structure and timeline** — the current structure front-loads too much into Spec Driven Development. Consider splitting it into more balanced standalone modules, each with a clear hands-on exercise or discussion moment. Suggested restructure:
-  - **Module 1: How we got here** (Intro + evolution of dev + LLMs vs agents) — sets the stage, no hands-on yet
-  - **Module 2: Setting up for agentic development** (Getting started + repo setup + agents.md + CLAUDE.md + MCPs) — hands-on: attendees set up their environment and configure their first agent
-  - **Module 3: Spec driven development** (spec → plan → tasks, annotation loop, prompts framework) — hands-on: attendees write a spec for a real or dummy feature
-  - **Module 4: Implementation and feedback loops** (implementation, validation, types of feedback, local dev, making edits, fixing forward) — hands-on: attendees run an implementation cycle
-  - **Module 5: CLIs, MCPs and debugging** (when to use them, debugging with spec driven dev) — hands-on: attendees connect a CLI or MCP and use it during a spec session
-  - **LAB** — full end to end run through using all of the above
-  - **Module 6: Ownership, security and new ways of working** — closing section, reflection and discussion, no hands-on needed
+
+Module 1: How we got here
+- [ ] **ROI framing** — why is this worth a team's time? Rough numbers from your own experience. Aimed at the manager or CTO in the room.
+
+Module 2: Setting up for agentic development
+- [ ] **Getting started content** (before "Building a Reusable Framework") — step by step: how to install a CLI agent (e.g. GitHub Copilot CLI, Claude Code), initial config, how to run your first prompt. Assume zero prior knowledge.
+- [ ] **What is agents.md / CLAUDE.md in practice** (agents.md subsection) — show a real example with actual content, not just a description. A filled-in template would be ideal.
+- [ ] **Skills section** — clarify what Skills are and how they relate to scripts in the scripts directory. Resolve the TODO currently in that subsection.
+
+Module 5: CLIs, MCPs and debugging
+- [ ] **MCP setup walkthrough** — walk through installing an MCP server, configuring it, and verifying the agent can use it. Pick one concrete example (e.g. a database MCP).
+
+Module 6: Ownership, security and new ways of working
+- [ ] **Team guardrails** (Ownership & security subsection) — what to put in place before rolling this out to a team: shared credential policies, what should and should not be committed, audit considerations, who reviews AI-generated code at scale.
+- [ ] **Common questions** — write up proper answers to each question. These are the exact questions a sceptical developer will ask on the day.
+
+Course structure
+- **Module 1: How we got here** — intro, LLMs vs agents, evolution of dev
+- **Module 2: Setting up for agentic development** — getting started + repo setup + agents.md + CLAUDE.md + templates + custom agents. Instructor-led demo. Consider a pre-work guide so no time is spent on installs.
+- **Module 3: Spec driven development** — spec → plan → tasks, annotation loop, prompts framework
+- **Module 4: Implementation and feedback loops** — implementation, validation, types of feedback, making edits, fixing forward, PR review and ownership
+- **Module 5: CLIs, MCPs and debugging** — when to use them, debugging with spec driven dev, CLI agents vs IDEs
+- **LAB** — full end to end run through using all of the above
+- **Module 6: Ownership, security and new ways of working** — closing section, reflection and discussion
 
 ---
 
-## Introduction
+## Module 1: How we got here
 
 ### The copy-paste problem
 
@@ -119,7 +129,79 @@ The key is learning to work with agents effectively. That starts with how you co
 
 
 
-## Spec driven development
+## Module 2: Setting up for agentic development
+
+*TODO: Instructor-led demo section. Cover: installing a CLI agent (GitHub Copilot CLI, Claude Code), initial configuration, running a first prompt, and a live walkthrough of a configured repo. Consider a pre-work guide for attendees to install tooling before the day.*
+
+### Building a Reusable Framework
+
+In your day to day, you may be using this framework multiple times. You may create several specs files for different features. You don't want to have to rewrite the same prompts each time. So here are some tricks to create a re-usable framework for you and your teams.
+
+#### Create templates
+First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
+
+Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
+
+#### Create an agents.md file
+
+The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
+
+#### Use specific agents for particular tasks
+
+Most coding agent tools let you define custom agents. Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
+
+For example, imagine you have a complex feature with a non-obvious testing process. You could create an agent that documents exactly how to test it: which scripts to run, what to check, and what a passing result looks like. Any time you want to test that feature, you invoke that agent instead of re-explaining the process from scratch.
+
+Custom agents are a way of encoding tribal knowledge into your workflow. Anything you find yourself explaining repeatedly to the agent is a good candidate for one.
+
+```markdown
+---
+name: readme-creator
+description: Agent specializing in creating and improving README files
+---
+
+You are a documentation specialist focused on README files. Your scope is limited to README  files or other related documentation files only - do not modify or analyze code files.
+
+Focus on the following instructions:
+- Create and update README.md files with clear project descriptions
+- Structure README sections logically: overview, installation, usage, contributing
+- Write scannable content with proper headings and formatting
+- Add appropriate badges, links, and navigation elements
+- Use relative links (e.g., `docs/CONTRIBUTING.md`) instead of absolute URLs for files within the repository
+- Make links descriptive and add alt text to images
+```
+
+#### Skills
+
+TODO - is this the same as having scripts in my scripts directory?
+
+
+#### Putting it all together
+
+The final repository might look like this
+
+```
+my-project/
+├── .github/
+│   └── agents/               # Custom agents (GitHub Copilot)
+│       ├── spec-writer.md
+│       └── test-runner.md
+├── .claude/
+│   └── agents/               # Custom agents (Claude Code)
+│       ├── spec-writer.md
+│       └── test-runner.md
+├── docs/
+│   └── spec-templates/       # Reusable templates
+│       ├── spec.md
+│       ├── plan.md
+│       └── tasks.md
+├── src/
+├── agents.md                 # General repo context for all agents
+├── CLAUDE.md                 # Repo instructions (Claude Code)
+└── README.md
+```
+
+## Module 3: Spec driven development
 
 ![workflow](./workflow.png)
 
@@ -184,6 +266,8 @@ You can structurre the file into small TODOs that the model can update as it imp
 > _Create a tasks.md file as detailed todo list to the plan, with all the phases and individual tasks necessary to complete the plan - don’t implement yet._
 
 The most important thing in the tasks file, is ensuring there are validation steps for each task. These can be unit tests, or custom scripts the agent creates to test functionality. These validation tasks will serve the agent as a validation loop that it can use to verify functionality to ensure it meets the success criteria before marking it done.
+
+## Module 4: Implementation and feedback loops
 
 ### Implementation Phase
 
@@ -268,76 +352,7 @@ This is one of the biggest shifts in agentic development. That accountability is
 - Do not assume passing tests means the feature is correct. Tests validate what was written, not what was intended.
 - Do not trust the agent to catch its own security issues. Agents will suggest things that are common but not necessarily secure. Long-lived tokens, overly broad permissions, accidentally committed `.env` files. These get through if you are not paying attention.
 
-## Building a Reusable Framework
-
-In your day to day, you may be using this framework multiple times. You may create several specs files for different features. You don't want to have to rewrite the same prompts each time. So here are some tricks to create a re-usable framework for you and your teams.
-
-### Create templates
-First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
-
-Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
-
-### Create an agents.md file
-
-The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
-
-### Use specific agents for particular tasks
-
-Most coding agent tools let you define custom agents. Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
-
-For example, imagine you have a complex feature with a non-obvious testing process. You could create an agent that documents exactly how to test it: which scripts to run, what to check, and what a passing result looks like. Any time you want to test that feature, you invoke that agent instead of re-explaining the process from scratch.
-
-Custom agents are a way of encoding tribal knowledge into your workflow. Anything you find yourself explaining repeatedly to the agent is a good candidate for one.
-
-```markdown
----
-name: readme-creator
-description: Agent specializing in creating and improving README files
----
-
-You are a documentation specialist focused on README files. Your scope is limited to README  files or other related documentation files only - do not modify or analyze code files.
-
-Focus on the following instructions:
-- Create and update README.md files with clear project descriptions
-- Structure README sections logically: overview, installation, usage, contributing
-- Write scannable content with proper headings and formatting
-- Add appropriate badges, links, and navigation elements
-- Use relative links (e.g., `docs/CONTRIBUTING.md`) instead of absolute URLs for files within the repository
-- Make links descriptive and add alt text to images
-```
-
-### Skills
-
-TODO - is this the same as having scripts in my scripts directory?
-
-
-### Putting it all together
-
-The final repository might look like this
-
-```
-my-project/
-├── .github/
-│   └── agents/               # Custom agents (GitHub Copilot)
-│       ├── spec-writer.md
-│       └── test-runner.md
-├── .claude/
-│   └── agents/               # Custom agents (Claude Code)
-│       ├── spec-writer.md
-│       └── test-runner.md
-├── docs/
-│   └── spec-templates/       # Reusable templates
-│       ├── spec.md
-│       ├── plan.md
-│       └── tasks.md
-├── src/
-├── agents.md                 # General repo context for all agents
-├── CLAUDE.md                 # Repo instructions (Claude Code)
-└── README.md
-```
-
-
-## CLI Tools & MCPs
+## Module 5: CLIs, MCPs and debugging
 
 When working with agents, your goal is to give them as much context as possible so they have enough information to complete their tasks successfully. Sometimes it is enough to look at the current repo. Other times it helps to have access to external systems to gather additional context that makes for stronger specs and more accurate implementations.
 
@@ -391,7 +406,7 @@ Start by using your CLIs and MCPs to gather evidence. Let the agent inspect logs
 The fix ends up well-scoped, documented, and tested.
 
 
-## CLI Agents and IDEs
+### CLI Agents and IDEs
 
 An IDE was designed for a world where you wrote code by hand. You needed to navigate files, read error messages, and type out every line yourself. The IDE was built around that workflow.
 
@@ -402,7 +417,14 @@ There are two flavours of coding agent available today. Some live inside an IDE,
 That said, it does not matter much which you use. The workflow described in this course works with either. What matters is starting to get comfortable with the idea that the IDE is no longer the centre of the process. You may still open it for a quick manual edit or to review a diff, but the heavy lifting happens elsewhere.
 
 
-## Ownership & security
+---
+## LAB
+
+TODO: lab will run in a sandbox environment hosted in github workspaces. They will run qwen-code. I provide a real use case of adding a feature to an existing repo using spec driven development, which includes agents.md, MCPs and all the things mentioned above.
+
+---
+
+## Module 6: Ownership, security and new ways of working
 
 ### Security is part of ownership
 
@@ -420,18 +442,9 @@ Production systems should be read-only or off-limits entirely to your local agen
 
 Before you connect an agent to any external system, check what it has access to and make sure you are comfortable with the worst case if something goes wrong.
 
+### New ways of working
 
-
----
-## LAB
-
-TODO: lab will run in a sandbox environment hosted in github workspaces. They will run qwen-code. I provide a real use case of adding a feature to an existing repo using spec driven development, which includes agents.md, MCPs and all the things mentioned above.
-
----
-
-## New ways of working
-
-### More upfront design
+#### More upfront design
 
 Agentic development quietly brings back something that agile methodologies pushed aside: the value of thinking carefully before you start building. Waterfall gets a bad reputation, and rightly so in many contexts, but one thing it got right was investing time upfront to understand what you are building before you write a single line of code.
 
@@ -439,42 +452,42 @@ With agents, that upfront investment pays off more than ever. The better your sp
 
 This is not waterfall. You are still working iteratively, one spec at a time. But each iteration starts with more rigour than before.
 
-### When not to use agents
+#### When not to use agents
 
 Not everything should be delegated to an agent. If you are learning something new, working through a problem manually is often the point. Expertise comes from doing things yourself, making mistakes, and understanding why they happened. An agent that solves the problem for you does not give you that.
 
 Use agents for work you already understand well enough to review and own. If you are in unfamiliar territory and you cannot evaluate whether the output is correct, slow down and do it by hand first. Build the understanding, then bring the agent in.
 
-### Commit your spec, plan and tasks
+#### Commit your spec, plan and tasks
 
 Spec, plan, and tasks files are not just scaffolding to throw away after implementation. They are a record of the decisions you made and why. Commit them to the repo alongside your code changes.
 
 This gives your reviewers context they would not otherwise have. They can see what was intended, what tradeoffs were considered, and what the scope of the change was. It also gives you and your team a reference point when a feature needs to be revisited or extended in the future.
 
 
-### Your own knowledge is the limiting factor
+#### Your own knowledge is the limiting factor
 
 With coding agents you can build almost anything in no time. The only thing stopping you is having enough knowledge of the system you want to build to ensure you can build something robust and consistent. Now, it is more important than ever to keep learning.
 
-## Common questions
+### Common questions
 
-### What does this cost?
+#### What does this cost?
 
 *TODO: Write about token/API costs and how to think about the ROI.*
 
-### Context window and context switching
+#### Context window and context switching
 
 *TODO: Write about managing context limits, running one agent at a time, and the cognitive overhead of switching between tasks mid-session.*
 
-### How efficient is this vs working manually?
+#### How efficient is this vs working manually?
 
 *TODO: Write about how efficiency depends on spec quality and incremental implementation — but solutions can be more thorough from the first pass.*
 
-### How much can we automate?
+#### How much can we automate?
 
 *TODO: Write about the realistic ceiling for automation and why human-in-the-loop remains essential.*
 
-### Are software engineers becoming obsolete?
+#### Are software engineers becoming obsolete?
 
 No. But the job has shifted.
 
