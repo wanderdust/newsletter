@@ -88,7 +88,7 @@ Hands-on: attendees connect a CLI or MCP to their agent and use it in a spec or 
 **LAB**
 Full end-to-end run through using everything from Modules 2-5. Attendees work in a sandboxed environment on a real feature using spec driven development, with agents.md, MCPs, and the full workflow.
 
-**Module 6: Ownership, security and new ways of working**
+**Module 7: Ownership, security and new ways of working**
 Closing section. Reflection and discussion. No hands-on needed. Leaves attendees with the right mindset to take this back to their team.
 - Cognitive debt of using agents (TODO: write this up)
 - Security is part of ownership — what agents get wrong, what you are responsible for
@@ -101,6 +101,9 @@ Closing section. Reflection and discussion. No hands-on needed. Leaves attendees
 ---
 
 ## Module 1: How we got here
+
+### Why this course?
+ROI framing — what changes for developers, teams, and organisations
 
 ### The copy-paste problem
 
@@ -181,29 +184,34 @@ The key is learning to work with agents effectively. That starts with how you co
 
 > *This section was inspired by Tom Wojcik's excellent post [Finding the Right Amount of AI](https://tomwojcik.com/posts/2026-02-15/finding-the-right-amount-of-ai/).*
 
-### Agentic developmnent vs Vibe Coding
-TODO
+### Agentic engineering vs Vibe Coding
+
+There is a difference between vibe coding and agentic engineering.
+
+Vibe coding refers to the process of prompting the model to write some code. It consitsts of incrementally prompting the model to add new features or to fix bugs, but without a workflow that follows engineering rigor. With vibe coding you may get a working version of your app. However the underlying code will lack the structure, readability, tests and ownership required to have code you can trust in production.
+
+Agentic engineering still uses AI agents to write code for us. However we do so following best engineering practices, by writing a detailed specification document, clearly defining scope and success criteria, and making technical decisions in advance. With agentic engineering we define as much as possible in advance, leaving very little autonomy to the agent to make assumptions or decisions on the fly about the implementation. THe agent has clear instructions of what to implement, and how. The agent's job is to write the code for the exact features defined in our document. The agent has no autonomy to make any important decisions on the fly. The implementation plan is clearly defined and documented.
+
+The main difference between both approaches is the level of planning ahead and ownership about what we ship. Vibe coding has little or no planning, and very little ownership. Agentic engineering follows a very rigorous process of defining, planning and ultimately owning any code shipped. 
 
 ## Module 2: Setting up for agentic development
 
-*TODO: Instructor-led demo section. Cover: installing a CLI agent (GitHub Copilot CLI, Claude Code), initial configuration, running a first prompt, and a live walkthrough of a configured repo. Consider a pre-work guide for attendees to install tooling before the day.*
+### Installing a CLI agent (GitHub Copilot CLI or Claude Code)
+— step by step, assume zero knowledge
 
-### Building a Reusable Framework
+### Running your first prompt
+what to expect, how the agent reads the repo
 
-In your day to day, you may be using this framework multiple times. You may create several specs files for different features. You don't want to have to rewrite the same prompts each time. So here are some tricks to create a re-usable framework for you and your teams.
+### Understanding the workspace
+where the agent reads and writes, what it can and cannot see. ASking premission
 
-#### Create templates
-First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
-
-Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
-
-#### Create an agents.md file
+### What is agents.md / CLAUDE.md?
 
 The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
 
-#### Use specific agents for particular tasks
+### Custom agents
 
-Most coding agent tools let you define custom agents. Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
+Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
 
 For example, imagine you have a complex feature with a non-obvious testing process. You could create an agent that documents exactly how to test it: which scripts to run, what to check, and what a passing result looks like. Any time you want to test that feature, you invoke that agent instead of re-explaining the process from scratch.
 
@@ -226,12 +234,11 @@ Focus on the following instructions:
 - Make links descriptive and add alt text to images
 ```
 
-#### Skills
+### Skills
 
-TODO - is this the same as having scripts in my scripts directory?
+what they are and how they differ from scripts (TODO: clarify)
 
-
-#### Putting it all together
+### Putting it all together — final repo structure walkthrough
 
 The final repository might look like this
 
@@ -245,11 +252,6 @@ my-project/
 │   └── agents/               # Custom agents (Claude Code)
 │       ├── spec-writer.md
 │       └── test-runner.md
-├── docs/
-│   └── spec-templates/       # Reusable templates
-│       ├── spec.md
-│       ├── plan.md
-│       └── tasks.md
 ├── src/
 ├── agents.md                 # General repo context for all agents
 ├── CLAUDE.md                 # Repo instructions (Claude Code)
@@ -257,6 +259,8 @@ my-project/
 ```
 
 ## Module 3: Spec driven development
+
+TODO: talk about using spec+plan+tasks vs plan+tasks only. depends on use case. A spec is useful for newer repos or new tech and we want to detach the WHAT from the technical decisions (that should come last). Technical decisions too early can lead is to inefficient solutions (ie choose an architecture because it fits the tool, rother than designing a good architecture and choosing the right tools)
 
 ![workflow](./workflow.png)
 
@@ -269,6 +273,8 @@ The planning phase consists of an in depth set of documents that contian in depu
 During this psahe, we do not implement any code.
 
 #### The spec.md file
+
+[TODO: tips, keywords to use "WHAT, not HOW", "WHY". Provide an example doc]
 
 First I create a spec.md file in the repository. I tell the agent to create the file based on my initial specifications and let it create a detailed initial draft. The specs file contains information about WHY we are building this feature and WHAT this feature is. At this point we do not specify technologies or anything related to HOW we are going to build this. This file needs to be a reflection of what we are building, agnostic of any technical decisions.
 
@@ -407,7 +413,19 @@ This is one of the biggest shifts in agentic development. That accountability is
 - Do not assume passing tests means the feature is correct. Tests validate what was written, not what was intended.
 - Do not trust the agent to catch its own security issues. Agents will suggest things that are common but not necessarily secure. Long-lived tokens, overly broad permissions, accidentally committed `.env` files. These get through if you are not paying attention.
 
-## Module 5: CLIs, MCPs and debugging
+## Module 5: Agentic Engineering for teams
+
+### Creating re-usable framework using templates
+
+Templates are essential for standardisisg the workflow and create re-usable and consistent templates the whole team can use. The templates ensure that the spec, plan and tasks files contain any mandatory sections that you want to always include, such as ensuring our specs clearly defines success criteria, important dependencies relevant to the tasks, or ensuring tests and formatting are always ran as part of implementing features.
+
+First, create some templates in your repository in a templates folder. Create templates for the spec, plan and tasks md files with the skeleton and mandatory sections each one should have. At the top of each file describe the purpose of the file, with a sample prompt.
+
+Then, when you are about to create a new spec, you can simply say "_I have these specs [copy paste here]_. Create a specs.md file using the template in templates/specs.md_".
+
+
+
+## Module 6: CLIs, MCPs and debugging
 
 When working with agents, your goal is to give them as much context as possible so they have enough information to complete their tasks successfully. Sometimes it is enough to look at the current repo. Other times it helps to have access to external systems to gather additional context that makes for stronger specs and more accurate implementations.
 
