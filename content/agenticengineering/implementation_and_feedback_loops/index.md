@@ -28,7 +28,7 @@ Hands-on: attendees run an implementation cycle on their spec from Module 3.
 
 ---
 
-### Implementation Phase
+## Implementation Phase
 
 Once you have reviewed the tasks.md file and you are happy to move forward with it, it is time to start implementing.
 
@@ -36,7 +36,7 @@ Ask your agent to start implement tasks. You can choose to implement all in one 
 
 > _Implement tasks 1 - 3. When you are done with a task, mark it as completed in the tasks.md file. Do not stop until all tasks in this phase are completed. Do not add unnecessary comments. Do not use any or unknown types. Continuously run the unit tests to make sure you are not introducing new issues._
 
-### Validation Loops
+## Validation Loops
 
 A validation loop is essential for the agent to properly verify if the changes it has made meet the success criteria defined in the specifications. A good validation process is what brings the real benefit of using agents, because they can write, run and validate code end to end with minimal human supervision. A good self validation process also gives you confidence as a developer that the code created meets the necessary standards, even before you review it.
 
@@ -44,7 +44,49 @@ The validation you choose to use depends on the objective you are trying to achi
 
 It is also worth mentioning that the validation loop is only possible if you have a local environment you can run your project on. If your application requires you to test in a deployed dev environment which the agent can't access, you are going to have a difficult time.
 
-#### Types of feedback
+### Validation as an optimisation problem
+
+We can compare agentic engineering to how we train machine learning models.
+
+With Machine Learning, we first build a model with random weights, which doesn't have any information about how to solve the task at hand.
+
+During the training process, we ask the model to make a predicition on our data. Once the model makes a predicion on the training data, we check how good the predicion is, by comparing the prediction to the real value. For example, if we were predicting house prices, we would compare the prediction to the real house price.
+
+The difference between the prediction and the real value is what we call the "Error". This error is the feedback we use to update the machine learning model. With enough feedback rounds, the model will get good at the task.
+
+As we can see, we use this feedback loop as a way to optimise our model in the right direction so that it learns the task.
+
+When it comes to agentic engineering, the process is not too different. We can think of the generated code as the "model" in this case. The agent is in charge of taking this feedback and using it to optimise the final solution. We can let the agent run the "model" (generated code) to gather feedback, which we then pass to the agent which uses it to update the model. After a few rounds, we reduce the overall error reaching an optimised solution.
+
+So the question is, how do we get the right feedback?
+
+#### What is feedback
+
+When thinking about what is the right feedback, it is as simple as thinking, what do I do as an engineer to be sure my solution is correct before making a pull request?
+
+From the top of my mind, I can think of a few things
+- Ensure my code follows standards and practices that currently exist in repo.
+- Ensure the code runs locally
+- Ensure I've added unit tests.
+- Ensure all unit tests pass so that we know other parts of the system are not broken
+- Run it locally, test any functionality I've added.
+- If I'm working on something that creates artifacts (such as data pipelines), have I checked the artifacts look like they should?
+
+These are all steps an engineer checks before they put request up for review, once they know it is ready and tested for production.
+
+When doing agentic engineering, you want the agents to have access to be able to gather feedback on their own. To be able to do that you neeed to ensure that your app can run locally to get all of this information.
+
+In some cases, for more complex projects, you may need to trigger an external or remote system such as CI/CD pipeline or development environments. Whatever the case is, if we want the agent to be able to gather its own feedback when implementing a solution, it should be able to trigger and connect to this systems autonously, so that it can gather the feedback to optimise the final solution.
+
+Whatever your project looks like, if you want your agent to generate solutions with checks as thorough as you would do yourself, you need to ensure the agent has that same access to the same feedback you would use as an engineer.
+
+#### Gathering the correct Feedback
+Earlier I mentioned some types of feedback I would use as an engineer. However, different projects have different criteria, so it does not work to try and have a generic set of tests we run for each project to call it a day.
+
+Depinding on the feedback, we can optimise towards different things. Do we optimise for speed? Code duplication? Do we simply optimise that we want the code to run but don't care about anything else? The feedback sets in which direction we optimise.
+
+
+### Types of feedback
 
 There are different levels of feedback which are useful for the model to test and validate the code.
 1. Being able to run the code locally. THe agent can fix any runtime errors. This is the most basic and the minimum you should aim to have.
@@ -54,7 +96,7 @@ There are different levels of feedback which are useful for the model to test an
 
 Basically anything that you would do yourself as part of your review process before making a Pull Request, you should be able to ask the agent to do as part of the development process.
 
-### Making Edits
+## Making Edits
 
 Sometimes, after implementation is finished, you notice that something was built incorrectly or not built at all. This is usually a symptom of one of two things: a poorly defined spec (the agent solved the wrong problem), or a weak feedback loop (the agent never got signal that something was wrong).
 
@@ -73,11 +115,11 @@ xychart-beta
 
 When you spot issues after implementation, you have two options depending on the severity.
 
-#### Manual edits
+### Manual edits
 
 If the issues are small and localised, a missed edge case or a minor behaviour that's slightly off, the pragmatic move is to review the code yourself and fix it by hand. This is faster than re-running the full workflow for something trivial, and it keeps you close to the code.
 
-#### Fixing forward
+### Fixing forward
 
 If the issues are more significant, resist the urge to prompt your way out of them. Instead, treat it as a new iteration. Write a new spec that clearly describes the gap or the incorrect behaviour, go through the full spec → plan → tasks workflow, and implement the fix cleanly in one pass.
 
@@ -86,7 +128,7 @@ The key principle here is that spec, plan, and tasks files are immutable once yo
 Fixing forward keeps the problem well-defined, gives the agent a clean starting point, and avoids the compounding drift that comes from patching a half-finished implementation.
 
 
-### Ownership and the Pull Request
+## Ownership and the Pull Request
 
 With a solid spec, a good feedback loop, and a capable agent, you can go from spec to pull request without writing a single line of code yourself. The agent builds it, tests it, and validates it end to end.
 
