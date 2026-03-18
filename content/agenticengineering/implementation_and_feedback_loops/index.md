@@ -16,6 +16,55 @@ params:
 
 ---
 
+# Feedback
+
+**What's working:**
+
+1. **The ML analogy is strong** — Developers who've touched machine learning will immediately grasp the "error signal → update" loop. It's a fresh way to frame something most books would just call "testing."
+
+2. **The API endpoint example** — This is your clearest moment. Same code, three different outcomes based on what you measure. This is the kind of concrete thinking developers will remember.
+
+3. **The voice** — You write like a practitioner, not a consultant. Phrases like "quietly becomes vibe coding" and "you're going to have a difficult time" land well. Keep that.
+
+---
+
+**What needs work:**
+
+1. **The section doesn't know what it is** — Right now you have: validation loops → ML analogy → "how do we get feedback?" → what is feedback → examples → optimisation → types of feedback. That's six conceptual moves in three pages. A reader will lose the thread.
+
+   My suggestion: Pick *one* narrative arc. Either (a) "Agents need feedback to self-correct — here's how to give it to them" or (b) "Your feedback loops determine what kind of code you get — choose deliberately." Not both in the same breath.
+
+2. **You're answering questions the reader hasn't asked yet** — The ML analogy arrives before the reader understands *why* feedback matters. Consider leading with the API example instead — show them that the same endpoint can become three different things depending on what you validate. *Then* explain the mechanism.
+
+3. **"Types of feedback" feels tacked on** — It reads like a list you added to be thorough. But after the optimisation discussion, it's anticlimactic. Either integrate it (e.g., "If you're optimising for reliability, end-to-end tests matter more than unit tests") or cut it.
+
+4. **The transition from mechanism to strategy is abrupt** — You go from "the agent needs to run tests locally" to "you can optimise for different things" without a bridge. Something like: *"But here's the catch: not all feedback is equal. What you choose to measure shapes what you get."*
+
+5. **Some sentences do too much work** — Example: *"When doing agentic engineering, you want the agents to have access to be able to gather feedback on their own."* That's 20 words that could be 8: *"Agents need to gather their own feedback."*
+
+---
+
+**Structural suggestion:**
+
+Consider this flow:
+
+1. **Open with the API example** — Show, don't tell. Same endpoint, three outcomes.
+2. **Explain why** — Because feedback steers the agent.
+3. **Show how** — Validation loops, local env, tests, etc.
+4. **Close with the principle** — "Your checks define what 'good' means."
+
+That's cleaner than: mechanism → analogy → definition → list → optimisation → list again.
+
+---
+
+**One bigger question:**
+
+Who is this for? You say "developers in general," but some of this assumes they've already adopted agentic workflows. A sceptical mid-level dev who's never used an agent might bounce off the ML analogy. A team lead evaluating whether to adopt this might want more on *why* this matters for their team's output.
+
+Consider: are you writing a *how-to* for practitioners, or a *why-to* for decision-makers? The answer shapes what stays and what goes.
+
+---
+
 **Module 4: Implementation and feedback loops**
 Hands-on: attendees run an implementation cycle on their spec from Module 3.
 - The implementation phase — how to prompt the agent to start, what to include in the prompt
@@ -28,7 +77,7 @@ Hands-on: attendees run an implementation cycle on their spec from Module 3.
 
 ---
 
-## Implementation Phase
+# Implementation Phase
 
 Once you have reviewed the tasks.md file and you are happy to move forward with it, it is time to start implementing.
 
@@ -44,7 +93,7 @@ The validation you choose to use depends on the objective you are trying to achi
 
 It is also worth mentioning that the validation loop is only possible if you have a local environment you can run your project on. If your application requires you to test in a deployed dev environment which the agent can't access, you are going to have a difficult time.
 
-### Validation as an optimisation problem
+## Validation as an optimisation problem
 
 We can compare agentic engineering to how we train machine learning models.
 
@@ -60,7 +109,7 @@ When it comes to agentic engineering, the process is not too different. We can t
 
 So the question is, how do we get the right feedback?
 
-#### What is feedback
+### What is feedback
 
 When thinking about what is the right feedback, it is as simple as thinking, what do I do as an engineer to be sure my solution is correct before making a pull request?
 
@@ -80,21 +129,39 @@ In some cases, for more complex projects, you may need to trigger an external or
 
 Whatever your project looks like, if you want your agent to generate solutions with checks as thorough as you would do yourself, you need to ensure the agent has that same access to the same feedback you would use as an engineer.
 
-#### Gathering the correct Feedback
-Earlier I mentioned some types of feedback I would use as an engineer. However, different projects have different criteria, so it does not work to try and have a generic set of tests we run for each project to call it a day.
+### Providing Feedback
 
-Depinding on the feedback, we can optimise towards different things. Do we optimise for speed? Code duplication? Do we simply optimise that we want the code to run but don't care about anything else? The feedback sets in which direction we optimise.
+There are different ways the model can gather its own feedback so that it can iterate its generated code towards production ready code. Essentially, you need to give the model access to all the same tools you would use to gather feedback when you want to ensure a pull request meets the standards to go for a review.
 
-
-### Types of feedback
-
-There are different levels of feedback which are useful for the model to test and validate the code.
 1. Being able to run the code locally. THe agent can fix any runtime errors. This is the most basic and the minimum you should aim to have.
-2. Running unit tests. Possible using Test Driven Development, where we create the tests first. It gives the model something more concrete that needs to be achieved.
-3. Testing user journeys. Ask the model to build scripts which test user journeys end to end, to ensure functionality. This gives the model the confidence that all features work together with each other, not just in individual blocks.
-4. Any other criteria can be created using custom scripts, such as taking screenshots from the UI.
+2. Running unit tests, to ensure new code does'n break older versions of the code.
+3. Using Test Driven Development. It gives the model something more concrete that needs to be achieved.
+4. Testing user journeys. Create scripts that let the agent interact with the API to ensure basic functionality works end to end.
+5. Using scripts or skills to test the UI, if your app has an interface.
+6. Load testing. Givin the agent the tools to ensure it can run basic load testing for applications that have low latency requirements under load.
 
-Basically anything that you would do yourself as part of your review process before making a Pull Request, you should be able to ask the agent to do as part of the development process.
+
+
+### Optimising towards the right goal
+Apart from the agent being able to gather its own feedback, you need to ensure the agent is optimising the code towards the right goal. It is not just about providing the model enough feedback to ensure the code is production ready, but also ensuring the agent is recieving the right feedback from the tests to ensure it steers the final solution towards the right goal.
+
+Depending on what you are trying to build, you may want to check different criteria. Are we optimising for speed? then you will wan to run load tests to ensure loading times stay under a certain threshold. Are we optimising towards code readability to ensure other developers can easily get into the project? then we will want to check are code is well structured using classes with easily testeable methods.
+
+The same project idea could be optimised towards different goals and end up being completely different things. You need to find out what is relevant to you project and ensure the agent is able to access this information to optimise the solution in the right direction.
+
+**Example: Building the same API endpoint, optimised for different goals**
+
+Imagine you're building a simple API endpoint that processes incoming orders. The functionality is identical in all three cases: receive an order, validate it, save it to the database, return a confirmation. But the success criteria you give the agent changes everything.
+
+If you optimise for **speed**, your validation loop measures: response time under 50ms, requests processed per second, database query execution time. The agent will add caching, connection pooling, async processing, maybe batch writes. The code becomes faster but more complex.
+
+If you optimise for **simplicity**, your validation loop measures: lines of code, cyclomatic complexity, number of dependencies, how easily a new developer could understand it. The agent will write straightforward, single-threaded code with clear error handling. It's slower but maintainable.
+
+If you optimise for **reliability**, your validation loop measures: retry success rate, error logging completeness, idempotency checks, circuit breaker triggers. The agent adds retry logic, detailed audit logs, rollback mechanisms, defensive checks. The code is more verbose but resilient.
+
+Same endpoint. Three different implementations. The difference is what you chose to measure and validate.
+
+The point is, what feedback do I need to provide so that the agent optimises to the right goal?
 
 ## Making Edits
 
@@ -115,11 +182,11 @@ xychart-beta
 
 When you spot issues after implementation, you have two options depending on the severity.
 
-### Manual edits
+## Manual edits
 
 If the issues are small and localised, a missed edge case or a minor behaviour that's slightly off, the pragmatic move is to review the code yourself and fix it by hand. This is faster than re-running the full workflow for something trivial, and it keeps you close to the code.
 
-### Fixing forward
+## Fixing forward
 
 If the issues are more significant, resist the urge to prompt your way out of them. Instead, treat it as a new iteration. Write a new spec that clearly describes the gap or the incorrect behaviour, go through the full spec → plan → tasks workflow, and implement the fix cleanly in one pass.
 
