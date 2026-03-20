@@ -88,6 +88,38 @@ The agent implements, validates its own work, and iterates until all checks pass
 
 ## The implementation phase
 
+The implementation phase begins when we've collected all of the specifications in a document and we are ready to start implementing. At this point all of the requirements should be gathered and the specifications should be clear and detailed.
+
+If you follow a spec driven development approach, all you need to do is ask the agent to implement the tasks. If you are not using a spec driven approach then I'd recommend you break down your specifications/plan into concrete tasks the agent can follow so that there is very little wiggle room for the agent to improvise.
+
+The implementation prompt can be as simple as
+
+> *Implement all of the tasks in the task document*
+
+If our implementation plan is large (we reccommend building smaller features that are easy to understand and review), then it may be benefitial to implement the tasks in phases. When implementing incrementally, we can ensure each phase has been implemented correctly, and we can make any changes early on if we detect that something is being implemented differently than we expected. This makes it easier to build on top of correct features, rather than building the whole thing and finding out at the end that the whole thing was built under the wroing foundation.
+
+While this phased approach goes against the philosophy of fully automated end to end engineering without a human in the loop, with this process we can ensure the correct implementation is being follewed for all steps of the process.
+
+With this approach, each phase will still have its own validations and tests to ensure each phase has been implemented correctly.
+
+{{< mermaid >}}
+flowchart LR
+    P1[Phase 1] --> V1[Validate]
+    V1 --> P2[Phase 2] --> V2[Validate]
+    V2 --> P3[Phase 3] --> V3[Validate]
+    V3 --> Done[Done]
+
+    style V1 fill:#90EE90,stroke:#333
+    style V2 fill:#90EE90,stroke:#333
+    style V3 fill:#90EE90,stroke:#333
+{{< /mermaid >}}
+
+Each phase implements → validates → passes before the next phase begins. Failed validation stops the pipeline early, before more code is built on a broken foundation.
+
+When prompting the agent, you can use something like this
+
+> *Implement phase 1 from the tasks document*
+
 
 ## Setting up a local environment
 
