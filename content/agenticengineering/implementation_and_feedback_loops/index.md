@@ -120,8 +120,11 @@ When prompting the agent, you can use something like this
 
 > *Implement phase 1 from the tasks document*
 
+After each phase is implemented, check the changes, commit and implement the following phase.
 
-## Setting up a local environment
+## Setting up a local development setup
+
+When you are building any software, the fastest way to validate your code is to be able to run things locally.
 
 
 ## Creating a validation loop for your project
