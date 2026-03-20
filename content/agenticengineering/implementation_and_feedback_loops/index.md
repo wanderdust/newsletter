@@ -15,69 +15,67 @@ params:
   tocOpen: false
 
 ---
+## Introduction
 
-# Feedback
+Once you get to the implementation phase, you can simply ask your agent to implement the task and end it there. The agent will produce the code based on the specifications. If that's all you do, then you still have the job of going through the validation steps required to ensure the code is ready for production, such as running unit tests, locally testing functionality to check it works and all the other things a good engineer needs to do to ensure the code is ready for production.
 
-**What's working:**
+If that's all you do, then you are not using agentic workflows to the full potential. The real benefit of agentic engineeering is that you can integrate all of these steps as part of your workflow. We do this by giving the agent clear instructions during the specification phase of the required validation steps before marking the task complete. The validation workflow will ensure generated code meets the existing quality standards required for any code to go into production.
 
-1. **The ML analogy is strong** — Developers who've touched machine learning will immediately grasp the "error signal → update" loop. It's a fresh way to frame something most books would just call "testing."
+There is one big catch. To make this work, the agent needs to have the same level of access as you do when you when you are validating any code. Anything you do as part of the validation process, such as running tests, manual checks, UI checks etc, the agent should also be able to do. This means we really need to make an effort to ensure our project can be ran locally, and that the agent has all the necessary tools to run all of the validations locally.
 
-2. **The API endpoint example** — This is your clearest moment. Same code, three different outcomes based on what you measure. This is the kind of concrete thinking developers will remember.
+With this feedback loop the agent has all the tools it needs to gather its own feedback and implement a feature end to end - from code generation to pull request. The feedback loop will ensure the agent can actually validate the code actually runs and achieves its goal, but also it ensures the end code meets the quality standards for any code going into production.
 
-3. **The voice** — You write like a practitioner, not a consultant. Phrases like "quietly becomes vibe coding" and "you're going to have a difficult time" land well. Keep that.
 
----
 
-**What needs work:**
 
-1. **The section doesn't know what it is** — Right now you have: validation loops → ML analogy → "how do we get feedback?" → what is feedback → examples → optimisation → types of feedback. That's six conceptual moves in three pages. A reader will lose the thread.
 
-   My suggestion: Pick *one* narrative arc. Either (a) "Agents need feedback to self-correct — here's how to give it to them" or (b) "Your feedback loops determine what kind of code you get — choose deliberately." Not both in the same breath.
+-----
+SECTIONS
+- What is a feedback loop? - feedback loop cycle (illustrated), difference between "agent wrote code" and "agent wrote, ran, and checked code works and fixed it based on feedback"
+- Starting the implementation phase - how to prompt, propmt example
+- Setting up a local environment - Why does it need it; What does it mean to run locally (python examples), common blockers (CI/CD tests, lack of permissions)
+- Creating your validation loop - Example based - tests, custom scripts, when you need to go manual, choosing the right validations (optimising the solution)
+- Giving agent access to CLIs and MCPs - (refer to full chapter for WHAT is CLI & MCP) how they expand your agents capabilities (example of Databricks) - Refer to MCP and CLIs chapter
+- Scoping permissions safely - agents run with your credentials, access to dev environments only, do not connect to prod (dev & QA only), Least permissions approach (what if agent goes rogue)
+- Sandbox environments - Why you need it (safety + autopilot), what does it look like, how to setup one
+- Manual edits vs Fixing forward
+- Ownership and the pull request
 
-2. **You're answering questions the reader hasn't asked yet** — The ML analogy arrives before the reader understands *why* feedback matters. Consider leading with the API example instead — show them that the same endpoint can become three different things depending on what you validate. *Then* explain the mechanism.
+----
 
-3. **"Types of feedback" feels tacked on** — It reads like a list you added to be thorough. But after the optimisation discussion, it's anticlimactic. Either integrate it (e.g., "If you're optimising for reliability, end-to-end tests matter more than unit tests") or cut it.
+## What is a feedback loop
 
-4. **The transition from mechanism to strategy is abrupt** — You go from "the agent needs to run tests locally" to "you can optimise for different things" without a bridge. Something like: *"But here's the catch: not all feedback is equal. What you choose to measure shapes what you get."*
 
-5. **Some sentences do too much work** — Example: *"When doing agentic engineering, you want the agents to have access to be able to gather feedback on their own."* That's 20 words that could be 8: *"Agents need to gather their own feedback."*
 
----
+## The implementation phase
 
-**Structural suggestion:**
 
-Consider this flow:
+## Setting up a local environment
 
-1. **Open with the API example** — Show, don't tell. Same endpoint, three outcomes.
-2. **Explain why** — Because feedback steers the agent.
-3. **Show how** — Validation loops, local env, tests, etc.
-4. **Close with the principle** — "Your checks define what 'good' means."
 
-That's cleaner than: mechanism → analogy → definition → list → optimisation → list again.
+## Creating a validation loop for your project
 
----
 
-**One bigger question:**
+## Give the agent more context with MCPs and CLIs
 
-Who is this for? You say "developers in general," but some of this assumes they've already adopted agentic workflows. A sceptical mid-level dev who's never used an agent might bounce off the ML analogy. A team lead evaluating whether to adopt this might want more on *why* this matters for their team's output.
 
-Consider: are you writing a *how-to* for practitioners, or a *why-to* for decision-makers? The answer shapes what stays and what goes.
+## Scoping your environments safely
 
----
 
-**Module 4: Implementation and feedback loops**
-Hands-on: attendees run an implementation cycle on their spec from Module 3.
-- The implementation phase — how to prompt the agent to start, what to include in the prompt
-- Validation loops — why the agent needs a way to verify its own work
-- Types of feedback — tests, scripts, manual checks; when to use each
-- Making edits — when to prompt vs when to edit manually
-- Fixing forward — why you never edit the spec backwards; how to handle change
-- Ownership and the pull request — reviewing AI-generated code, the 95-5 principle, what to check, security
-- Committing spec, plan and tasks alongside code
+## Sandbox environments
 
----
 
-# Implementation Phase
+## Manual edits vs Fixing Forward (when your specs fail)
+
+
+## Ownership and the pull request
+
+
+
+-------------
+[OLD]
+
+## Implementation Phase
 
 Once you have reviewed the tasks.md file and you are happy to move forward with it, it is time to start implementing.
 
