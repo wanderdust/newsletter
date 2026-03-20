@@ -53,7 +53,20 @@ When it comes to agents, the idea is the same. In our project, we set the differ
 
 Let's take a look at these two approaches to implement a feature using agentic engineering. In the first image, we use the agent to implement the code, but there is no validation. In this case, once the code is implemented, it is up to us to run all the checks to ensure everything works. If any of the checks fail, it is up to us to re-propmt the agent with the error message so that it can go back and fix the code.
 
-[implementaion with no validation]
+
+{{< mermaid >}}
+flowchart LR
+    A[Spec + Tasks] --> B[Agent Implements]
+    B --> C[Human Tests Manually]
+    C --> D{Issues Found?}
+    D -- Yes --> E[Copy/Paste Error to Agent]
+    E --> B
+    D -- No --> F[Done]
+
+    style C fill:#f9a8a8,stroke:#333,stroke-width:2px
+    style E fill:#f9a8a8,stroke:#333,stroke-width:2px
+{{< /mermaid >}}
+
 
 With this workflow, the engineer becomes the feedback loop. We have to be constantly checking every time the agent finishes running so that we can run all the necessary checks. As you can imagine, this is very time consuming, and not a very fun task for an engineer to do. I'm sure you have better things to do than to copy back and forth.
 
@@ -61,7 +74,17 @@ Another big issue with this approach, is that you are not giving the agent the f
 
 On the other hand, if the agent has all the necessary tools to run its own checks and gather its own feedback, it can easily check everytime it needs to validate if the generated solution passes all the checks to call something done. It completely removes the human in the loop, completely automating the code implementation and validation process end to end. It will ensure the solutions meet the standards set by the checks. By having access to the validations, the agent has all the context it needs when looking at the feedback to ensure it fixes the code to a working solution.
 
-[implementation with validation]
+{{< mermaid >}}
+flowchart LR
+    A[Spec + Tasks] --> B[Agent Implements]
+    B --> C[Agent Runs Validation]
+    C --> D{Issues Found?}
+    D -- Yes --> E[Agent Fixes Code]
+    E --> B
+    D -- No --> F[Done - Ready for PR]
+{{< /mermaid >}}
+
+The agent implements, validates its own work, and iterates until all checks pass. No copy/paste. No human in the loop. The agent has full context on every failure and can fix issues autonomously.
 
 ## The implementation phase
 
