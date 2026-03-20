@@ -19,6 +19,7 @@ params:
 **Module 5: Agentic Engineering for teams**
 - Creating re-usable framework using templates
 - Standardising the workflow across the team
+- Committing the specs used for building a feature
 
 ---
 
