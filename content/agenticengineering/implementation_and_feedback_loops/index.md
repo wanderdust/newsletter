@@ -45,7 +45,23 @@ SECTIONS
 
 ## What is a feedback loop
 
+When you as an engineer implement any code, you have to go through some steps to ensure the code you've implemented actually works and does the thing it is supposed to do. To check this, you usually run the code to check it actually runs. You may also run the unit tests, to check the new code doesn't break any other parts of the system, and you may also write some tests for this new code. If you are building an application with a user interface, you may run the application locally and interact with it, to ensure the User interface looks correct, and that everything works as expected.
 
+All of these things are different types of feedback that we use to check if our code was implemented correctly. Every time we look for feedback, we check if it meets our expectations. If it doesn't we use this feedback to fix our code so that it works as intended. We go through this feedback loop as many times as needed to ensure the code standards meet the expectations to call our work "done" and ready for production.
+
+When it comes to agents, the idea is the same. In our project, we set the different checks that the agent needs to go through before it can mark any task as complete. Every time the agent writes a piece of code, it goes through all the checks. If any of them fails, the agent looks at the feedback and fixes the code. The agent repeats this process until all checks pass.
+
+Let's take a look at these two approaches to implement a feature using agentic engineering. In the first image, we use the agent to implement the code, but there is no validation. In this case, once the code is implemented, it is up to us to run all the checks to ensure everything works. If any of the checks fail, it is up to us to re-propmt the agent with the error message so that it can go back and fix the code.
+
+[implementaion with no validation]
+
+With this workflow, the engineer becomes the feedback loop. We have to be constantly checking every time the agent finishes running so that we can run all the necessary checks. As you can imagine, this is very time consuming, and not a very fun task for an engineer to do. I'm sure you have better things to do than to copy back and forth.
+
+Another big issue with this approach, is that you are not giving the agent the full context when you provide feedback. When copy pasting an error message, or any logs from a failed check, you may be omitting some crucial information about the check that failed.
+
+On the other hand, if the agent has all the necessary tools to run its own checks and gather its own feedback, it can easily check everytime it needs to validate if the generated solution passes all the checks to call something done. It completely removes the human in the loop, completely automating the code implementation and validation process end to end. It will ensure the solutions meet the standards set by the checks. By having access to the validations, the agent has all the context it needs when looking at the feedback to ensure it fixes the code to a working solution.
+
+[implementation with validation]
 
 ## The implementation phase
 
