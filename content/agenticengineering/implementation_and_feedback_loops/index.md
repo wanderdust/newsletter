@@ -92,15 +92,53 @@ The implementation phase begins when we've collected all of the specifications i
 
 If you follow a spec driven development approach, all you need to do is ask the agent to implement the tasks. If you are not using a spec driven approach then I'd recommend you break down your specifications/plan into concrete tasks the agent can follow so that there is very little wiggle room for the agent to improvise.
 
-The implementation prompt can be as simple as
+The feedback loop should be part of your plan, added to the success criteria for any new functionality created. When creating an implementation plan, your agent should be aware of all of the commands/scripts that can be used for validation, such as how to run unit tests or run you project locally. If you have any scripts you use for testing, your agent should know about these ones too. When you break down you plan into tasks, the validation criteria should be added each time a feature is implemented
 
-> *Implement all of the tasks in the task document*
+This is as example of what your tasks.md file containing the concrete tasks might look like:
 
-If our implementation plan is large (we reccommend building smaller features that are easy to understand and review), then it may be benefitial to implement the tasks in phases. When implementing incrementally, we can ensure each phase has been implemented correctly, and we can make any changes early on if we detect that something is being implemented differently than we expected. This makes it easier to build on top of correct features, rather than building the whole thing and finding out at the end that the whole thing was built under the wroing foundation.
+```markdown
+## Tasks: Implement POST /orders endpoint
 
-While this phased approach goes against the philosophy of fully automated end to end engineering without a human in the loop, with this process we can ensure the correct implementation is being follewed for all steps of the process.
+### Task 1: Create the endpoint skeleton
+- Create POST /orders endpoint in routes/orders.py
+- Define request schema: order_id, customer_id, items (list), total_amount
+- Define response schema: order_id, status, created_at
+- Return 201 on success, 400 on invalid request
+- [Testing] Run `pytest tests/test_orders_routes.py::test_create_order_schema` - must pass
+- [Testing] Run `make lint` - must pass
 
-With this approach, each phase will still have its own validations and tests to ensure each phase has been implemented correctly.
+### Task 2: Implement database persistence
+- Create orders table if not exists (id, customer_id, status, total_amount, created_at)
+- Insert order record on POST request
+- Return persisted order data in response
+- [Testing] Run `pytest tests/test_orders_repository.py` - must pass
+- [Testing] Run `make db-migrate` - must complete without errors
+
+### Task 3: Add input validation
+- Validate customer_id exists (call GET /customers/{id})
+- Validate items list is not empty
+- Validate total_amount matches sum of items
+- Return 422 on validation failure with error details
+- [Testing] Run `pytest tests/test_orders_validation.py` - must pass
+- [Testing] Run `python scripts/test_validation_scenarios.py` - all 12 scenarios must pass
+
+### Task 4: Add error handling and logging
+- Wrap database operations in try/catch
+- Log all order creation attempts with correlation ID
+- Return 500 with error ID on internal failures
+- [Testing] Run `pytest tests/test_orders_errors.py` - must pass
+- [Testing] Check logs in `logs/orders.log` - correlation ID present on all entries
+
+### Task 5: End-to-end validation
+- Call POST /orders with valid payload via curl
+- Verify response contains all required fields
+- Verify record exists in database
+- Verify log entry was created
+- [Testing] Run `python scripts/e2e_test_orders.py` - all checks must pass
+- [Testing] Run `make test-e2e` - must pass
+```
+
+In the example above, each task has its own validations and tests. We don't wait untlil the end to create to validate our code.
 
 {{< mermaid >}}
 flowchart LR
@@ -114,13 +152,18 @@ flowchart LR
     style V3 fill:#90EE90,stroke:#333
 {{< /mermaid >}}
 
-Each phase implements → validates → passes before the next phase begins. Failed validation stops the pipeline early, before more code is built on a broken foundation.
+Each phase implements → validates → passes before the next phase begins. Failed validation means the agent fixes the issue based on the feedback before moving on to the next task. With this approach we ensure a valid implementation for each task, so that we don't build downstream features using the wrong foundations.
 
-When prompting the agent, you can use something like this
+If our implementation plan is large (we reccommend building smaller features that are easy to understand and review), then it may be benefitial to implement the tasks in phases. When implementing incrementally, we can ensure each phase has been implemented correctly, and we can make any changes early on if we detect that something is being implemented differently than we expected. This makes it easier to build on top of correct features, rather than building the whole thing and finding out at the end that the whole thing was built under the wroing foundation.
 
-> *Implement phase 1 from the tasks document*
+While this phased approach goes against the philosophy of fully automated end to end engineering without a human in the loop, with this process we can ensure the correct implementation is being follewed for all steps of the process.
 
-After each phase is implemented, check the changes, commit and implement the following phase.
+
+The implementation prompt can be as simple as
+
+> *Implement all of the tasks in the task document*
+
+You can change it depending on whether you are implementing all tasks in one go, or one at a time.
 
 ## Setting up a local development setup
 
