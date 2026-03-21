@@ -194,6 +194,15 @@ Anything that we can't run locally and we need to rely deploying to higher envoi
 
 ## Creating a validation loop for your project
 
+For this section, lets work with an example. We have to implement a POST /orders endpoint into our API, but we want to make sure we are capable of testing everything as it gets implemented.
+
+TODO
+- TDD - write tests first
+- Setting up connection to RDS in dev environment
+- Make command for unit tests
+- Run black formatter and flake8
+- SPecify in the plan that we need to run these each time.
+
 
 ## Give the agent more context with MCPs and CLIs
 
