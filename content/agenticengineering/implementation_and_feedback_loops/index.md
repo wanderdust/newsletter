@@ -167,8 +167,30 @@ You can change it depending on whether you are implementing all tasks in one go,
 
 ## Setting up a local development setup
 
-When you are building any software, the fastest way to validate your code is to be able to run things locally.
+Any time you are building software you need to be able to validate it before it goes into production. At the very least, for any software written, you need to check that it actually runs, otherwise the program won't work and deploying it will be pointless.
 
+There are many ways you can validate your projects. Depending on the application and the team, you may have things running locally. This is the fastest way to get feedback, because you can run things in your local setup.
+
+Other times, teams have validations in their CI/CD pipelines, or in an external dev or QA environment. This is also valid, and the reason is usually because if there are cloud deployments it can be easier to test them in a dev environment deployed in the cloud instead than in your local system.
+
+The biggest issue with testing in a higher environment like a dev or QA environment is that we normally have to wait some time for our code to be deployed, this can go from a few minutes to hours, deperding on the application. This makes the feedback collection a very slow task.
+
+Hierarchy of testing
+- Locally - basic checks to ensure code runs. Basic unit testing and local servers
+- deployed dev environment - Useful when our application has other dependencies that are also deployed in the cloud
+- QA or preprod environment - Similar to the dev environment, except this one is very similar to the prod environment than dev. In dev we usually have unlimited permissions to try things out.
+- Prod environment - user facing environment. Only code thoroughly tested in the lower environments actually makes it to prod.
+
+The most efficient way to build code reliably and efficiently is to be able to run as much testing as possible in our local environment. If we can make our local enviroment as capable as the deployed dev environment where the application can run and connect to the other dependencies - such as databases, api gateways etc - then we will be in a very good position to have a good agentic engineering setup with a strong feedback loop.
+
+Each project is different, and will have different checks you want to run. But at a surface level, these are the things you want to be able to run in you local environment.
+
+- Unit tests: all the tests should be easily runnable using a simple command. If we have tests that depend on external systems, we should have all the necessary mocks.
+- End to End tests: scripts that test the functionality end to end. For example if we have an API, which has an API gateway and also connects to a database, we should be able to run and end to end test via the API gateway, through the API service, all the way to the database and back. No Mocks.
+- We should be able to run the application locally to run any manual checks. If our application needs debugging, we should be able to easily run it locally and debug.
+
+
+Anything that we can't run locally and we need to rely deploying to higher envoironments to test, is going to make it more difficult for the agent to gather the feedback it needs to ensure the correct implementation of features. The less feedback it can get, the less reliable the final implementation will be, and the more manual checks, you, the developer will have to run.
 
 ## Creating a validation loop for your project
 
@@ -215,8 +237,6 @@ Fixing forward keeps the problem well-defined, gives the agent a clean starting 
 
 
 ## Ownership and the pull request
-
-## Ownership and the Pull Request
 
 With a solid spec, a good feedback loop, and a capable agent, you can go from spec to pull request without writing a single line of code yourself. The agent builds it, tests it, and validates it end to end.
 
