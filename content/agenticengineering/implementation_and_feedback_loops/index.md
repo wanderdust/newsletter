@@ -184,9 +184,62 @@ When you are building any software, the fastest way to validate your code is to 
 
 ## Manual edits vs Fixing Forward (when your specs fail)
 
+Sometimes, after implementation is finished, you notice that something was built incorrectly or not built at all. This is usually a symptom of one of two things: a poorly defined spec (the agent solved the wrong problem), or a weak feedback loop (the agent never got signal that something was wrong).
+
+When this happens, there is a temptation to start firing off quick fixes. "Just change this bit", "actually make it do this instead". This is where spec driven development quietly becomes vibe coding. Each prompt narrows the context a little more, the model loses track of the bigger picture, and the quality of the output degrades with each exchange.
+
+A useful rule of thumb: the fewer prompts it takes to implement something, the better the result. Quality and prompt count tend to move in opposite directions.
+
+{{< mermaid >}}
+%%{init: { 'theme': 'base', 'themeVariables': { 'xyChart': { 'plotColorPalette': '#e11d48' } } }}%%
+xychart-beta
+    title "Code Quality vs Number of Prompts"
+    x-axis "Number of Prompts" ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+    y-axis "Code Quality (%)" 0 --> 100
+    line [95, 80, 60, 40, 25, 15, 10, 7, 5, 5]
+{{< /mermaid >}}
+
+When you spot issues after implementation, you have two options depending on the severity.
+
+**Manual edits**
+
+If the issues are small and localised, a missed edge case or a minor behaviour that's slightly off, the pragmatic move is to review the code yourself and fix it by hand. This is faster than re-running the full workflow for something trivial, and it keeps you close to the code.
+
+**Fixing forward**
+
+If the issues are more significant, resist the urge to prompt your way out of them. Instead, treat it as a new iteration. Write a new spec that clearly describes the gap or the incorrect behaviour, go through the full spec → plan → tasks workflow, and implement the fix cleanly in one pass.
+
+The key principle here is that spec, plan, and tasks files are immutable once you have moved past them. You do not go back and edit an earlier document mid-flight, as that cascades changes unpredictably across the whole workflow. Once you are happy with a phase and move forward, it is locked. If something is missing, you either finish what you have and create a new spec for the next iteration, or you abandon the current cycle and start over from the spec.
+
+Fixing forward keeps the problem well-defined, gives the agent a clean starting point, and avoids the compounding drift that comes from patching a half-finished implementation.
+
 
 ## Ownership and the pull request
 
+## Ownership and the Pull Request
+
+With a solid spec, a good feedback loop, and a capable agent, you can go from spec to pull request without writing a single line of code yourself. The agent builds it, tests it, and validates it end to end.
+
+But this only gets you 95% of the way there.
+
+No matter how detailed your spec is, the agent can and will misinterpret something. It can be small things, but they still need to be caught and corrected. That last 5% is where you come in, and it is arguably the most important part of the whole process.
+
+The agent writes the code. You own it. There is a difference.
+
+Owning the code means you can vouch for every line that goes to production. If someone asks you why a particular approach was taken, you should be able to answer, after all it was you who defined the specs and made the decisions. "The LLM wrote that part" is not an acceptable answer in a production system, and it is not fair to your reviewers to hand them code you have not personally understood. It is not the reviewer's responsibility to decypher code you have not checked.
+
+This is one of the biggest shifts in agentic development. That accountability is what separates professional engineering from vibe coding.
+
+**Do this:**
+- Go through every change before raising the PR. Read the diff. Understand what was built and why.
+- Check that the implementation matches the intent of the spec, not just that the code runs or the tests pass.
+- Be able to explain any piece of the code if someone challenges it in review. If you cannot, that is a red flag.
+- Keep PRs small. The smaller the change, the easier it is to review thoroughly and the easier it is for your colleagues to give useful feedback.
+
+**Do not do this:**
+- Do not raise a PR for code you have not personally read. It is not the reviewers job to be the gatekeeper of code.
+- Do not assume passing tests means the feature is correct. Tests validate what was written, not what was intended.
+- Do not trust the agent to catch its own security issues. Agents will suggest things that are common but not necessarily secure. Long-lived tokens, overly broad permissions, accidentally committed `.env` files. These get through if you are not paying attention.
 
 
 -------------
