@@ -260,7 +260,72 @@ Write the spec to the specs/ directory.
 Now any developer in the team can simply type `/spec` followed by their feature description, and the agent will take care of the rest. You can create the same for `/plan` and `/tasks`, each referencing their corresponding templates. Since the skills live in the repository, they are version controlled and shared across the team just like any other code.
 
 ## Walkthrough: setting up a re-usable framework
-TODO: include using branching to save the specs and commit them.
+
+Let us bring everything together. We have templates for our documents, prompt templates that tell the agent how to use them, and skills that make the whole thing invocable with a single command. Now we want to set this up in a way that any developer in the team can clone the repo and start using it straight away.
+
+### The repository structure
+
+Here is what the full setup looks like in your repository:
+
+```
+your-repo/
+  .claude/
+    skills/
+      spec/
+        SKILL.md
+      plan/
+        SKILL.md
+      tasks/
+        SKILL.md
+  templates/
+    spec.md
+    plan.md
+    tasks.md
+  specs/
+    feature/add-user-auth/
+      spec.md
+      plan.md
+      tasks.md
+    feature/payment-integration/
+      spec.md
+      plan.md
+      tasks.md
+```
+
+The `templates/` directory holds the document templates we defined earlier. The `.claude/skills/` directory holds the skills that reference those templates. And the `specs/` directory is where the generated documents live, organised by branch name.
+
+### Organising specs by branch
+
+Each feature branch gets its own directory inside `specs/`. When a developer creates a new branch and runs `/spec`, the spec file is written to `specs/<branch-name>/spec.md`. The same applies to the plan and tasks. This keeps everything organised and makes it easy to find the specifications for any given feature.
+
+To make this work, the skill needs to know which branch it is running on. You can do this with a small setup script that detects the current branch and passes the path to the skill, or you can simply instruct the skill to use the current git branch name as the directory. Adding this to the skill prompt is straightforward:
+
+```markdown
+Detect the current git branch name.
+Use it to create or locate the specs directory at `specs/<branch-name>/`.
+Write the spec to `specs/<branch-name>/spec.md`.
+```
+
+As you adopt this workflow, you might want to add helper scripts that handle branch detection, check whether prerequisite documents exist before running the next step, or validate that the directory structure is correct. These are nice to have and can be added over time as the team gets comfortable with the process.
+
+### Committing the specs
+
+This is an important part. The spec, plan, and tasks files should be committed to the repository alongside the code. They are part of the feature, not throwaway artifacts. Committing them gives you auditability. You can look back at any feature and see exactly what was specified, what was planned, and what tasks were created. During code reviews, reviewers can look at the spec and plan to understand the intent behind the changes, which makes reviews faster and more meaningful.
+
+It also means that if a feature introduces a bug six months later, you can go back and check whether the spec missed something, the plan had a gap, or the implementation diverged from the tasks. This is useful not just for debugging but also for improving your templates over time.
+
+The workflow for any developer on the team now looks like this:
+
+1. Create a feature branch
+2. Run `/spec` with the feature description
+3. Review the generated spec, make any adjustments
+4. Run `/plan` to create the implementation plan
+5. Review the plan, adjust if needed
+6. Run `/tasks` to break it down into actionable steps
+7. Implement the tasks
+8. Commit everything: specs, plan, tasks, and code
+
+The whole process is the same for every developer, regardless of experience level. The templates encode what the team considers important, the skills automate the prompting, and the specs directory keeps a record of every decision made.
 
 ## Defining team standards with a constitution
 
