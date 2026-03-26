@@ -1,5 +1,5 @@
 ---
-title: 'Spec driven development'
+title: 'Chapter 3 - Spec driven development'
 date: '2026-03-06T13:50:31Z'
 draft: false
 summary: ''

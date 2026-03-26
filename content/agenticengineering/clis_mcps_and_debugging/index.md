@@ -1,5 +1,5 @@
 ---
-title: 'CLIs, MCPs and debugging'
+title: 'Chapter 6 - CLIs, MCPs and debugging'
 date: '2026-03-06T13:50:34Z'
 draft: false
 summary: ''

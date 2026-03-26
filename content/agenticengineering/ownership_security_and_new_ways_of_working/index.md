@@ -1,5 +1,5 @@
 ---
-title: 'Ownership, security and new ways of working'
+title: 'Chapter 7 - Ownership, security and new ways of working'
 date: '2026-03-06T13:50:35Z'
 draft: false
 summary: ''

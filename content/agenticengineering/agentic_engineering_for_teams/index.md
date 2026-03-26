@@ -1,5 +1,5 @@
 ---
-title: 'Chapter 5 - Agentic Engineering for teams'
+title: 'Chapter 5 - Agentic engineering for teams'
 date: '2026-03-06T13:50:33Z'
 draft: false
 summary: ''
