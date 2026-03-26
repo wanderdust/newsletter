@@ -50,6 +50,8 @@ The first thing you might do, is to is to save these prompts in a document and r
 
 We can use templates in our repositories that can be referenced each time we go through this process. The templates include all of the sections that you want to make sure your document includes, and the structure it should follow. Here are some expamples of templates we can use.
 
+By using templates, we can also make it very easy to share across teams, and different teams can easily modify them according to their needs, but at least everyone starts from some base which includes the minumum required criteria for all teams. By using small, concise templates, it is also very easy for teams to review and make small modifications to match their needs.
+
 ### The spec template
 
 The spec template captures the _what_ and _why_ of the work. It should include any sections that are important for your team. Some sections should be non-negotiable across all teams, like having clear goals and success criteria. Others will depend on what your team cares about, for example, your team might always want to include user journeys because it leads to better solutions, or maybe constraints are important because you work with strict dependencies.
@@ -123,20 +125,113 @@ The templates above are a starting point. Your team will likely add or remove se
 
 Once all of the templates are clearly defined, we can start thinking about how to prompt the model to consistently use these templates when building features.
 
-## Automating the workflow with skills
+## Creating templates for our prompts
 
 Having the templates is the first step, and it could be enough to start creating a consitstent workflow across the team. When prompting the model, we can say
 
-> _Create a specifications document using the spec.md file template provided. The specs are these <feature specs here>_
+> _Create a specifications document using the spec.md file template provided. The specs are these [feature specs here]_
 
-The problem with this workflow is that we still have to write a full prompt referencing the templates each time. A developer can easily forget to reference the provided template, which means all this standardisation is all in vain. It also means that we have to constantly repeat the phrase "_use the provided template in <path to template>_" each time. Surely we can automate this.
+The problem with this workflow is that we still have to write a full prompt referencing the templates each time. A developer can easily forget to reference the provided template, which means all this standardisation is all in vain. It also means that we have to constantly repeat the phrase "_use the provided template in [path to template]_" each time.
+
+We can automate this by using prompt templates. A prompt template is a reusable set of instructions that tells the agent exactly how to use each document template. Instead of the developer having to remember the right prompt each time, the prompt template does it for them. Here are some examples.
+
+As a starting point, we can create the prompt templates in our repository, and re-use them each time.
+
+### The spec prompt template
+
+```markdown
+You are creating a feature specification.
+The spec captures the **what** and **why**. No technical decisions.
+
+Read the spec template at `templates/spec.md`.
+Use the user input to understand what is being built.
+
+Fill in the spec template with these sections:
+  **Overview**: what is being built and why
+  **Goals**: what this work should achieve
+  **Non goals**: what is explicitly out of scope
+  **User journeys**: step by step descriptions of how users interact with the feature
+  **Requirements**: specific functional requirements
+  **Constraints**: limitations, dependencies, or requirements that affect scope
+  **Success criteria**: measurable outcomes that define when this is done
+
+Be specific and concrete. Avoid vague language.
+Write the spec to the specs/ directory.
+---
+
+**User Input Below**
+
+```
+
+### The plan prompt template
+
+```markdown
+You are creating an implementation plan from a feature specification.
+
+Read the spec at `specs/spec.md` and the plan template at `templates/plan.md`.
+Explore the repository to understand the existing code structure, patterns, and conventions.
+
+Fill in the plan with these sections:
+  **Technical decisions**: key technology choices, frameworks, patterns
+  **Approach**: what gets added, changed, or removed, and in what order
+  **Integration**: how the new code fits into the existing codebase, file locations, module boundaries
+  **Validation and testing**: how the implementation will be tested, which tools, what must pass
+
+The plan should be concrete enough that someone could implement it
+without needing to make further architectural decisions.
+Write the plan to the specs/ directory.
+---
+
+**User Input Below**
+
+```
+
+### The tasks prompt template
+
+```markdown
+You are creating a task list from an implementation plan.
+
+Read the spec at `specs/spec.md`, the plan at `specs/plan.md`,
+and the tasks template at `templates/tasks.md`.
+
+Generate a task list organised into phases.
+Each phase should be completable independently.
+
+For each task:
+  Use checkbox format: `- [ ] X.Y Description`
+  Scope it small enough to implement in a single step
+  Include the specific files or areas of code involved where possible
+
+Each phase should include validation and testing tasks, not just implementation.
+Write the tasks to the specs/ directory.
+```
+
+Each prompt template references the corresponding document template and tells the agent exactly what to do. The developer only needs to provide the feature description, and the prompt template handles the rest. This is already a big improvement because the workflow is now consistent regardless of who in the team is running it.
+
+But we can take this one step further. Instead of having the developer copy and paste these prompt templates each time, we can turn them into skills.
+
+
+## Automating the workflow with skills
+
+So far we have templates for the specification documents and the prompts. With this workflow, we simply copy paste the prompt and pass it to the agent alongside with the required information about the feature we are trying to implement. This approach is perfectly valid and we could leave it here. However there is still a fair amount of copy pasting across prompts. While no one likes to copy paste, it can also introduce human errors.
+
+We can make use of agent skills to bake the prompts into a skill we can directly invoke from within the agent. Instead of copy pasting the prompt each time, we create a skill, and invoke that skill using a slash (/) command. All of a sudden, your prompt may look like this
+
+> _/spec [my feature information]_
+
+In this case the `/spec` command contains all the prompt information and all we need to do is pass our feature information. THis makes the process a lot simlper and removes the need to copy paste altogether!
+
+Skills were originally a concept impemented in claude code. However most of the agent providers offer this functionality in one way or another. As we have seen in the previous example, a skill is simply a command we invoke which holds some information about the task we want to implement. In claude, a simple skill would look like this.
+
 
 
 ## Walkthrough: setting up a re-usable framework
-
+TODO: include using branching to save the specs and commit them.
 
 ## Defining team standards with a constitution
 
+
+## Building re-usable agents
 
 ## When to use and not to use agentic engineering
 
