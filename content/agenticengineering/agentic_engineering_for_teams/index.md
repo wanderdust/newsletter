@@ -1,5 +1,5 @@
 ---
-title: 'Agentic Engineering for teams'
+title: 'Chapter 5 - Agentic Engineering for teams'
 date: '2026-03-06T13:50:33Z'
 draft: false
 summary: ''
@@ -13,15 +13,8 @@ images: []
 params:
   showtoc: true
   tocOpen: false
-
 ---
 
-**Module 5: Agentic Engineering for teams**
-- Creating re-usable framework using templates
-- Standardising the workflow across the team
-- Committing the specs used for building a feature
-
----
 ## Introduction
 
 At this point we have already seen how to use spec driven development to create a structured engineering workflow and using feedback loops te ensure the code is validated and meeting the necessary standards. We already have a very solid workflow we can go and use.
