@@ -2,10 +2,12 @@
 name: Deploy Hugo site to Pages
 
 # ======================================
-# Change this to deploy a different branch
+# Change this to use a different theme branch.
+# Set to "main" for default theme.
+# Content always comes from main.
 # ======================================
 env:
-  DEPLOY_BRANCH: retro-ui
+  THEME_BRANCH: retro-ui
 
 on:
   push:
@@ -46,12 +48,18 @@ jobs:
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Install Dart Sass
         run: sudo snap install dart-sass
-      - name: Checkout
+      - name: Checkout main (content)
         uses: actions/checkout@v4
         with:
-          ref: ${{ env.DEPLOY_BRANCH }}
+          ref: main
           submodules: recursive
           fetch-depth: 0
+      - name: Overlay theme from branch
+        if: ${{ env.THEME_BRANCH != 'main' }}
+        run: |
+          git fetch origin ${{ env.THEME_BRANCH }}
+          git checkout origin/${{ env.THEME_BRANCH }} -- layouts/ 2>/dev/null || true
+          git checkout origin/${{ env.THEME_BRANCH }} -- assets/ 2>/dev/null || true
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
