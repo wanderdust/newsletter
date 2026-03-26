@@ -22,6 +22,12 @@ params:
 - Committing the specs used for building a feature
 
 ---
+## Intro
+- We have a good workflow for agentc engineering
+- But how do we make it consistent across our team?
+- How do we make it consistent across different teams?
+- How do we automate some of the steps and prompts?
+- Use skills and templates.
 
 ## Creating re-usable framework
 
