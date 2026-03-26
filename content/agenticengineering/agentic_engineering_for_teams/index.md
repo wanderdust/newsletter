@@ -22,12 +22,7 @@ params:
 - Committing the specs used for building a feature
 
 ---
-## Intro
-- We have a good workflow for agentc engineering
-- But how do we make it consistent across our team?
-- How do we make it consistent across different teams?
-- How do we automate some of the steps and prompts?
-- Use skills and templates.
+## Introduction
 
 At this point we have already seen how to use spec driven development to create a structured engineering workflow and using feedback loops te ensure the code is validated and meeting the necessary standards. We already have a very solid workflow we can go and use.
 
@@ -36,14 +31,114 @@ Engineering is more often than not, not done on your own. You usually work in a 
 We already see this with linting tools. It is a lot better when the team uses the same linting rules for the codebase, so that there is consistency accross the repo in how code is built. It also helps so that each team member does not change each others linting rules on every Pull Request, making the reviews more difficult than they need to be. It also helps keeping a tidier codebase. The same idea applies to having a shared workflow across the team (or teams) when using agentic engineering. We want to ensure we all use the same templates when building our specs. We want to ensure the templates include mandatory information about what is mandatory - such as including user journeys in the spec, including data validation as part of the plan, or including running unit testing as part of the tasks. These will help ensure the specifications include enough details and meet the necessary standards for each different implementation across team members. It will also ensure the code output has gone through the necessary quality gates before it is submitted for review.
 
 ----
-1. Using templates (repo example)
-2. Team using the same agent
-3. Using /skills to automate workflows (repo example with claude)
-4. Re-using agents & scripts to make it easy to run tests and validations
-5. WHen to use and not to use agentic engineering
+1. Creating re-usable templates for specs, plans, and tasks
+2. Automating the workflow with skills
+3. Walkthrough: setting up a simplified spec-kit
+4. Defining team standards with a constitution
+5. When to use and not to use agentic engineering
 
 
+-----
 
+## Creating re-usable templates for specs, plans, and tasks
+
+In the chapter where talked about spec driven development, we spoke about a workflow where we went through the process of creating a series of documents, where we start by specifying the work that needs done and then start breaking it down into actionable tasks.
+
+Over time we will start finding out what works for us. For example, we might like to include user journeys in our spec document because it makes the solutions better. We may also want to always include a section about success criteria and testing which makes our solutionsn more robust.
+
+The first thing you might do, is to is to save these prompts in a document and reference them each time you need to use them. THe prompt might include all of the information you like the agent to add in your document. THis approach works, but it is very manual, and it also makes it a bit awkward to re-use across your team. We can do better.
+
+We can use templates in our repositories that can be referenced each time we go through this process. The templates include all of the sections that you want to make sure your document includes, and the structure it should follow. Here are some expamples of templates we can use.
+
+### The spec template
+
+The spec template captures the _what_ and _why_ of the work. It should include any sections that are important for your team. Some sections should be non-negotiable across all teams, like having clear goals and success criteria. Others will depend on what your team cares about, for example, your team might always want to include user journeys because it leads to better solutions, or maybe constraints are important because you work with strict dependencies.
+
+Here is an example of a spec template:
+
+```markdown
+# Spec
+
+## Overview
+<!-- What is being built and why. One or two sentences. -->
+
+## Goals
+<!-- What this work should achieve. -->
+
+## Non-goals
+<!-- What is explicitly out of scope. -->
+
+## User journeys
+<!-- Step-by-step descriptions of how users will interact with this feature.
+Include the happy path and key edge cases. -->
+
+## Requirements
+<!-- Specific functional requirements. What must the system do? -->
+
+## Constraints
+<!-- Any limitations, dependencies, or requirements that affect scope. -->
+
+## Success criteria
+<!-- How we know this is done. Measurable outcomes that define success. -->
+```
+
+### The plan template
+
+The plan template captures the _how_. This is where technical decisions are made. Having a template here ensures the team always thinks about how new code integrates with the existing codebase, and that there is always a testing strategy before implementation starts.
+
+```markdown
+# Plan
+
+## Technical decisions
+<!-- Key technology choices, frameworks, patterns to use. -->
+
+## Approach
+<!-- How the spec will be implemented. What gets added, changed, or removed. -->
+
+## Integration
+<!-- How the new code fits into the existing codebase.
+File locations, module boundaries, etc. -->
+
+## Validation and testing
+<!-- How the implementation will be tested. Tools, strategy (unit, integration, e2e),
+and what must pass before this is considered done. -->
+```
+
+### The tasks template
+
+The tasks template breaks the plan into small, actionable steps grouped by phase. Each phase should be completable independently, and each phase should include its own validation step. This is important — it forces the agent to validate as it goes rather than leaving all testing to the end.
+
+```markdown
+# Tasks
+
+## Phase 1
+<!-- Group related tasks into phases. Each phase should be completable independently.
+Include validation and testing tasks per phase where possible. -->
+
+- [ ] 1.1 Task description — implementation
+- [ ] 1.2 Task description — validation and testing
+```
+
+The templates above are a starting point. Your team will likely add or remove sections over time as you figure out what works. The point is that they live in the repo, everyone uses them, and they encode what the team considers important.
+
+Once all of the templates are clearly defined, we can start thinking about how to prompt the model to consistently use these templates when building features.
+
+## Automating the workflow with skills
+
+Having the templates is the first step, and it could be enough to start creating a consitstent workflow across the team. When prompting the model, we can say
+
+> _Create a specifications document using the spec.md file template provided. The specs are these <feature specs here>_
+
+The problem with this workflow is that we still have to write a full prompt referencing the templates each time. A developer can easily forget to reference the provided template, which means all this standardisation is all in vain. It also means that we have to constantly repeat the phrase "_use the provided template in <path to template>_" each time. Surely we can automate this.
+
+
+## Walkthrough: setting up a re-usable framework
+
+
+## Defining team standards with a constitution
+
+
+## When to use and not to use agentic engineering
 
 -----
 
