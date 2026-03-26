@@ -1,0 +1,760 @@
+/* ==============================================
+   PABLO'S HOMEPAGE - BEST VIEWED IN NETSCAPE 4.0
+   Last Updated: March 1997
+   ============================================== */
+
+/* Import retro fonts */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Comic+Neue:wght@400;700&display=swap');
+
+/* Override ALL PaperMod CSS variables */
+:root {
+  --gap: 12px;
+  --content-gap: 8px;
+  --nav-width: 780px;
+  --main-width: 780px;
+  --header-height: auto;
+  --footer-height: auto;
+  --radius: 0px;
+  --theme: #c0c0c0;
+  --entry: #ffffff;
+  --primary: #000080;
+  --secondary: #800080;
+  --tertiary: #808080;
+  --content: #000000;
+  --code-block-bg: #000000;
+  --code-bg: #e0e0e0;
+  --border: #808080;
+}
+
+[data-theme="dark"] {
+  --theme: #c0c0c0;
+  --entry: #ffffff;
+  --primary: #000080;
+  --secondary: #800080;
+  --tertiary: #808080;
+  --content: #000000;
+  --code-block-bg: #000000;
+  --code-bg: #e0e0e0;
+  --border: #808080;
+}
+
+/* KILL all modern styling */
+* {
+  border-radius: 0 !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+html {
+  scroll-behavior: auto !important;
+}
+
+/* Body - classic grey Windows 95 background */
+body {
+  font-family: 'Comic Neue', 'Comic Sans MS', 'MS Sans Serif', 'Trebuchet MS', cursive, sans-serif !important;
+  background-color: #008080 !important;
+  background-image: none !important;
+  color: #000000 !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath d='M0 0 L12 10 L5 10 L0 15Z' fill='white' stroke='black'/%3E%3C/svg%3E"), auto;
+}
+
+/* Main content area as a white "window" */
+.main {
+  max-width: 780px !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  background: #ffffff !important;
+  border: 3px outset #c0c0c0 !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+
+/* ========================
+   HEADER - Windows 95 Title Bar
+   ======================== */
+.header {
+  background: #000080 !important;
+  border-bottom: 3px outset #c0c0c0 !important;
+  box-shadow: none !important;
+  max-width: 780px !important;
+  margin: 10px auto 0 !important;
+  padding: 0 !important;
+  border: 3px outset #c0c0c0 !important;
+}
+
+.nav {
+  max-width: 100% !important;
+  padding: 4px 8px !important;
+  gap: 0 !important;
+  flex-wrap: wrap !important;
+}
+
+.logo a {
+  color: #ffffff !important;
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 12px !important;
+  text-shadow: 1px 1px 0 #000000 !important;
+  text-decoration: none !important;
+}
+
+.logo-switches {
+  display: none !important;
+}
+
+#menu {
+  background: #c0c0c0 !important;
+  border: 2px inset #ffffff !important;
+  padding: 2px !important;
+  margin-top: 4px !important;
+  width: 100% !important;
+  gap: 0 !important;
+  overflow-x: visible !important;
+  justify-content: center !important;
+}
+
+#menu li {
+  display: inline !important;
+}
+
+#menu a {
+  color: #000080 !important;
+  font-family: 'VT323', 'MS Sans Serif', monospace !important;
+  font-size: 18px !important;
+  padding: 2px 10px !important;
+  text-decoration: underline !important;
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  display: inline-block !important;
+  margin: 2px !important;
+}
+
+#menu a:hover {
+  background: #000080 !important;
+  color: #ffffff !important;
+  border-style: inset !important;
+}
+
+#menu a span.active {
+  color: #ff0000 !important;
+  font-weight: bold !important;
+}
+
+/* ========================
+   PROFILE MODE (Homepage)
+   ======================== */
+.profile {
+  padding: 10px !important;
+  min-height: auto !important;
+}
+
+.profile_inner {
+  text-align: center !important;
+}
+
+.profile_inner h1 {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 20px !important;
+  color: #ff0000 !important;
+  text-shadow: 2px 2px 0px #ffff00 !important;
+  margin: 10px 0 !important;
+  animation: blink-text 1s steps(2, start) infinite !important;
+}
+
+@keyframes blink-text {
+  to { visibility: hidden; }
+}
+
+.profile_inner span {
+  font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+  font-size: 16px !important;
+  color: #800080 !important;
+}
+
+.profile_inner img {
+  border: 3px ridge #c0c0c0 !important;
+  image-rendering: pixelated !important;
+}
+
+/* Social icons */
+.social-icons {
+  padding: 10px 0 !important;
+}
+
+.social-icons a {
+  color: #000080 !important;
+  border: 2px outset #c0c0c0 !important;
+  background: #c0c0c0 !important;
+  padding: 4px !important;
+  margin: 2px !important;
+}
+
+.social-icons a:hover {
+  border-style: inset !important;
+  background: #a0a0a0 !important;
+}
+
+.social-icons a svg {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* ========================
+   POST LIST - 90s Web Directory Style
+   ======================== */
+.post-entry {
+  border: 2px ridge #c0c0c0 !important;
+  background: #ffffff !important;
+  margin: 8px 12px !important;
+  padding: 0 !important;
+  box-shadow: 2px 2px 0px #808080 !important;
+}
+
+.post-entry:hover {
+  transform: none !important;
+  box-shadow: 2px 2px 0px #808080 !important;
+}
+
+.first-entry {
+  border: 3px double #ff0000 !important;
+  background: #ffffcc !important;
+  margin: 8px 12px !important;
+  padding: 0 !important;
+  box-shadow: 2px 2px 0px #808080 !important;
+}
+
+.first-entry:hover {
+  transform: none !important;
+}
+
+.entry-header h2 {
+  font-family: 'VT323', 'Courier New', monospace !important;
+  font-size: 22px !important;
+  color: #0000ff !important;
+  text-decoration: underline !important;
+  padding: 8px 10px 0 !important;
+  line-height: 1.2 !important;
+}
+
+.entry-content {
+  padding: 0 10px !important;
+  font-size: 13px !important;
+  color: #333333 !important;
+}
+
+.entry-content p {
+  margin: 4px 0 !important;
+  line-height: 1.3 !important;
+}
+
+.entry-footer {
+  padding: 4px 10px 8px !important;
+  font-size: 12px !important;
+  color: #808080 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+}
+
+.entry-link {
+  border-radius: 0 !important;
+}
+
+/* ========================
+   SINGLE POST - Geocities Style
+   ======================== */
+.post-single {
+  padding: 0 15px 15px !important;
+}
+
+.post-header {
+  padding: 10px 0 !important;
+  border-bottom: 3px double #000080 !important;
+  margin-bottom: 10px !important;
+}
+
+.post-title {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 16px !important;
+  color: #000080 !important;
+  line-height: 1.6 !important;
+  text-shadow: 1px 1px 0px #c0c0c0 !important;
+}
+
+.post-description {
+  font-style: italic !important;
+  color: #800080 !important;
+  font-size: 14px !important;
+  border-left: 4px solid #ff00ff !important;
+  padding-left: 8px !important;
+  margin: 8px 0 !important;
+}
+
+.post-meta {
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+  color: #808080 !important;
+}
+
+/* Post content */
+.post-content {
+  font-family: 'Comic Neue', 'Comic Sans MS', cursive !important;
+  font-size: 15px !important;
+  line-height: 1.5 !important;
+  color: #000000 !important;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3,
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  font-family: 'Press Start 2P', monospace !important;
+  color: #000080 !important;
+  border-bottom: 2px solid #000080 !important;
+  padding-bottom: 4px !important;
+  margin-top: 20px !important;
+}
+
+.post-content h1 { font-size: 18px !important; }
+.post-content h2 { font-size: 15px !important; }
+.post-content h3 { font-size: 13px !important; }
+.post-content h4 { font-size: 12px !important; }
+
+.post-content a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+
+.post-content a:visited {
+  color: #800080 !important;
+}
+
+.post-content a:hover {
+  color: #ff0000 !important;
+  text-decoration: underline !important;
+}
+
+.post-content p {
+  margin: 8px 0 !important;
+}
+
+.post-content img {
+  border: 3px ridge #c0c0c0 !important;
+  padding: 4px !important;
+  background: #ffffff !important;
+  max-width: 100% !important;
+}
+
+.post-content blockquote {
+  border-left: 4px solid #808080 !important;
+  background: #ffffcc !important;
+  padding: 8px 12px !important;
+  margin: 8px 0 !important;
+  font-style: italic !important;
+  border: 2px inset #c0c0c0 !important;
+}
+
+.post-content pre {
+  background: #000000 !important;
+  color: #00ff00 !important;
+  border: 3px inset #c0c0c0 !important;
+  padding: 10px !important;
+  font-family: 'VT323', 'Courier New', monospace !important;
+  font-size: 16px !important;
+  overflow-x: auto !important;
+}
+
+.post-content code {
+  font-family: 'VT323', 'Courier New', monospace !important;
+  background: #e0e0e0 !important;
+  border: 1px solid #808080 !important;
+  padding: 0 3px !important;
+  font-size: 16px !important;
+  color: #000000 !important;
+}
+
+.post-content pre code {
+  background: transparent !important;
+  border: none !important;
+  color: #00ff00 !important;
+}
+
+.post-content ul,
+.post-content ol {
+  padding-left: 20px !important;
+  margin: 6px 0 !important;
+}
+
+.post-content li {
+  margin: 3px 0 !important;
+}
+
+.post-content li::marker {
+  color: #ff0000 !important;
+}
+
+.post-content table {
+  border-collapse: collapse !important;
+  border: 2px solid #000080 !important;
+  width: 100% !important;
+  margin: 10px 0 !important;
+}
+
+.post-content table th {
+  background: #000080 !important;
+  color: #ffffff !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+  padding: 4px 8px !important;
+  border: 1px solid #c0c0c0 !important;
+}
+
+.post-content table td {
+  border: 1px solid #808080 !important;
+  padding: 4px 8px !important;
+  font-size: 13px !important;
+}
+
+.post-content table tr:nth-child(even) {
+  background: #e0e0e0 !important;
+}
+
+/* Horizontal rules */
+.post-content hr {
+  border: none !important;
+  height: 4px !important;
+  background: linear-gradient(to right, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff) !important;
+  margin: 15px 0 !important;
+}
+
+/* ========================
+   TAGS - Retro badges
+   ======================== */
+.post-tags li a {
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  color: #000080 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+  padding: 2px 8px !important;
+  text-decoration: none !important;
+}
+
+.post-tags li a:hover {
+  border-style: inset !important;
+  background: #a0a0a0 !important;
+}
+
+/* ========================
+   PAGINATION - 90s button style
+   ======================== */
+.pagination {
+  gap: 4px !important;
+}
+
+.pagination a,
+.pagination span {
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  color: #000080 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  padding: 4px 12px !important;
+  text-decoration: none !important;
+}
+
+.pagination a:hover {
+  border-style: inset !important;
+}
+
+/* Post nav links */
+.paginav {
+  border: 2px ridge #c0c0c0 !important;
+  margin: 10px 0 !important;
+  background: #e0e0e0 !important;
+}
+
+.paginav a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  padding: 8px !important;
+  border: none !important;
+}
+
+.paginav a:hover {
+  color: #ff0000 !important;
+}
+
+.paginav a .title {
+  font-size: 14px !important;
+  color: #808080 !important;
+}
+
+/* ========================
+   SHARE BUTTONS - 90s style
+   ======================== */
+.share-buttons {
+  padding: 10px 0 !important;
+  border-top: 2px groove #c0c0c0 !important;
+}
+
+.share-buttons a {
+  color: #000080 !important;
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  padding: 3px !important;
+  margin: 2px !important;
+}
+
+.share-buttons a:hover {
+  border-style: inset !important;
+}
+
+/* ========================
+   FOOTER - Classic 90s footer
+   ======================== */
+.footer {
+  max-width: 780px !important;
+  margin: 0 auto 10px !important;
+  background: #c0c0c0 !important;
+  border: 3px outset #ffffff !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+  padding: 8px !important;
+  text-align: center !important;
+  color: #000000 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+}
+
+.footer a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+
+/* Back to top */
+.top-link {
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  color: #000000 !important;
+  bottom: 10px !important;
+  right: 10px !important;
+  padding: 6px !important;
+  box-shadow: 2px 2px 0px #000000 !important;
+}
+
+.top-link:hover {
+  border-style: inset !important;
+}
+
+/* ========================
+   ARCHIVE PAGE
+   ======================== */
+.archive-month {
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  color: #800080 !important;
+}
+
+.archive-entry .entry-hint {
+  font-family: 'VT323', monospace !important;
+}
+
+.archive-entry a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+
+/* ========================
+   PAGE HEADER (list/tag pages)
+   ======================== */
+.page-header h1 {
+  font-family: 'Press Start 2P', monospace !important;
+  font-size: 16px !important;
+  color: #000080 !important;
+  text-shadow: 1px 1px 0 #c0c0c0 !important;
+  padding: 8px 12px !important;
+  background: #ffffcc !important;
+  border: 2px ridge #c0c0c0 !important;
+  margin: 8px 12px !important;
+}
+
+/* ========================
+   TERMS (Tags page)
+   ======================== */
+.terms-tags a {
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  color: #000080 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  padding: 3px 10px !important;
+}
+
+.terms-tags a:hover {
+  border-style: inset !important;
+}
+
+/* ========================
+   SEARCH
+   ======================== */
+#searchbox {
+  border: 3px inset #c0c0c0 !important;
+  background: #ffffff !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  color: #000000 !important;
+  padding: 4px 8px !important;
+}
+
+/* ========================
+   RAINBOW DIVIDER
+   ======================== */
+.rainbow-divider {
+  height: 4px;
+  background: linear-gradient(to right, #ff0000, #ff7700, #ffff00, #00ff00, #0000ff, #8b00ff);
+  margin: 0;
+  max-width: 780px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ========================
+   TABLE OF CONTENTS
+   ======================== */
+.toc {
+  background: #ffffcc !important;
+  border: 2px ridge #c0c0c0 !important;
+  margin: 10px 0 !important;
+}
+
+.toc details summary {
+  font-family: 'VT323', monospace !important;
+  font-size: 18px !important;
+  color: #000080 !important;
+  cursor: pointer !important;
+  padding: 4px 8px !important;
+}
+
+.toc ul {
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+}
+
+.toc a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+
+/* ========================
+   RESPONSIVE - No responsive! Just like the 90s.
+   Actually, let's be merciful and add minimal support.
+   ======================== */
+@media (max-width: 780px) {
+  .header,
+  .main,
+  .footer,
+  .retro-marquee,
+  .status-bar {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+}
+
+/* Kill smooth scrolling everywhere */
+html, body, * {
+  scroll-behavior: auto !important;
+}
+
+/* Remove all hover effects that feel modern */
+a {
+  transition: none !important;
+}
+
+/* Pixelated images for extra retro feel on small images */
+.profile_inner img {
+  image-rendering: pixelated !important;
+}
+
+/* Override chroma syntax highlighting to green-on-black terminal */
+.highlight pre {
+  background: #000000 !important;
+  color: #00ff00 !important;
+}
+
+.highlight .chroma {
+  background: #000000 !important;
+  color: #00ff00 !important;
+}
+
+/* Copy code button - 90s style */
+.copy-code {
+  background: #c0c0c0 !important;
+  border: 2px outset #ffffff !important;
+  color: #000000 !important;
+  font-family: 'VT323', monospace !important;
+  font-size: 14px !important;
+}
+
+.copy-code:hover {
+  border-style: inset !important;
+}
+
+/* Make breadcrumbs retro */
+.breadcrumbs {
+  font-family: 'VT323', monospace !important;
+  font-size: 16px !important;
+  color: #808080 !important;
+}
+
+.breadcrumbs a {
+  color: #0000ff !important;
+  text-decoration: underline !important;
+}
+
+/* 404 page */
+.not-found {
+  font-family: 'Press Start 2P', monospace !important;
+  text-align: center !important;
+}
+
+/* Override any remaining PaperMod smooth transitions */
+.post-entry,
+.first-entry,
+#menu a,
+.social-icons a,
+.share-buttons a,
+.top-link,
+.pagination a {
+  transition: none !important;
+}
+
+/* Ensure the "window" look */
+body.list {
+  background: #008080 !important;
+}
+
+/* Stars background pattern for that extra touch */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-image:
+    radial-gradient(1px 1px at 10% 20%, #ffffff33 50%, transparent 50%),
+    radial-gradient(1px 1px at 30% 60%, #ffffff22 50%, transparent 50%),
+    radial-gradient(1px 1px at 50% 10%, #ffffff33 50%, transparent 50%),
+    radial-gradient(1px 1px at 70% 80%, #ffffff22 50%, transparent 50%),
+    radial-gradient(1px 1px at 90% 40%, #ffffff33 50%, transparent 50%),
+    radial-gradient(1px 1px at 15% 90%, #ffffff22 50%, transparent 50%),
+    radial-gradient(1px 1px at 45% 45%, #ffffff33 50%, transparent 50%),
+    radial-gradient(1px 1px at 85% 15%, #ffffff22 50%, transparent 50%);
+  background-color: #008080;
+}
