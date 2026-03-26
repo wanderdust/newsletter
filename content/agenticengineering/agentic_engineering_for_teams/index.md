@@ -329,6 +329,77 @@ The whole process is the same for every developer, regardless of experience leve
 
 ## Defining team standards with a constitution
 
+The templates and skills we have set up so far define the structure of the workflow. But they do not say anything about how the team actually works. What branching strategy do we use? What testing standards do we expect? What are the hard rules that should never be broken? This is where the constitution comes in.
+
+A constitution is a single document that lives at the root of the specs directory (`specs/constitution.md`) and applies to the entire repository. Unlike the spec, plan, and tasks files which are created per feature branch, there is only one constitution per repo. It captures the team's norms, tools, quality standards, and non-negotiables in one place.
+
+Here is an example of a constitution template:
+
+```markdown
+# Constitution
+
+## Project context
+<!-- What this repo is, who uses it, and any domain knowledge needed. -->
+
+## Team norms
+<!-- How the team works: branching strategy, code review expectations,
+PR conventions, etc. -->
+
+## Tools and conventions
+<!-- Languages, frameworks, formatters, linters, test runners,
+package managers, etc. -->
+
+## Quality standards
+<!-- Testing requirements, coverage expectations, CI checks that must pass, etc. -->
+
+## Non-negotiables
+<!-- Hard rules that must never be broken. Security requirements, compliance,
+architectural boundaries, etc. -->
+```
+
+The constitution is created once when the team first adopts this workflow, and updated as the team evolves. It is not something that changes with every feature. Think of it as the equivalent of your linting configuration, but for how the team builds software with agents.
+
+### Referencing the constitution across the workflow
+
+The constitution becomes useful when the rest of the workflow references it. Each skill (spec, plan, tasks) should read the constitution before generating its output. This ensures that every feature, regardless of who is building it, is built according to the same team standards.
+
+In practice, this means adding a line to each skill prompt telling the agent to read the constitution first:
+
+```markdown
+Read the constitution at `specs/constitution.md` for team norms and standards.
+Ensure the output is consistent with the constitution.
+```
+
+When the agent creates a spec, it will check that the spec aligns with the team's quality standards and does not violate any non-negotiables. When it creates a plan, it will use the tools and conventions defined in the constitution. When it creates tasks, it will include the validation steps that the constitution requires.
+
+This is where things start to compound. The constitution sets the rules, the templates enforce the structure, and the skills wire it all together. A junior developer running `/spec` for the first time will produce a specification that meets the same standards as a senior developer, because the constitution and templates are doing the heavy lifting.
+
+The updated repository structure now looks like this:
+
+```
+your-repo/
+  .claude/
+    skills/
+      spec/
+        SKILL.md
+      plan/
+        SKILL.md
+      tasks/
+        SKILL.md
+  templates/
+    constitution.md
+    spec.md
+    plan.md
+    tasks.md
+  specs/
+    constitution.md
+    feature/add-user-auth/
+      spec.md
+      plan.md
+      tasks.md
+```
+
+Notice that `constitution.md` sits directly inside `specs/`, not inside a branch directory. It is shared across all features. The template for the constitution lives in `templates/` like everything else, and you can create a `/constitution` skill to make it easy to set up or update.
 
 ## Building re-usable agents
 
