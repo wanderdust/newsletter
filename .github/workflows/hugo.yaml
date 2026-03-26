@@ -5,7 +5,7 @@ name: Deploy Hugo site to Pages
 # Change this to deploy a different branch
 # ======================================
 env:
-  DEPLOY_BRANCH: main
+  DEPLOY_BRANCH: retro-ui
 
 on:
   push:
