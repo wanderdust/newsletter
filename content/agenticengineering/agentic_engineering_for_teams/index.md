@@ -401,9 +401,22 @@ your-repo/
 
 Notice that `constitution.md` sits directly inside `specs/`, not inside a branch directory. It is shared across all features. The template for the constitution lives in `templates/` like everything else, and you can create a `/constitution` skill to make it easy to set up or update.
 
-## Building re-usable agents
-
 ## When to use and not to use agentic engineering
+
+Agentic engineering can automate or speed up code writing, which is a positive case in many scenarios. However, when we look at companies, writing code is usually not the bottleneck. Companies are run by people, and as people we tend to be very inefficient. A lot of times the reason we are not shipping fast enough is because reviews are slow, QA takes too long, or simply requirements are not being clarified well enough.
+
+### When to use it
+
+There are some low hanging fruits where agentic engineering can really help. Migrations are a good example, where you need to repeat the same operation for multiple items. You can start doing one, and once it works, ask the agent to repeat it for all items while keeping the item specific configuration. Boilerplate code and proof of concepts are another good case. And more generally, tedious tasks where you are already very familiar with the repository and you know what needs to be done.
+
+### When not to use it
+
+In many cases, it is not about writing faster code, but about reducing the bottlenecks that are making delivery slow. That will have a much bigger impact than shipping faster code.
+
+Even in teams where code truly ships fast, we might be tempted to deliver more than is actually needed, building features that no one asked for. With the tools available to write faster code, adding unnecessary features becomes more tempting than ever.
+
+It may also be tempting to always use agentic engineering for all tasks. However, there are repos where a good understanding of the architecture and decisions made is important, specially if these are customer facing and we need to make deliberate decisions about the functionality we want and expect. Developers should also spend time understanding important repos they will have to deal with when on call. It is beneficial to slow down and build understanding by writing things manually when we are not familiar with a specific repo, rather than being tempted to use agents to implement our tickets, robbing us from building that understanding.
+
 
 -----
 
