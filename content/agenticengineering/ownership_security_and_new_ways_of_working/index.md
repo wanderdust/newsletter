@@ -26,8 +26,7 @@ Closing section. Reflection and discussion. No hands-on needed. Leaves attendees
 - When not to use agents — learning through doing; knowing when to keep your hands on the keyboard
 - Your own knowledge is the limiting factor — why deep expertise matters more now, not less
 - Common questions — cost, context windows, efficiency, automation ceiling, are engineers obsolete
-- testing
-
+- testing again
 ---
 
 ### Security is part of ownership
