@@ -221,9 +221,43 @@ We can make use of agent skills to bake the prompts into a skill we can directly
 
 In this case the `/spec` command contains all the prompt information and all we need to do is pass our feature information. THis makes the process a lot simlper and removes the need to copy paste altogether!
 
-Skills were originally a concept impemented in claude code. However most of the agent providers offer this functionality in one way or another. As we have seen in the previous example, a skill is simply a command we invoke which holds some information about the task we want to implement. In claude, a simple skill would look like this.
+Skills were originally a concept impemented in claude code. However most of the agent providers offer this functionality in one way or another. As we have seen in the previous example, a skill is simply a command we invoke which holds some information about the task we want to implement. In claude code, skills live inside the `.claude/skills/` directory in your repository. Each skill is a folder containing a `SKILL.md` file, and the folder name becomes the skill name. For example, to create a `/spec` skill, the directory structure would look like this:
 
+```
+.claude/
+  skills/
+    spec/
+      SKILL.md
+```
 
+The `SKILL.md` file contains the prompt template we defined earlier, with some metadata at the top. Here is what the spec skill would look like:
+
+```markdown
+---
+name: spec
+description: Create a feature specification for the current branch.
+---
+
+You are creating a feature specification.
+The spec captures the **what** and **why**. No technical decisions.
+
+Read the spec template at `templates/spec.md`.
+Use the user input to understand what is being built.
+
+Fill in the spec template with these sections:
+  **Overview**: what is being built and why
+  **Goals**: what this work should achieve
+  **Non goals**: what is explicitly out of scope
+  **User journeys**: step by step descriptions of how users interact with the feature
+  **Requirements**: specific functional requirements
+  **Constraints**: limitations, dependencies, or requirements that affect scope
+  **Success criteria**: measurable outcomes that define when this is done
+
+Be specific and concrete. Avoid vague language.
+Write the spec to the specs/ directory.
+```
+
+Now any developer in the team can simply type `/spec` followed by their feature description, and the agent will take care of the rest. You can create the same for `/plan` and `/tasks`, each referencing their corresponding templates. Since the skills live in the repository, they are version controlled and shared across the team just like any other code.
 
 ## Walkthrough: setting up a re-usable framework
 TODO: include using branching to save the specs and commit them.
