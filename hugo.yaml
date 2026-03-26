@@ -19,7 +19,6 @@ params:
   DateFormat: "January 2, 2006"
   defaultTheme: light # dark, light
   disableThemeToggle: true
-  ShowReadingTime: true
   ShowShareButtons: true
   ShowPostNavLinks: trued
   ShowBreadCrumbs: false
