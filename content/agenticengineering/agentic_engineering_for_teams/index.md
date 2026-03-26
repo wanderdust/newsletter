@@ -29,6 +29,24 @@ params:
 - How do we automate some of the steps and prompts?
 - Use skills and templates.
 
+At this point we have already seen how to use spec driven development to create a structured engineering workflow and using feedback loops te ensure the code is validated and meeting the necessary standards. We already have a very solid workflow we can go and use.
+
+Engineering is more often than not, not done on your own. You usually work in a team where everyone is trying to achieve the same goals. If everyone in the team is using agents differently, this can create inconsistencies on how the code is built. Perhaps one of the approaches from you junior members is not very thorough, and the output code comes out bloated, and in very large pull requests that are very difficult to review. There is a benefit in everyone using the same workflow and principles to ensuere the whole team is building under the same standards.
+
+We already see this with linting tools. It is a lot better when the team uses the same linting rules for the codebase, so that there is consistency accross the repo in how code is built. It also helps so that each team member does not change each others linting rules on every Pull Request, making the reviews more difficult than they need to be. It also helps keeping a tidier codebase. The same idea applies to having a shared workflow across the team (or teams) when using agentic engineering. We want to ensure we all use the same templates when building our specs. We want to ensure the templates include mandatory information about what is mandatory - such as including user journeys in the spec, including data validation as part of the plan, or including running unit testing as part of the tasks. These will help ensure the specifications include enough details and meet the necessary standards for each different implementation across team members. It will also ensure the code output has gone through the necessary quality gates before it is submitted for review.
+
+----
+1. Using templates (repo example)
+2. Team using the same agent
+3. Using /skills to automate workflows (repo example with claude)
+4. Re-using agents & scripts to make it easy to run tests and validations
+5. WHen to use and not to use agentic engineering
+
+
+
+
+-----
+
 ## Creating re-usable framework
 
 Templates are essential for standardisisg the workflow and create re-usable and consistent templates the whole team can use. The templates ensure that the spec, plan and tasks files contain any mandatory sections that you want to always include, such as ensuring our specs clearly defines success criteria, important dependencies relevant to the tasks, or ensuring tests and formatting are always ran as part of implementing features.
