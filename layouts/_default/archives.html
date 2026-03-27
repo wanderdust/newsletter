@@ -1,0 +1,32 @@
+{{- define "main" }}
+
+<header class="page-header">
+  <h1>{{ .Title }}</h1>
+</header>
+
+{{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+
+{{- if site.Params.ShowAllPagesInArchive }}
+{{- $pages = site.RegularPages }}
+{{- end }}
+
+{{- range $pages.GroupByPublishDate "2006" }}
+{{- if ne .Key "0001" }}
+{{- $year := replace .Key "0001" "" }}
+<div class="archive-year">
+  <h2 class="archive-year-header">{{ $year }} <span class="archive-count">({{ len .Pages }})</span></h2>
+  <table class="archive-table">
+    {{- range .Pages }}
+    {{- if eq .Kind "page" }}
+    <tr>
+      <td class="archive-date">{{ .Date.Format "Jan 02" }}</td>
+      <td class="archive-title"><a href="{{ .Permalink }}">{{ .Title | markdownify }}</a></td>
+    </tr>
+    {{- end }}
+    {{- end }}
+  </table>
+</div>
+{{- end }}
+{{- end }}
+
+{{- end }}{{/* end main */}}

@@ -662,6 +662,71 @@ body {
 }
 
 /* ========================
+   ARCHIVE
+   ======================== */
+.archive-year {
+  padding: 0 16px 8px !important;
+}
+
+.archive-year-header {
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-size: 18px !important;
+  color: #000080 !important;
+  border-bottom: 1px solid #c0c0c0 !important;
+  padding-bottom: 4px !important;
+  margin: 16px 0 8px !important;
+}
+
+.archive-year-header .archive-count {
+  font-family: Tahoma, Verdana, sans-serif !important;
+  font-size: 11px !important;
+  color: #808080 !important;
+  font-weight: normal !important;
+}
+
+.archive-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  border: none !important;
+  margin: 0 !important;
+}
+
+.archive-table tr:hover {
+  background: #f0f0ff !important;
+}
+
+.archive-table td {
+  padding: 3px 0 !important;
+  border: none !important;
+  border-bottom: 1px solid #f0f0f0 !important;
+  font-family: Verdana, Tahoma, sans-serif !important;
+  font-size: 12px !important;
+  vertical-align: baseline !important;
+}
+
+.archive-date {
+  color: #808080 !important;
+  font-family: Tahoma, Verdana, sans-serif !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+  width: 60px !important;
+  padding-right: 12px !important;
+}
+
+.archive-title a {
+  color: #0000cc !important;
+  text-decoration: underline !important;
+}
+
+.archive-title a:visited {
+  color: #800080 !important;
+}
+
+.archive-title a:hover {
+  color: #cc0000 !important;
+}
+
+/* ========================
    SEARCH
    ======================== */
 #searchbox {
