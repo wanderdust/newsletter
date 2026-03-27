@@ -57,9 +57,6 @@
     {{- partial "post_nav_links.html" . }}
     {{- end }}
     {{- if (and site.Params.ShowShareButtons (ne .Params.disableShare true)) }}
-    <div style="font-family: 'VT323', monospace; font-size: 18px; color: #000080; margin: 8px 0 4px; text-align: center;">
-      --- Share this page with your friends! ---
-    </div>
     {{- partial "share_icons.html" . -}}
     {{- end }}
   </footer>

@@ -51,11 +51,6 @@
 {{- partial "home_info.html" . }}
 {{- end }}
 
-{{/* Retro: Article listing header */}}
-<div style="text-align: center; font-family: 'VT323', monospace; font-size: 20px; color: #000080; padding: 8px 12px; margin: 4px 12px; border-bottom: 2px dashed #808080;">
-  What's New on This Site:
-</div>
-
 {{- $term := .Data.Term }}
 {{- range $index, $page := $paginator.Pages }}
 

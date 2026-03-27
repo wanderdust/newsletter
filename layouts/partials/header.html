@@ -82,14 +82,6 @@
         </div>
         {{- $currentPage := . }}
         <ul id="menu">
-            {{/* Retro: Home link */}}
-            <li>
-                <a href="{{ "" | absLangURL }}" title="Home">
-                    <span {{- if .IsHome }} class="active" {{- end }}>
-                        [Home]
-                    </span>
-                </a>
-            </li>
             {{- range site.Menus.main }}
             {{- $menu_item_url := (cond (strings.HasSuffix .URL "/") .URL (printf "%s/" .URL) ) | absLangURL }}
             {{- $page_url:= $currentPage.Permalink | absLangURL }}
@@ -99,7 +91,7 @@
                 {{- cond $is_search (" accesskey=/" | safeHTMLAttr) ("" | safeHTMLAttr ) }}>
                     <span {{- if eq $menu_item_url $page_url }} class="active" {{- end }}>
                         {{- .Pre }}
-                        [{{ .Name }}]
+                        {{ .Name }}
                         {{ .Post -}}
                     </span>
                     {{- if (findRE "://" .URL) }}&nbsp;
