@@ -2,7 +2,7 @@
 
 {{- if (and site.Params.profileMode.enabled .IsHome) }}
 {{- partial "index_profile.html" . }}
-{{- else }} {{/* if not profileMode */}}
+{{- end }}
 
 {{- if not .IsHome | and .Title }}
 <header class="page-header">
@@ -51,15 +51,26 @@
 {{- partial "home_info.html" . }}
 {{- end }}
 
+{{- if .IsHome }}
+{{/* Homepage: simple title-only list of last 10 posts */}}
+<div class="recent-posts">
+  <h3 class="recent-posts-heading">Recent Posts</h3>
+  <ul class="recent-posts-list">
+    {{- range first 10 $pages }}
+    <li>
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      <span class="recent-posts-date">{{ .Date.Format "Jan 2, 2006" }}</span>
+    </li>
+    {{- end }}
+  </ul>
+</div>
+{{- else }}
+{{/* Non-home pages: full post entries with pagination */}}
 {{- $term := .Data.Term }}
 {{- range $index, $page := $paginator.Pages }}
 
 {{- $class := "post-entry" }}
-
-{{- $user_preferred := or site.Params.disableSpecial1stPost site.Params.homeInfoParams }}
-{{- if (and $.IsHome (eq $paginator.PageNumber 1) (eq $index 0) (not $user_preferred)) }}
-{{- $class = "first-entry" }}
-{{- else if $term }}
+{{- if $term }}
 {{- $class = "post-entry tag-entry" }}
 {{- end }}
 
@@ -115,7 +126,6 @@
   </nav>
 </footer>
 {{- end }}
-
-{{- end }}{{/* end profileMode */}}
+{{- end }}
 
 {{- end }}{{- /* end main */ -}}

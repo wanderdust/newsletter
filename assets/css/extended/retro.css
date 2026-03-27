@@ -608,6 +608,60 @@ body {
 }
 
 /* ========================
+   RECENT POSTS (homepage)
+   ======================== */
+.recent-posts {
+  padding: 0 16px 16px !important;
+  border-top: 1px solid #c0c0c0;
+}
+
+.recent-posts-heading {
+  font-family: Georgia, 'Times New Roman', serif !important;
+  font-size: 15px !important;
+  color: #000080 !important;
+  margin: 12px 0 8px !important;
+  padding: 0 !important;
+  font-weight: bold !important;
+}
+
+.recent-posts-list {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.recent-posts-list li {
+  padding: 4px 0 !important;
+  border-bottom: 1px solid #e8e8e8 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: baseline !important;
+  gap: 12px !important;
+}
+
+.recent-posts-list li a {
+  color: #0000cc !important;
+  text-decoration: underline !important;
+  font-family: Verdana, Tahoma, sans-serif !important;
+  font-size: 13px !important;
+}
+
+.recent-posts-list li a:visited {
+  color: #800080 !important;
+}
+
+.recent-posts-list li a:hover {
+  color: #cc0000 !important;
+}
+
+.recent-posts-date {
+  color: #808080 !important;
+  font-family: Tahoma, Verdana, sans-serif !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+}
+
+/* ========================
    SEARCH
    ======================== */
 #searchbox {
