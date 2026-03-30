@@ -28,21 +28,27 @@ Instructor-led demo. Attendees follow along passively. Show a working repo live 
 - Putting it all together — final repo structure walkthrough
 
 ---
+## Introduction
 
-### Installing a CLI agent (GitHub Copilot CLI or Claude Code)
+## IDE agents vs CLI agents
+
+
+## Installing a CLI agent (GitHub Copilot CLI or Claude Code)
 — step by step, assume zero knowledge
 
-### Running your first prompt
+## Running your first prompt
 what to expect, how the agent reads the repo
 
-### Understanding the workspace
-where the agent reads and writes, what it can and cannot see. ASking premission
+## Understanding the workspace
+where the agent reads and writes, what it can and cannot see. ASking premissions. Briefly mention sandboxing.
 
-### What is agents.md / CLAUDE.md?
+## What is agents.md / CLAUDE.md?
 
 The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
 
-### Custom agents
+## Custom agents
+
+(Needs re-written)
 
 Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
 
@@ -67,13 +73,13 @@ Focus on the following instructions:
 - Make links descriptive and add alt text to images
 ```
 
-### Skills
+## Skills
 
 what they are and how they differ from scripts (TODO: clarify)
 
-### Prompt engineering fundamentals
+## Prompt engineering fundamentals
 
-### Putting it all together — final repo structure walkthrough
+## Putting it all together — final repo structure walkthrough
 
 The final repository might look like this
 
