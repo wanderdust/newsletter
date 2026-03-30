@@ -212,6 +212,11 @@ TODO
 
 ## Sandbox environments
 
+### Why sandbox your agent
+### Running agents in Docker containers
+### Running agents in VMs
+### Managed sandbox tools
+### Choosing the right approach for your team
 
 ## Manual edits vs Fixing Forward (when your specs fail)
 
