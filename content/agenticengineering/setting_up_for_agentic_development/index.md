@@ -1,7 +1,7 @@
 ---
 title: 'Chapter 2 - Setting up for agentic development'
 date: '2026-03-06T13:50:30Z'
-draft: false
+draft: true
 summary: ''
 tags: ['ai', 'tooling']
 categories: []
