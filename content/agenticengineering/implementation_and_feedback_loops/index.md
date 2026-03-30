@@ -274,3 +274,10 @@ This is one of the biggest shifts in agentic development. That accountability is
 - Do not raise a PR for code you have not personally read. It is not the reviewers job to be the gatekeeper of code.
 - Do not assume passing tests means the feature is correct. Tests validate what was written, not what was intended.
 - Do not trust the agent to catch its own security issues. Agents will suggest things that are common but not necessarily secure. Long-lived tokens, overly broad permissions, accidentally committed `.env` files. These get through if you are not paying attention.
+
+## Resources
+- [Claude Code: Best practices for agentic coding](https://www.anthropic.com/engineering/claude-code-best-practices) - Anthropic's engineering team on structuring feedback through tests and linting, and setting up effective validation loops. ([HN discussion, 614 points](https://news.ycombinator.com/item?id=43735550))
+- [Everything Is a Ralph Loop](https://ghuntley.com/loop/) - Conceptual framework for agent feedback loops: give task, write code, run checks, feed failures back, repeat until green. ([HN discussion](https://news.ycombinator.com/item?id=46655945))
+- [SWE-agent (Princeton NLP)](https://github.com/princeton-nlp/SWE-agent) - Research project demonstrating autonomous agents resolving real GitHub issues using a write-test-fix loop in sandboxed environments. ([HN discussion, 307 points](https://news.ycombinator.com/item?id=39907468))
+- [Docker Sandboxes for Coding Agents](https://www.docker.com/blog/docker-sandboxes-run-claude-code-and-other-coding-agents-unsupervised-but-safely/) - Docker's approach to hypervisor-isolated sandboxes for running coding agents unsupervised.
+- [Ask HN: How are you LLM-coding in an established code base?](https://news.ycombinator.com/item?id=46292682) - Practitioners sharing real setups: pre-commit hooks as feedback loops, worktrees for parallel sessions, integration test pipelines. (70 points, 66 comments)

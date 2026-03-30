@@ -16,7 +16,7 @@ params:
 
 ---
 
-**Module 7: Ownership, security and new ways of working**
+**Module 9: Ownership, security and new ways of working**
 Closing section. Reflection and discussion. No hands-on needed. Leaves attendees with the right mindset to take this back to their team.
 - Cognitive debt of using agents (TODO: write this up)
 - Security is part of ownership — what agents get wrong, what you are responsible for
@@ -103,3 +103,10 @@ The role is no longer primarily about writing code. It is about working with sta
 What has not changed is everything around the code. A software system is much more than a repository. It needs to be deployed, monitored, and maintained. When things go wrong in production, someone needs to understand the system well enough to diagnose the problem, coordinate across teams, and get things back to a stable state. That requires deep context that no agent currently has on its own.
 
 Good engineering practices matter more now, not less. It is easier than ever to ship something that looks right but is not built reliably. Engineers are the ones responsible for ensuring that what goes to production has been built, tested, and deployed in a way that holds up. That judgment still requires a human who knows what they are doing.
+
+## Resources
+- [How Generative and Agentic AI Shift Concern from Technical Debt to Cognitive Debt](https://margaretstorey.com/blog/2026/02/09/cognitive-debt/) - Professor Margaret-Anne Storey argues AI shifts risk from technical debt to cognitive debt: loss of shared understanding among developers. ([HN discussion](https://news.ycombinator.com/item?id=47063148))
+- [Comprehension Debt: The Hidden Cost of AI-Generated Code](https://addyosmani.com/blog/comprehension-debt/) - Addy Osmani (Google) on the gap between code volume and human understanding. Anthropic study showed 17% lower comprehension scores with AI assistance. ([HN discussion, 507 points](https://news.ycombinator.com/item?id=47196582))
+- [From Coder to Orchestrator: The Future of Software Engineering with AI](https://humanwhocodes.com/blog/2026/01/coder-orchestrator-future-software-engineering/) - Nicholas Zakas on how developer hands-on coding diminishes but developer responsibility actually increases in scope.
+- [Stanford jai - Sandboxing Tool for AI Coding Agents](https://jai.scs.stanford.edu/) - Practical sandboxing tool from Stanford with three isolation modes. Transparent about limitations including no network restriction. ([Security model](https://jai.scs.stanford.edu/security.html))
+- [How AI Assistants are Moving the Security Goalposts](https://krebsonsecurity.com/2026/03/how-ai-assistants-are-moving-the-security-goalposts/) - Krebs on Security on how AI-generated code is creating new CVEs at an accelerating rate (35 in March 2026 alone).
