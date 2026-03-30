@@ -32,7 +32,13 @@ params:
 
 ## IDE agents vs CLI agents
 
-When it comes to working with agents there are plenty of options to choose from. Some of the most popular options include claude code, codex, github copilot, cursor, or windsurf. All of these options can be sub-divided into two main categories: IDE based agents and command line agents.
+Traditionally, software engineers use code editors to navigate and edit their code. These are often referred to as IDEs (Integrated Development Environments), and you could say the IDE is the main tool every software engineer uses to write code. Some common examples are VSCode, IntelliJ, or Eclipse.
+
+On the other hand there is the terminal. The terminal is an environment where we can interact with our machine programmatically using commands. It is an alternative way to access our machine and its filesystem rather than using the desktop interface with our mouse. It also gives us more flexibility as developers, as there are things we simply cannot do from the UI directly.
+
+To make interaction with the terminal easier, a lot of the tools we use provide a command line interface (CLI). A CLI is a structured way to run software from the terminal. The way it works is that you type the tool name followed by options to run what you need.
+
+When it comes to working with agents there are plenty of options to choose from. Some of the most popular options include Claude Code, Codex, GitHub Copilot, Cursor, or Windsurf. All of these options can be sub-divided into two main categories: IDE based agents and command line (CLI) agents.
 
 IDE based agents are agents that are embedded within your code editor. With IDE agents you usually have the code files open on one side of your screen, while having an agent chat window open on the other side of the screen. The idea is that you can see live code changes in your editor and manually review changes as they happen. Some popular examples of this are Cursor, Github Copilot or Windsurf.
 
@@ -47,7 +53,10 @@ Whichever you decide to use, all agents have more or less the same capabilities 
 It is worth noting that most agent providers give you the option to use their agent within the CLI or within the IDE. So it's up to you to find out what works best.
 
 ## Understanding the workspace
-where the agent reads and writes, what it can and cannot see. ASking premissions. Briefly mention sandboxing.
+
+Agents can: see your files; edit your files; run commands. Permissions & approvals. What the agent cannot see (browser tabs, slack messages etc. unless you use MCPs). Mention sandboxing.
+
+
 
 ## Installing an agent
 
@@ -68,7 +77,7 @@ The [agents.md](https://agents.md/) file should contain any general information 
 
 ## Prompt engineering fundamentals
 
-## Agents
+## Custom agents
 
 (Needs re-written - agent=goal + own context. Skill = reusable prompt)
 
