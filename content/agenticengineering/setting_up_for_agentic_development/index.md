@@ -36,11 +36,11 @@ When it comes to working with agents there are plenty of options to choose from.
 
 IDE based agents are agents that are embedded within your code editor. With IDE agents you usually have the code files open on one side of your screen, while having an agent chat window open on the other side of the screen. The idea is that you can see live code changes in your editor and manually review changes as they happen. Some popular examples of this are Cursor, Github Copilot or Windsurf.
 
-![IDE agent example using Cursor](IDE-agent-cursor.png)
+{{< figure src="IDE-agent-cursor.png" caption="IDE agent example using Cursor" alt="IDE agent example using Cursor" >}}
 
 On the other hand CLI agents, are those that you run directly in your terminal. CLI agents are not attached to a code editor, you can simply ask the agent to complete a task from the terminal without having to see the code if you don't want to. CLI agents provide a bit more flexibility than IDE agents, because you can use them without any IDE, or you can still use them in your IDE by running the agent in your IDE terminal. Many CLI agents also have IDE extensions which means you can still use them within your IDE if you whish to do so. Some popular examples are Claude Code, Codex, Github Copilot CLI, or qwen code.
 
-![CLI agent example using Claude Code](cli-agent-claude.png)
+{{< figure src="cli-agent-claude.png" caption="CLI agent example using Claude Code" alt="CLI agent example using Claude Code" >}}
 
 Whichever you decide to use, all agents have more or less the same capabilities to access the relevant tools to complete tasks autonously. The main difference is the philosophy behind using one or the other. With IDE agents, the philosophy is that there should be a human in the loop during the whole process. With CLI agents, the philosophy is more about letting the agents handle the code writing and execution with less human in the loop, while still leaving flexibility to the developer to decide how involve they want to be.
 
