@@ -94,3 +94,5 @@ You can structurre the file into small TODOs that the model can update as it imp
 > _Create a tasks.md file as detailed todo list to the plan, with all the phases and individual tasks necessary to complete the plan - don't implement yet._
 
 The most important thing in the tasks file, is ensuring there are validation steps for each task. These can be unit tests, or custom scripts the agent creates to test functionality. These validation tasks will serve the agent as a validation loop that it can use to verify functionality to ensure it meets the success criteria before marking it done.
+
+### Working with existing and legacy codebases

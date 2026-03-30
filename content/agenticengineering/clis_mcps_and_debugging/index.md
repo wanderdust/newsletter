@@ -1,6 +1,6 @@
 ---
-title: 'Chapter 6 - CLIs, MCPs and debugging'
-date: '2026-03-06T13:50:34Z'
+title: 'Chapter 4 - CLIs, MCPs and debugging'
+date: '2026-03-06T13:50:32Z'
 draft: true
 summary: ''
 tags: ['ai', 'tooling']
@@ -69,6 +69,8 @@ CLIs and MCPs are useful at any point in the workflow where the agent would bene
 **During debugging.** This is where CLIs and MCPs arguably provide the most value. Rather than reasoning from code alone, the agent can inspect the actual state of the system: query logs, describe infrastructure resources, check what is deployed and where. Use the findings as input to a new spec and fix the bug through the full workflow.
 
 Use CLIs and MCPs wherever you would normally switch to another tool, look something up manually, or copy and paste external context into your prompt.
+
+### Debugging with agents
 
 ### Debugging with spec driven development
 

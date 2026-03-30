@@ -1,6 +1,6 @@
 ---
-title: 'Chapter 5 - Agentic engineering for teams'
-date: '2026-03-06T13:50:33Z'
+title: 'Chapter 6 - Agentic engineering for teams'
+date: '2026-03-06T13:50:34Z'
 draft: true
 summary: ''
 tags: ['ai', 'tooling']

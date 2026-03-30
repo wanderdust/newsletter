@@ -1,6 +1,6 @@
 ---
-title: 'Chapter 4 - Implementation and feedback loops'
-date: '2026-03-06T13:50:32Z'
+title: 'Chapter 5 - Implementation and feedback loops'
+date: '2026-03-06T13:50:33Z'
 draft: true
 summary: ''
 tags: ['ai', 'tooling']

@@ -71,6 +71,8 @@ Focus on the following instructions:
 
 what they are and how they differ from scripts (TODO: clarify)
 
+### Prompt engineering fundamentals
+
 ### Putting it all together — final repo structure walkthrough
 
 The final repository might look like this
