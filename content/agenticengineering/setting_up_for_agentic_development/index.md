@@ -32,6 +32,13 @@ Instructor-led demo. Attendees follow along passively. Show a working repo live 
 
 ## IDE agents vs CLI agents
 
+When it comes to working with agents there are plenty of options to choose from. Some of the most popular options include claude code, codex, github copilot, cursor, or windsurf. All of these options can be sub-divided into two main categories: IDE based agents and command line agents.
+
+IDE based agents are agents that are embedded within your code editor. With IDE agents you usually have the code files open on one side of your screen, while having an agent chat window open on the other side of the screen. The idea is that you can see live code changes in your editor and manually review changes as they happen. Some popular examples of this are Cursor, Github Copilot or Windsurf.
+
+On the other hand CLI agents, are those that you run directly in your terminal. CLI agents are not attached to a code editor, you can simply ask the agent to complete a task from the terminal without having to see the code if you don't want to. CLI agents provide a bit more flexibility than IDE agents, because you can use them without any IDE, or you can still use them in your IDE by running the agent in your IDE terminal. Many CLI agents also have IDE extensions which means you can still use them within your IDE if you whish to do so. Some popular examples are Claude Code, Codex, Github Copilot CLI, or qwen code.
+
+Whichever you decide to use, all agents have more or less the same capabilities to access the relevant tools to complete tasks autonously. The main difference is the philosophy behind using one or the other. With IDE agents, the philosophy is that there should be a human in the loop during the whole process. With CLI agents, the philosophy is more about letting the agents handle the code writing and execution with less human in the loop, while still leaving flexibility to the developer to decide how involve they want to be.
 
 ## Installing a CLI agent (GitHub Copilot CLI or Claude Code)
 — step by step, assume zero knowledge
