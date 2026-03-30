@@ -47,7 +47,14 @@ Whichever you decide to use, all agents have more or less the same capabilities 
 It is worth noting that most agent providers give you the option to use their agent within the CLI or within the IDE. So it's up to you to find out what works best.
 
 ## Installing a CLI agent (GitHub Copilot CLI or Claude Code)
-— step by step, assume zero knowledge
+
+Installing an agent is really straightforward. Once you have chosen the type of type of agent you want to run, head to their documentation website and read the installation instructions.
+
+Keep in mind that using agents is not free. Coding agents work within your machine, but they still need to make network requests the the AI models which are usually hosted by an LLM provider. However, some coding agent providers give free or limited access to some of their models, so you can still use them if you do not want to pay for an account.
+
+Let's assume you have instatlled a CLI agent, such as claude or codex. Once the installation is complete, all you need to do is open a terminal and type `claude` or `codex` depending on your installation. This will open chat interface within your terminal ready for you to start giving instructions.
+
+{{< figure src="" alt="[Starting the CLI agent image here]">}}
 
 ## Running your first prompt
 what to expect, how the agent reads the repo
