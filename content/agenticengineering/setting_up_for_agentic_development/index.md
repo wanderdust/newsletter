@@ -16,16 +16,16 @@ params:
 
 ---
 
-**Module 2: Setting up for agentic development**
-Instructor-led demo. Attendees follow along passively. Show a working repo live before concepts are introduced. Consider a pre-work guide so no install time is spent on the day.
-- Installing a CLI agent (GitHub Copilot CLI or Claude Code) — step by step, assume zero knowledge
-- Running your first prompt — what to expect, how the agent reads the repo
-- Understanding the workspace — where the agent reads and writes, what it can and cannot see
-- What is agents.md / CLAUDE.md? — with a real filled-in example
-- Creating templates — spec, plan, tasks skeleton files
-- Custom agents — what they are, when to use them, example agent file
-- Skills — what they are and how they differ from scripts (TODO: clarify)
-- Putting it all together — final repo structure walkthrough
+1. Introduction — what you will have set up by the end of this chapter
+2. IDE agents vs CLI agents — the two flavours, narrow scope to CLI for this chapter
+3. Understanding the workspace — mental model of what the agent can see, do, and access before you install anything
+4. Installing an agent — now the reader knows what they are installing and why
+5. Running your first prompt — first real interaction, what to expect
+6. What is agents.md / CLAUDE.md? — general repo configuration for agents
+7. Prompt engineering fundamentals — how to communicate effectively with the agent
+8. Custom agents — specialised agents for specific tasks, encoding tribal knowledge
+9. Skills — automated slash commands, how they differ from custom agents
+10. Putting it all together — final repo structure walkthrough
 
 ---
 ## Introduction
@@ -46,7 +46,10 @@ Whichever you decide to use, all agents have more or less the same capabilities 
 
 It is worth noting that most agent providers give you the option to use their agent within the CLI or within the IDE. So it's up to you to find out what works best.
 
-## Installing a CLI agent (GitHub Copilot CLI or Claude Code)
+## Understanding the workspace
+where the agent reads and writes, what it can and cannot see. ASking premissions. Briefly mention sandboxing.
+
+## Installing an agent
 
 Installing an agent is really straightforward. Once you have chosen the type of type of agent you want to run, head to their documentation website and read the installation instructions.
 
@@ -59,16 +62,15 @@ Let's assume you have instatlled a CLI agent, such as claude or codex. Once the 
 ## Running your first prompt
 what to expect, how the agent reads the repo
 
-## Understanding the workspace
-where the agent reads and writes, what it can and cannot see. ASking premissions. Briefly mention sandboxing.
-
 ## What is agents.md / CLAUDE.md?
 
 The [agents.md](https://agents.md/) file should contain any general information which is useful for any agent interacting with that repo. It should include setup commands to execute dev environments, code style, testing principles and anything about how to operate in that repository. The agents.md file can be used to document generic information about the repositiry that any agentic workflow should include as context.
 
-## Custom agents
+## Prompt engineering fundamentals
 
-(Needs re-written)
+## Agents
+
+(Needs re-written - agent=goal + own context. Skill = reusable prompt)
 
 Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
 
@@ -95,9 +97,7 @@ Focus on the following instructions:
 
 ## Skills
 
-what they are and how they differ from scripts (TODO: clarify)
-
-## Prompt engineering fundamentals
+what they are and how they differ from agents. How to use them together and hierarchy of agents + Skills (TODO: clarify)
 
 ## Putting it all together — final repo structure walkthrough
 
