@@ -54,8 +54,35 @@ It is worth noting that most agent providers give you the option to use their ag
 
 ## Understanding the workspace
 
-Agents can: see your files; edit your files; run commands. Permissions & approvals. What the agent cannot see (browser tabs, slack messages etc. unless you use MCPs). Mention sandboxing.
+Agents work within your machine, and can execute anything that you can execute. Think of an agent as a tech expert who lives inside of machine. Any tools you have access to in your machine, the agent also has access to. This means that using the right instructions and setup you can delegate any task to an agent.
 
+Coding agents are built so that they have access to tools. These tools are the basic tools it contains to be able to complete any coding tasks.
+
+The first tool is listing and searching files. This is necessary in order for the agent to understand repository structure and being able to find relevant files. The next logical tool is file viewing. Once you have found the relevant files, the agent is able to read files, which is required to be able to understand the existing content, to see what changes might be required based on the user prompt.
+
+Another important tool is the file search and text search tools. When an agent needs to search for a specicific file or specific keywords, it uses a search tool to find the relevant files.
+
+The next tool agents have access to is file editing. Once the agent has reviewed the existing files and needs to make a change based on the user prompt, it then uses the file editing tool to make the edits. If the files don't exist, it creates its own.
+
+With list, search and edit tools the agent can complete mosts tasks. However, there may be a lot other things that cannot be accomplished with them alone. Which is why we give access to the agent to run terminal commands. If the agent wants to run a spefic command, for example from a tool you have installed, it can use this tool to run commands in the terminal. With this, the agent has pretty much all the tools it needs to complete any task.
+
+
+**Running Commands**
+
+Giving the agent access to run its own commands is one of the biggest breakthroughs into enabling agents to cemplete tasks autonously. However, this also comes with its own risks. What if the agent decided to run the `rm ~/` command in your machine and deleted everything in the home directory? This is not only hypothetical, but we have already seen real life examples of issues like this happening.
+
+To prevent this, coding agents have a system to ask for permissions before running any commands. What this means is that when the agent identifies the need to run a certain command in order to achieve its goal, it pauses and asks the users for permissions before moving on. What this looks in practice is a prompt in the chat window where you have confirm if you want the agent to run the command and continue. If you reject, the agent drops the task and you'd have to start again.
+
+Having to manually approve commands, while required to keep your system safe, is a very tedious task and it goes against the philosophy of letting agents autonously write the code. Having a human in the loop constantly approving commands can be innefficent and counter productive, assiuming that most of the times the commands will be safe.
+
+An alternative to command approvals consists in running agents in a sandbox environment, where their access is scoped only to the minimum and necessary, blocking access to anything else outside of that. For example, when working in a repository we can give the coding agent full access to the current directroy, and block any read & write access to anything outside it. This means, that if we let the agent run commands freely, if anything happens, the damage contained within the repository and nothing else. This can give us the confidence to run agents autonously to complete tasks without our supervisien. We will talk more about sandbox environments in chapter 5.
+
+
+**WHat the agent can't see**
+
+By default, agents cannot access anything that cannot be accessed from within your terminal. For example, your browser tabs, slack messages or any other applications outside your terminal. However, there is flexibility to give agent access to these if that is something you want to do, and you can do it via command line tools and MCP servers. With these you can extend your agents to have access outside of your terminal, such as making interneat searches, reading and writing messages on slack, accessing your confluence sites and so on. We'll speak in more detail about them in chapter 4.
+
+To summarise, the agent has all the tools it needs to read, write and execute code in your machine. Agents have access to run commands on our behalf, so we need to be careful about the permissions we give the agents to prevent from running any dangerous commands. Finally, if we want to give the agent access outside of the terminal, we can use specialised CLI tools and MCP servers to extend the context of our agents.
 
 
 ## Installing an agent
