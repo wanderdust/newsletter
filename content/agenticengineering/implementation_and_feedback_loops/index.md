@@ -194,15 +194,18 @@ Anything that we can't run locally and we need to rely deploying to higher envoi
 
 ## Creating a validation loop for your project
 
-For this section, lets work with an example. We have to implement a POST /orders endpoint into our API, but we want to make sure we are capable of testing everything as it gets implemented.
+If we want the agent to develop features end to end with minimal developer interaction, we need to setup a feedback loop. A feedboack loop is what gives the agent information about the implementation that tells it if has implemented the correct solution or not. Based on the feedback it can go back and improve the solution further.
 
-TODO
-- TDD - write tests first
-- Setting up connection to RDS in dev environment
-- Make command for unit tests
-- Run black formatter and flake8
-- SPecify in the plan that we need to run these each time.
+Setting up the correct feedback loop for our project will be challenging. A good excercise to understand what feedback is needed, is to think of all of the things you check before you make a PR. These can be things like code readability, unit testing, end to end tests, manual tests, UI rendering and so on. The steps you go through will depend on the projects you work on. A Software engineer will have a different process than a Data Enigneer who builds pipelines.
 
+Once you have identified all of the things that you use to give you feedback when you implement a new feature, write them down. Next for each, try to find out if this is something the model already has access to or not. For example, can you run testing locally or do you need to test in a lower environment. Does the agent have access to this environment for testing? If the answer is no, the agent does not have access, then you need to figure out how to give the agent access to that system, so that it can easily run tests to gather feedback. For every thing in your list, ideally the agent should be able to run it locally. However, that is not sustainable for some projects or tasks. For example, Data Engineers may need to test pipelines in the data warehause because of the size of the data is too much for local envirorments. In that case, the best scenario is to give the agent access to command line tools and MCP servers to be able to run its own testing in the external system.
+
+The best feedback loop is the one that has as many elements of feedback as you would use as developer to ensure your Pull Request is ready to be reviewed and shipped. If any of these elements of feedback is missing, for example if you are building a web application and the agent cannot validate how it renders features in the User interfarce, then your agent won't be able to validate and optimise towords the right solution in that regard. If the agent is able to write code, run unit test, manual end to end tests but is not able to verify if features render correctly, then the agent won't be able to optimise or fix issues in the interface and it will require human interaction to fix.
+
+If you want truly autonomous agents that require very little humon interaction, you will need to find all of the tests and processes that need to pass, as well as the passing standards and make sure the agent has access to them to get its own feedback and provide the best final solution. Failing to provide the correct feedback tools, or providing the tools with the wrong feedbock will result in agents that will not provide complete or accurate solution, which will require human interaction, defeating the puprose of fully automoted agents.
+
+
+[We need some sort of visualisation]
 
 ## Give the agent more context with MCPs and CLIs
 
