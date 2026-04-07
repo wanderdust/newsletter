@@ -104,15 +104,66 @@ The [agents.md](https://agents.md/) file should contain any general information 
 
 ## Prompt engineering fundamentals
 
-## Custom agents
+[TODO]
 
-(Needs re-written - agent=goal + own context. Skill = reusable prompt)
 
-Think of an agent as a markdown file that contains a specific set of instructions for a particular task. Unlike the `agents.md` file, which provides general context for the whole repository, a custom agent is scoped to one specific job.
 
-For example, imagine you have a complex feature with a non-obvious testing process. You could create an agent that documents exactly how to test it: which scripts to run, what to check, and what a passing result looks like. Any time you want to test that feature, you invoke that agent instead of re-explaining the process from scratch.
+## Skills
 
-Custom agents are a way of encoding tribal knowledge into your workflow. Anything you find yourself explaining repeatedly to the agent is a good candidate for one.
+Skills are a concept now used by most coding agents. In short, when you find yourself using the same prompt over and over, you create a skill to make it easily re-usable.
+
+Let's say for example that you use your agent for your development workflow. Every time you build a new feature, you want to test your code, so you have a prompt to tell your agent how to test: which frameworks you use, how you write tests, what to test, and so on. Over time, you create a prompt that has all the required context so that the model gets it right. However you find yourself having to refer to this prompt over and over again. As your workflow changes and improves over time, you end up having to save and maintain this prompt in a document somewhere, and this becomes unnatainable.
+
+The solution is to use skills. A skill is a markdown file containing information about how to do something. For the testing example, the task has all of the information to instruct an agent how to build a test suite the way we want to. We can have as many skills as we want to, depending on our workflow and what's useful to us.
+
+The main benefit of using skills is of course re-usability. When you create a skill, you can simply invoke the prompt by using the skill name, such as `/test`, rather than having to type or paste the whole prompt. The other big benefit of having skills is that it also makes the prompts not only re-usable for yourself, but for the rest of the team members, so that everyone uses the same skills making sure that everyone builds features using the same standards. Having centralised and re-usable skills also makes it easier for the rest of the team to collaborate and improve the skills over time to improve the overall team's engineering workflow.
+
+When it comes to creating skills, there is no limit. We create as many or few skills as we need for our engineering workflows. The core principle of creating skills is to create small specialised skills, with a single responsibilty, rather than creating very generic skills that try to cover too many things.
+
+Let's take an example. We could create a skill called `/implement` which contains all of the information on how to implement the code, run it and test it all in one prompt. This would work, however we end up with a skill that's trying to do too many things. This creates some problems. First, the markdown file ends up being too big. WHen developers want to review or change the file, it makes it very difficult to review and modify. Second, as the file gets larger, it means the agent has a lot of context in a single prompt, which means that some information might be missed. Third, if the model has already implemented some code, and we wanted to only test, calling this skill would mean the agent gets a lot of useless context that is not required for the testing task. THis means more unnecessary token usage and the risk of information being missed or ignored during implementation due to the large input prompt.
+
+A better solution is to break down the skills into small independend units. For the example above we could have a `/build`, `/write-unit-tests` and `/run-test-suite` skills, each with its own lever of responsibility. WHen we split them into smaller units, we keep the markdown files small and easy to review and modify. It also means, that we can pick and choose each task when we need them. In some cases we will want to use all three, in others, we may just want to use a single one.
+
+We deciding how much to break down skills, think of how you would build functions or methods when you write code. You would rather have small functions that have a single responsibility, so that they are easy to read, understand, test and modify. The same idea applies to skills.
+
+ It is worth noting that we can also go the other way, and break down skills too much. THis would create very small and readable files that are easy to understand and edit, but it may make our workflow too slow and more inefficient that needs to be. We need to find the right balannce.
+
+[Example of an md file]
+
+
+## Agents
+
+In the previous section we defined skills as re-usable prompts that can easily be invoked by their name. On the other hands, we have agents. Think of agents as "personas" than need to achieve a specific goal. An agent can then use different skills to achieve the goal.
+
+Let's say for example we have an agent for building features in our repository. For this repository, we have different skills: /build, which implements the code; /test, which runs the unit tests; /review, which reviews the final code and suggest changes; and /pr-request, which creates a pull request ready for review. All of these skills represent the workflow a team may use to build features.
+
+As a developer, we could simply invoke each of the skills manually in our coding agent, one by one and achieve the task. An agentic approach would involve using an agent to run that workflow end to end, making use of all of the skills to build, test and push the PR.
+
+When using agents, you define a goal such as "Implement feature X". It then looks at all of the available skills, and uses the relevant ones when it needs to. By being able to choose, it can then use them in any order it needs to achieve the task. For example, after the /review phase, there may be some changes required, so the agent can go back to the /build & /test phases should it need to, before going back to the /review phase again. If everything looks good it can then push a PR. By using a mix of skills and agents we can create a fully end to end agentic workflow.
+
+One of the biggest differences between skills and agents is that skills are simply re-usable prompts with no context attached, whereas agents are "personas" that need to achieve agoal, for which they keep a context of all of the actions and skills used during the session.
+
+Like skills, agent files are also markdown files with a set of instructions. The agent file will contain information about it's purpose, and instructions on how to best achieve it's goal.
+
+At this point, you may be wondering: why use skills? WHy not give the agent all of the context it needs to achieve its' goals in its own mardown file?
+
+The answeer is, yes that can be done, but it has its downsides. Like skills, we want to make sure we keep the markdown files small, targeted, easy to read and understand. If we have a simple agent, then we may encode all of the information it needs in its markdown file. However, for agents that need to achieve more complex tasks in more complex repositories, this will get out of hand very quickly, where you may end up with very large markdown agent files, containing all of the necessary information required for the agent to achieve it's task.
+
+This is not recommended, because first, the markdown file will be too large, making it very hard to review and modify as our workflows change over time. It will be impossible for anyonoe to maintain. Second, having too much context embedded into a single file means we will burn through a lot of tokens each time we use the agent, many times unnecessarily, because the agent does not always need all the information to achieve its task, only small bits a time depending on the task.
+
+You can think of skills as textbooks, and an agent as a person. When you need implement a task you are not familiar with, you pickup a textbook to understand how that technology works. Once you read and understand that information you go ahead and implement the task. You have many textbooks for different technologies, and you pick up only the relevant ones each time you need some referonce.
+
+On the other hand, it would be very inefficient for you to try and read all of your 20 textbooks in your bookshelf each time you need to implement a task. In many cases a lot of them won't be relevant, and it is a waste of time and brain power trying to read and remember information you don't need.
+
+When we break down skills and agents into small concrete blocks, we make use of best engineering practices to keep them small, specialised, readable, and easily understandable. Small and specialised tasks also makes them easily re-usable across different agents.
+
+
+
+[Example agent file]
+
+
+-- agents maintain context. Skills don't
+
 
 ```markdown
 ---
@@ -130,10 +181,6 @@ Focus on the following instructions:
 - Use relative links (e.g., `docs/CONTRIBUTING.md`) instead of absolute URLs for files within the repository
 - Make links descriptive and add alt text to images
 ```
-
-## Skills
-
-what they are and how they differ from agents. How to use them together and hierarchy of agents + Skills (TODO: clarify)
 
 ## Putting it all together — final repo structure walkthrough
 
