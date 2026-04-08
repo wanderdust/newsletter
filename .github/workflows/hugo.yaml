@@ -7,7 +7,7 @@ name: Deploy Hugo site to Pages
 # Content always comes from main.
 # ======================================
 env:
-  THEME_BRANCH: retro-ui
+  THEME_BRANCH: main
 
 on:
   push:
