@@ -12,6 +12,7 @@ cover:
   caption: ''
 images: []
 ---
+
 This is a note to myself
 
 ---
