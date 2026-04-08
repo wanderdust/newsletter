@@ -1,7 +1,7 @@
 ---
 title: 'Do not forget how you got here'
 date: '2026-04-08T19:54:32+01:00'
-draft: true
+draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
 tags: ['reflections']
