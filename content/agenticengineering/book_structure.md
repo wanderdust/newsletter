@@ -13,54 +13,27 @@ images: []
 ---
 
 
-## Step 1 - Target Audience
+## Step 1 — Target Audience
 
-> Complete this before writing or restructuring anything. If you can't answer these clearly, the book isn't ready to write.
-
-**Who exactly is reading this?**
-Describe one specific person: their role, seniority, tech stack, and current relationship with AI tools.
-
-
-```
+### The Reader
 
 A junior, mid, or senior data engineer who builds data pipelines in the warehouse (DBT, Databricks, Snowflake) and orchestrates them with Airflow.
 
-**Skills and knowledge:**
-- Git, Python, SQL, PySpark, Airflow
-- Strong business logic knowledge — they understand the data they work with, not just the technical layer
+**Skills and knowledge:** Git, Python, SQL, PySpark, Airflow. Strong business logic knowledge — they understand the data they work with, not just the technical layer.
 
-**Production responsibilities:**
-- Own pipelines in production — on-call, support, fix breakages
-- Follow engineering best practices: monitoring, dashboards, alerts
-- Some testing, but not much
+**Production responsibilities:** Own pipelines in production — on-call, support, fix breakages. Follow engineering best practices: monitoring, dashboards, alerts. Some testing, but not much.
 
-**Current AI usage:**
-- Use AI tools (Cursor, Claude) for code completion and quick questions
-- Not using fully agentic workflows with feedback loops that enable autonomous development with minimal human interaction
-- AI is underutilised — they know it can do more but haven't bridged the gap
+**Current AI usage:** Use AI tools (Cursor, Claude) for code completion and quick questions. Not using fully agentic workflows with feedback loops that enable autonomous development with minimal human interaction. AI is underutilised — they know it can do more but haven't bridged the gap.
 
-**Team context:**
-- Work on teams of any size
-- No standardised approach to AI — every engineer uses it their own way
-- Want to use AI tools professionally and consistently in their workplace
-```
----
+**Team context:** Work on teams of any size. No standardised approach to AI — every engineer uses it their own way. Want to use AI tools professionally and consistently in their workplace.
 
-**What problem brought them here?**
-What pain, frustration, or missed opportunity made them pick up this book?
+### The Problem
 
-```
 They use AI, but it's mostly copy-paste prompts and manual workflows. They know they could automate more but don't know how to get there. Their team has no shared approach — everyone uses AI their own way. They may not even be aware of what's possible with fully agentic workflows.
-```
 
----
+### The Outcome
 
-**What can they do after finishing?**
-One concrete, observable outcome.
-
-```
 They can hand an agent a task — building a pipeline, migrating a table, troubleshooting a support issue — and get back working, validated code with minimal interaction. Their agents have the tools and context to autonomously gather information, execute code, and validate their own implementations.
-```
 
 ---
 
@@ -71,16 +44,11 @@ They can hand an agent a task — building a pipeline, migrating a table, troubl
 
 **Before (reader's starting state):**
 
-```
-[e.g. Uses LLMs reactively — prompts ChatGPT, accepts Copilot suggestions, but drives everything manually.]
-```
+They have to babysit every step — providing context, running commands, reviewing output. The agent never really works on its own because the human is the glue holding it together.
 
 **After (reader's end state):**
 
-```
-[e.g. Designs and delegates to autonomous agents that handle DE tasks end-to-end, with the right
-guardrails, tooling, and team practices in place.]
-```
+Confidently delegates data engineering tasks to autonomous agents with the right guardrails, tooling, and team practices in place. They trust the process, not just the output.
 
 ---
 
