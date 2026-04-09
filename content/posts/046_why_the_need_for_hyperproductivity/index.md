@@ -4,7 +4,7 @@ date: '2026-04-09T11:56:05+01:00'
 draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
-tags: []
+tags: ['reflections']
 categories: []
 cover:
   image: ''
