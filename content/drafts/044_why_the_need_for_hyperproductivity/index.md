@@ -1,5 +1,5 @@
 ---
-title: '044_why_the_need_for_hyperproductivity'
+title: 'Where is our leisure time now?'
 date: '2026-04-09T11:56:05+01:00'
 draft: true
 summary: ''
