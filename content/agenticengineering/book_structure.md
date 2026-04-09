@@ -19,7 +19,7 @@ images: []
 
 A junior, mid, or senior data engineer who builds data pipelines in the warehouse (DBT, Databricks, Snowflake) and orchestrates them with Airflow.
 
-**Skills and knowledge:** Git, Python, SQL, PySpark, Airflow. Strong business logic knowledge — they understand the data they work with, not just the technical layer.
+**Skills and knowledge:** Git, Python, SQL, PySpark, Airflow. Strong business logic knowledge — they understand the data they work with, not just the technical layer. They are not necesarily very strong software engineers, but can code.
 
 **Production responsibilities:** Own pipelines in production — on-call, support, fix breakages. Follow engineering best practices: monitoring, dashboards, alerts. Some testing, but not much.
 
@@ -29,7 +29,7 @@ A junior, mid, or senior data engineer who builds data pipelines in the warehous
 
 ### The Problem
 
-They use AI, but it's mostly copy-paste prompts and manual workflows. They know they could automate more but don't know how to get there. Their team has no shared approach — everyone uses AI their own way. They may not even be aware of what's possible with fully agentic workflows.
+They use AI, but it's mostly copy-paste prompts and manual workflows. They know they could automate more but don't know it is possible or if they do they do not know how to get there. Their team has no shared approach — everyone uses AI their own way. They may not even be aware of what's possible with fully agentic workflows.
 
 ### The Outcome
 
@@ -44,7 +44,7 @@ They can hand an agent a task — building a pipeline, migrating a table, troubl
 
 **Before (reader's starting state):**
 
-They have to babysit every step — providing context, running commands, reviewing output. The agent never really works on its own because the human is the glue holding it together.
+They have to babysit every step — providing context, running commands, reviewing output. They use agents as a series of manual steps. There's no real automation.
 
 **After (reader's end state):**
 
@@ -63,14 +63,14 @@ Confidently delegates data engineering tasks to autonomous agents with the right
 
 
 **Part 1 — WHY**
-- Enters knowing: `AI is useful for code completion and quick questions. They think of it as a faster way to write code.`
-- Leaves knowing: `Agents are not assistants — they are autonomous workers that need structure, not hand-holding. The shift is from writing code to owning systems. More delegation requires more planning, not less.`
+- Enters knowing: `AI is useful for code completion and quick questions. They think of it as a code writing tool.`
+- Leaves knowing: `Agents can be autonomous workers with the right structure in place. The shift is from writing code to fully autonomus workflows. Developers spend time on the requirements, agents handle the rest.`
 - DE hook: `You already know the fix for most support issues. You already know the pattern for a new DAG. You spend hours doing what an agent could do in minutes — if it had the right context, tools, and guardrails. The bottleneck is not the code. The bottleneck is you being the feedback loop.`
 
 **Part 2 — FOUNDATION** *(the process and the environment — not DE-specific yet)*
-- Enters knowing: `They can use an IDE agent to write code. But they are passive — if the tools or local environment aren't there, they work around it manually. They don't think about what the agent needs to succeed.`
+- Enters knowing: `They can use an IDE agent to write code. But they are passive — if the tools or local environment aren't there, they work around all of the engineering steps manually. They don't think about what the agent needs to be fully autonomous.`
 - Leaves knowing: `How to set up the environment so the agent has the same access you do — local execution, tool access, terminal commands. How spec-driven development works: spec, plan, tasks, implement, validate. What a feedback loop is and why the agent needs one to work autonomously. Without foundations, you are the glue. With them, you are the reviewer.`
-- DE hook: `The spec is the focal point. Before you write a single line of pipeline code, you define what needs to be built, how, and what "done" looks like. The agent needs a local environment where it can run code and gather feedback — without that, it can't validate anything and you're back to babysitting.`
+- DE hook: `The spec is the focal point. Before you write a single line of pipeline code, you define what needs to be built, how, and what "done" looks like, including the data, schemas, transformations and so on. The agent needs a local environment where it can run code and gather feedback — without that, it can't validate anything and you're back to babysitting.`
 
 **Part 3 — CORE SKILLS** *(applying the process to real DE work — the recipes)*
 - Enters knowing: `The process and the environment are set up. They understand specs, feedback loops, and how the agent works. But they haven't applied it to their actual DE workflows yet.`
