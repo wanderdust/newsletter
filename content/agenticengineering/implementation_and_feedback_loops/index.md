@@ -1,7 +1,7 @@
 ---
 title: 'Chapter 5 - Implementation and feedback loops'
 date: '2026-03-06T13:50:33Z'
-draft: true
+draft: false
 summary: ''
 tags: ['ai', 'tooling']
 categories: []

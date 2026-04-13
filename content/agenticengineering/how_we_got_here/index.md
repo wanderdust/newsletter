@@ -1,7 +1,7 @@
 ---
 title: 'Chapter 1 - How we got here'
 date: '2026-03-06T13:50:29Z'
-draft: true
+draft: false
 summary: ''
 tags: ['ai', 'tooling']
 categories: []

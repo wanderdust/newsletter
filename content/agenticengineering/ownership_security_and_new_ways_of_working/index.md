@@ -1,7 +1,7 @@
 ---
 title: 'Chapter 9 - Ownership, security and new ways of working'
 date: '2026-03-06T13:50:37Z'
-draft: true
+draft: false
 summary: ''
 tags: ['ai', 'tooling']
 categories: []

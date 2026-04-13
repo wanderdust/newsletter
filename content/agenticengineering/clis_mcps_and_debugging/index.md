@@ -1,7 +1,7 @@
 ---
 title: 'Chapter 4 - CLIs, MCPs and debugging'
 date: '2026-03-06T13:50:32Z'
-draft: true
+draft: false
 summary: ''
 tags: ['ai', 'tooling']
 categories: []

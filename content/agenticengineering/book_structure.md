@@ -1,7 +1,7 @@
 ---
 title: 'Book Structure'
 date: '2026-04-09T00:00:00+01:00'
-draft: true
+draft: false
 summary: ''
 tags: []
 categories: []
