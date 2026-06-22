@@ -27,7 +27,7 @@ I am an engineer specialising in Data Platforms and MLOps, with experience leadi
 
 Sep 2025 to today | Edinburgh, UK (remote)
 
-As a Senior Data Engineer at FanDuel, I deliver timely and reliable data solutions in a highly regulated environment handling sensitive PII. I build and maintain data pipelines using Databricks, Spark, and DBT.
+As a Senior Data Engineer at FanDuel, I build and maintain reliable data pipelines and lead platform observability initiatives using Databricks, Spark, and DBT in a highly regulated, PII-sensitive environment.
 - Architected and implemented the Spec Driven Development Lifecycle, an AI-driven development framework adopted across all data department teams, standardising how pipelines are built and reducing time to deployment.
 - Led the data platform observability initiative, establishing frameworks that define what to monitor, how to monitor it, and how to act on it, improving data trust and replacing noisy alerts with actionable ones.
 - Drove the Spark Runtime upgrade programme across 100+ pipelines, keeping the data platform aligned with LTS versions and eliminating infrastructure debt at scale.
