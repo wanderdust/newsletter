@@ -19,65 +19,64 @@ Edinburgh, UK | [pablo.lopez.santori@gmail.com](mailto\:pablo.lopez.santori@gmai
 
 ## Summary
 
-I am an engineer specialising in Data Platforms and MLOps, with experience leading projects and collaborating across teams and stakeholders. I value operational excellence through strong team culture and collaboration. I thrive on an environment of continuous learning and growth.
+Machine Learning Engineer with 6+ years of experience building and deploying production ML systems across the full lifecycle, from data pipelines and model training to cloud infrastructure and inference APIs. Strong background in AWS, Kubernetes and MLOps, with hands-on experience across deep learning, model serving, observability and operational excellence. Comfortable working across the stack, from data engineering and backend APIs to model deployment and monitoring.
 
 ## Experience
 
-### FanDuel: Senior Data Engineer
+### FanDuel: Senior Platform Engineer
 
-Sep 2025 to today | Edinburgh, UK (remote)
+Nov 2025 to today | Edinburgh, UK (remote)
 
-As a Senior Data Engineer at FanDuel, I build and maintain reliable data pipelines and lead platform observability initiatives using Databricks, Spark, and DBT in a highly regulated, PII-sensitive environment.
-- Architected and implemented the Spec Driven Development Lifecycle, an AI-driven development framework adopted across all data department teams, standardising how pipelines are built and reducing time to deployment.
-- Led the data platform observability initiative, establishing frameworks that define what to monitor, how to monitor it, and how to act on it, improving data trust and replacing noisy alerts with actionable ones.
-- Drove the Spark Runtime upgrade programme across 100+ pipelines, keeping the data platform aligned with LTS versions and eliminating infrastructure debt at scale.
-- Led the Salesforce-to-Databricks data migration, partnering with stakeholders to gather requirements and document outcomes, improving data trust, broadening table usage, and enabling teams who previously lacked access to discover and use the data independently.
+- Led the first phase of the fraud risk platform, building a batch pipeline to make transaction data available at the ML feature API within 30 minutes. Built a reusable reverse ETL library into PostgreSQL that is now used by multiple engineering teams for similar workloads.
+- Contributed to the subsequent real-time fraud risk API backed by Redis and AWS MemoryDB, enabling data science-owned models to score transactions within a second of a transaction occurring.
+- Led the platform observability programme, establishing frameworks that define what to monitor, how to monitor it, and how to respond, replacing noisy alerting with actionable signals.
+- Architected and implemented the Spec Driven Development Lifecycle, an AI-assisted development framework adopted across all data teams, standardising how pipelines are built and reducing time to deployment.
+- Drove the Spark Runtime upgrade programme across 100+ pipelines, keeping the platform aligned with LTS releases and eliminating infrastructure debt at scale.
+- Led the Salesforce-to-Databricks data migration end to end, partnering with stakeholders to define requirements, document outcomes, and broaden data access for teams that previously had no visibility into that data.
 
-### FanDuel: Data Platform Engineer
+### FanDuel: Platform Engineer
 
-Sep 2023 to Sep 2025 | Edinburgh, UK (remote)
+Sep 2023 to Nov 2025 | Edinburgh, UK (remote)
 
-As a Platform Engineer I worked on a self serving Data API Platform to enable teams to access data in an easy and secure way. I engineered and supported distributed systems on Kubernetes, leveraging Trino and Aurora PostgreSQL to deliver high availability and horizontally scalable performance for terabyte scale data workloads.
-
-- Reduced kubernetes costs by £60k a year by improving our resource monitoring in Datadog to ensure resources were assigned according to real usage.
-- Collaborated in the design of the platform since day 1, from early architecture decisions through production rollout. Tech stack included Databricks, Spark, Postgres, Trino, Python, AWS, Terraform, Kubernetes and Kong.
-- Optimised PostgreSQL performance through partitioning strategies, data modelling, index design, and read versus write replica management, reducing critical API query latency to millisecond response times.
-- Streamlined Performance Testing on the APIs to ensure latency requirements were met under high load by creating a reusable Framework with Locust.
-- Created Platfrom wide documentation for our customers. This creates a single place for knowledge, reduces support burden and encouraged team members to keep docs up to date.
-- Led Projects such as the Reverse ETL strategy from Databricks to Postgres, or GraphQL adoption for the Platform. Collaborated with technical and non technical stakeholders to gather requirements and ensure expectations were met.
-- Reduced time to troubleshoot production issues from hours to minutes by providing the team with tools to troubleshoot without having to rely on external teams.
+- Reduced Kubernetes infrastructure costs by £60k annually by improving resource monitoring in Datadog, aligning allocated resources to real usage patterns across the cluster.
+- Contributed to platform architecture from day one, from early design decisions through production rollout. Core stack included Python, AWS, Terraform, Kubernetes, Kong, Trino and PostgreSQL.
+- Optimised PostgreSQL performance through partitioning strategies, data modelling, index design, and read/write replica management, reducing critical API query latency to millisecond response times.
+- Built a reusable performance testing framework using Locust to validate API latency requirements under production-level load, making performance testing a repeatable part of the release process.
+- Led technical delivery on platform initiatives including a GraphQL API layer and a reverse ETL migration of operational data from Databricks to PostgreSQL to serve high-throughput query patterns.
+- Reduced time to troubleshoot production incidents from hours to minutes by building internal tooling that gave the team the ability to investigate and recover EKS environments independently.
+- The API platform serves as the data access layer for ML feature retrieval and model serving, supporting latency-sensitive inference workloads at production scale.
 
 ### Zonda Satellite: MLOps Engineer
 
 Jan 2022 to Sep 2023 | Glasgow, UK (remote)
 
-As an MLOps Engineer I deployed Data Science Models to provide insights on the construction landscape in the United States.
-
-- Led the development of a model to find similar properties in an area in real time via an API. The stack used was Snowflake, dbt, terraform, AWS (Batch), MongoDB, AWS Lambda and API Gateway.
-- Implemented the DBT framework to improve the MLOps workflow to create more consistent data transformation pipelines. Used AWS Batch to create a reverse ETL pipeline to make data available in MongoDB to support models in production.
-- Created a re-usable MLOps framework to facilitate deployment of machine learning models using AWS Sagemaker and MLFlow reducing time to deploy.
-- Introduced Grafana based monitoring for API performance and pipeline execution with alerting, improving time to detect and resolve issues.
-- Mentored an intern on a project using Generative AI models (GANs and Stable Diffusion) for 3D object generation and collaborated closely with Product and stakeholders to keep delivery on track.
+- Built and deployed a Stable Diffusion model that generated photorealistic facade images from hand-drawn architectural drafts, served via a FastAPI REST API on AWS Lambda.
+- Built a GAN-based satellite image completion model to generate synthetic training data by filling occluded regions in satellite imagery, used to augment training sets for downstream object detection models.
+- Built a semantic property search API using OpenAI embeddings, Pinecone and Elasticsearch that allowed users to find properties via free-text input, using an LLM to generate structured search queries from natural language.
+- Built and maintained the feature data pipelines feeding the online model store, automating periodic data updates from Snowflake into MongoDB via AWS Batch to support similarity search models in production.
+- Created a reusable MLOps framework using AWS SageMaker and MLflow to standardise model deployment, reducing time from experiment to production.
+- Introduced Grafana-based monitoring across model serving APIs and pipelines, covering latency, error rates and execution, replacing reactive debugging with proactive alerting.
+- Built agentic pipelines using LangChain and pydantic AI.
+- Mentored an intern on a generative AI project using GANs and Stable Diffusion for 3D object synthesis, collaborating closely with Product and stakeholders throughout.
 
 ### Zonda Satellite: Machine Learning Engineer
 
 Nov 2020 to Jan 2022 | Glasgow, UK (remote)
 
-As a Machine Learning engineer, I worked on building and deploying Computer Vision Models to track construction activity via Satellite Imagery.
+- Improved construction activity tracking from satellite imagery using MaskRCNN in PyTorch, raising model performance from 0.3 to 0.7 mAP through a systematic programme of image augmentation, hyperparameter tuning, loss function experimentation, ensemble modelling and targeted data labelling. Eliminated the need to send drivers to construction sites across the USA, saving thousands of dollars in data collection costs.
+- Developed a novel image oversampling technique to address overfitting: decomposed training images into 8x8 feature grids and recombined them to generate synthetic samples, raising per-sample prediction accuracy from ~60% to ~90% while producing a simpler, faster model. Experiments tracked and shared across the team using MLflow.
+- Built a property valuation model using regression techniques, working closely with subject matter experts to define requirements and iterate on outputs. Deployed as a FastAPI service on AWS with full observability, testing and monitoring. Adopted into the core pricing workflow used daily by internal consultants, reducing valuation time from hours to minutes. The underlying approach was granted a USPTO patent (co-inventor).
+- Deployed deep learning models to AWS Batch for offline prediction workloads, with all model repositories containerised using Docker and shipped via CI/CD with Terraform and AWS CodePipeline.
 
-- Built an object detection model to track the development of new homes via Satellite Imagery. The stack used was Pytorch, MLFlow, AWS Batch, Docker and Terraform.
-- Came up with a novel approach to predict construction progerss using time series data with KNN and data embeddings using Scikit Learn, and FastAPI to deploy the final model.
-- Collaborated with non technical stakeholders to gather requirements, and keep in touch about ongoing progess to ensure requirements were met.
+### KLU: MLOps Engineer Contractor
 
-### KLU:  MLOps Engineer Consultant
+Mar 2023 to Aug 2023 | Remote
 
-Apr 2023 to May 2023 | Remote
-
-As a Consultant, I helped KLU understand the performance of State of the Art LLMs,
-
-- Fine tuned Alpaca 7B and 13B on a custom dataset using GPU accelerated distributed training.
-- Deployed and benchmarked the models to enable data driven deployment decisions.
-- Established best practices for model training and deployment on AWS using S3, DVC, Weights and Biases, Terraform, and SageMaker, with clear documentation for handover.
+- Fine-tuned Alpaca 7B and 13B on a custom dataset using GPU-accelerated distributed training, optimising inference performance for integration with downstream applications.
+- Architected an end-to-end MLOps pipeline on AWS integrating S3, DVC, Weights and Biases, Terraform and SageMaker, enabling automated model versioning, reproducibility and deployment.
+- Designed an LLM evaluation framework using GPT-4 as an automated evaluator to benchmark frontier models against each other across tasks, enabling fast and data-driven model selection decisions.
+- Built agentic AI pipelines using LangChain, pydantic AI and vector databases.
+- Documented and standardised the AI infrastructure for handover to in-house engineering teams.
 
 
 ### Earlier
@@ -110,10 +109,12 @@ As a Consultant, I helped KLU understand the performance of State of the Art LLM
 
 ## Skills
 
-Leadership and strategy: platform roadmaps, cross team alignment, migration planning, stakeholder communication, mentoring and hiring.
-
-Data platforms: Databricks, Trino, Redshift, Postgres, Snowflake, reverse ETL, streaming and batch connectors.
+ML and AI: PyTorch, scikit-learn, MLflow, AWS SageMaker, LangChain, pydantic AI, Pinecone, LLM fine-tuning, Stable Diffusion, computer vision, FastAPI model serving.
 
 Infra and ops: AWS, Kubernetes, Terraform, CI/CD, performance testing, monitoring and alerting.
 
+Data platforms: Databricks, Trino, Redshift, Postgres, Snowflake, reverse ETL, streaming and batch connectors.
+
 Backend and APIs: Python, FastAPI, Kong, GraphQL, REST, security and performance considerations.
+
+Leadership and strategy: platform roadmaps, cross team alignment, migration planning, stakeholder communication, mentoring and hiring.
