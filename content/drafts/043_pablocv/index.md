@@ -19,7 +19,7 @@ Edinburgh, UK | [pablo.lopez.santori@gmail.com](mailto\:pablo.lopez.santori@gmai
 
 ## Summary
 
-Machine Learning Engineer with 6+ years of experience building and deploying production ML systems across the full lifecycle, from data pipelines and model training to cloud infrastructure and inference APIs. Strong background in AWS, Kubernetes and MLOps, with hands-on experience across deep learning, model serving, observability and operational excellence. Comfortable working across the stack, from data engineering and backend APIs to model deployment and monitoring.
+Machine Learning Engineer with 6+ years of experience building and deploying production ML systems at scale, across the full lifecycle from model training and data pipelines to cloud infrastructure and inference APIs. Strong background in AWS, Kubernetes and MLOps, with hands-on experience across deep learning, model serving, observability and operational excellence. Comfortable working across the stack, from data engineering and backend APIs to scalable model deployment and monitoring.
 
 ## Experience
 
