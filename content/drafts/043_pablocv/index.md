@@ -69,9 +69,9 @@ Mar 2023 to Aug 2023 | Remote
 
 ## Projects
 
-**Coding Agent** — Built an LLM-powered coding agent from scratch: a CLI tool that autonomously reads, edits, and tests code via a multi-step tool-use loop, similar in design to Claude Code. Built in Python using the Anthropic API and pydantic AI for tool definitions and structured outputs; capable of autonomously adding unit tests to existing functions. [Write-up](https://medium.com/ai-in-plain-english/from-llm-to-agent-building-your-own-coding-agent-867844f3c002)
+**Coding Agent** - Built an LLM-powered coding agent from scratch: a CLI tool that autonomously reads, edits, and tests code via a multi-step tool-use loop, similar in design to Claude Code. Built in Python using the Anthropic API and pydantic AI for tool definitions and structured outputs; capable of autonomously adding unit tests to existing functions. [Write-up](https://medium.com/ai-in-plain-english/from-llm-to-agent-building-your-own-coding-agent-867844f3c002)
 
-**Deep Q-Learning — Space Invaders** — Implemented a Deep Q-Network agent in PyTorch to play Space Invaders from raw pixels, using experience replay, target networks, and epsilon-greedy exploration. [GitHub](https://github.com/wanderdust/reinforcement-learning/tree/main/reinforcement_learning/deep_q_learning)
+**Deep Q-Learning - Space Invaders** - Implemented a Deep Q-Network agent in PyTorch to play Space Invaders from raw pixels, using experience replay, target networks, and epsilon-greedy exploration. [GitHub](https://github.com/wanderdust/reinforcement-learning/tree/main/reinforcement_learning/deep_q_learning)
 
 ## Education
 
@@ -87,6 +87,7 @@ Mar 2023 to Aug 2023 | Remote
 - AWS Certified Solutions Architect Professional
 - AWS Certified Solutions Architect Associate
 - Certified Kubernetes Application Developer
+- Databricks Certified Data Engineer Professional
 
 ## Speaking and Writing
 
