@@ -1,10 +1,10 @@
 ---
 title: '048_why_you_should_blog'
 date: '2026-07-01T12:44:25+01:00'
-draft: true
+draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
-tags: []
+tags: ['reflections']
 categories: []
 cover:
   image: ''
@@ -23,10 +23,9 @@ You don't need to write about anything new. At the beggining I would get stuck t
 
 Over time, you get more relaxed about the stuff you write about, and it is easier to find topics. A lot of times, the things I write about are about topics that come up in conversations with colleagues, from things that I think could be helpful for everyone if it's written down, or simply topics with helpful advice, such as this blog.
 
-Finally, you don't need to be a "good writer" to be able to write blogs. ALl my life I grew up thinking I wasn't good at writing. And perhaps I won't be the next Ernst Hemingway, but practice makes better. If you are not great at writing, you'll get better as you do it. You'll start finding your own rythm.
+Finally, you don't need to be a "good writer" to be able to write blogs. ALl my life I grew up thinking I wasn't good at writing. And perhaps I won't be the next Ernst Hemingway, but practice makes better. If you are not great at writing, you'll get better as you do it [^1]. You'll start finding your own rythm.
 
 Bottom line is, there are a lot of benefits to writing, from increasing your own knowledge, to knowledge sharing with others. It can also open up opportunities when people start reading your blog, as you become a subject matter expert. Don't let the fear of being wrong to stop you. The benefit it brings to you is much greater than the irrational reasons stopping you from doing so.
 
-# Note on Using AI
 
-Using AI can be very tempting, especially if you
+[^1]: It can be tempting to use AI to help you "sound better", in fact I'm still tempted every once in a while. There are a couple of reasons to avoid this: if you use AI you won't get much better at writing. Part of writing is to start with a draft and then re-organising your thoughts to make text flow better, and make topics clearer. This is a good skill to develop and you should avoid letting the AI do this. Secondly, if you write a good blog post and start letting the AI meddle in, I can assure you that you'll be dissapointed with the end result and you won't be as proud of your writing as if it was your own words. Remember, if you come back to this in a few yeors time, do you want to recognise the voice of younger you, or do you rather read a generic AI voice?
