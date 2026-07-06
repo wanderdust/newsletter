@@ -61,20 +61,25 @@ A second improvement we added was to create the indexes asynchronously. By defau
 ## Lesson 4: Partitioning Has a Cost
 <!-- query pattern lock-in pitfall → maintenance overhead (cron jobs) → callback: this was a patch, Lesson 1 was the real fix -->
 
-On the other hand, partitioning brings its onw issues. For example, once you partition by a specific column, you need to ensure that column is a filter on the user queries. If you partition by a column that is not in the filter, it means that when there's a query coming, it is going to have to search arcoss all partitions. This is an issue we encountered, as a new query pattern arrived after our partitions were added, so those queries became rather inefficient. On top of that, when you start partitioning you need to create cron jobs to create and delete new partitions on a schedule. This adds more complexity to the platfrom, and it's worth considering when considering partitions.
+Partitioning solved one of our biggest problems with large growing tables. On the other hand, it is important to consider the cost of partitioning.
 
-One thing to note, is that for our partitioned data use case, partitioning was a patch rather than a solution. A proper fix to our problem would have involded going back to Lesson 1 and ask our users to model the streaming data before it arrived in the database. If that had happened, then we would have had fewer write operations in our database because of better filtered data arriving to the database (instead of the raw data coming straight through) and a lot of these problems woould have gone away.
+In theory, partitioning is a great way to split your data into smaller tables, potentially making querying more efficient and dropping older tables very easy.
+
+In reality, partitioning adds a lot of overhead to your system. For example, in postgres you have to manage your partition creationg. This means setting up a cron job to run every x amount of seconds/hours/days to create the new partitions ahead of time. A partition is essentially an empty table you need to create before you can add your data to it. Managing this cron job can be a real pain, and the logic can get complex really fast. This cron job suddenly becomes one of the most critical jobs in your system, because if it fails and you don't create/drop partitions in time, then you can be in real trouble. So you want to ensure it has the correct visibility and alerting systems so that your team can be aware of issues early on.
+
+The other problem with partitioning is when query patterns change. For example, we partitioned by date, and this was originally a good idea because some of the queries in the API filtered by date, which meant we could effectively use partitioning to reduce the amount of data needed to be queried, potentially making query times faster.
+
+Over time, new use cases arrived that queried the same data, which didn't use date as a filter query. Our ANALYZE queries revealed that all partitions were being scanned for these queries. Because indexes are created at the partition level, it meant that scanning all partitions is slower than scanning a single table. Our decision to partition helped us with some queries, but made other queries worse.
+
+Undoing any partitioning can be very hard and take a lot of effort to do, which is why it needs to be carefully considered as the right option.
+
+The real eye opener for us, was that while partitioning fixed our immediate problems, it wasn't the right solution. Instead, for the partitioned tables, we would have benefited from going back to lesson 1, and do a better modelling of our data before landing it to our database. This would have meant a lot less data being written in the database in the first place, potentially removing the need to partition in the first place, which would have saved us a lot of engineering time.
 
 
 ## Lesson 5: Protect Your Database
 <!-- why DBs are fragile → rate limiting → caching (when to use / when not to) -->
 
 The reason we build APIs in front of our Database is not only to do some business logic on the data, but it is to add a layer of protection to our databases. Databases can be very fragile if mis-used. If a user runs an expensive query in a for loop adding lots of load to your database, it can easily bring the database down, bringing down your whele service. This is why good to remember basic stuff like rate limiting and caching where possible.
-
-
-
-
-
 
 
 -----
