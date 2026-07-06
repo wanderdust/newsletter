@@ -1,6 +1,6 @@
 ---
 title: 'Building Performant Data APIs'
-date: '2026-02-15T10:41:15+01:00'
+date: '2026-07-5T10:41:15+01:00'
 draft: false
 summary: ''
 tags: []
@@ -11,6 +11,23 @@ cover:
   caption: ''
 images: []
 ---
+
+Over the last 3 years at Fanduel I've been building building highly scalable Data APIs, to enable data access from different data sources with minimal effort. There's been several mistakes made along the way, and many lessons learned. I believe that these lessons learned make up for the foundations to build a good Data API from day one.
+
+## Lesson 1: Model the Data Before it arrives
+
+## Lesson 2: Know your database (and indexes)
+
+## Lesson 3: Protect your Database
+
+
+
+
+
+
+
+
+-----
 
 How to build a robust Data API with Postgres
 
