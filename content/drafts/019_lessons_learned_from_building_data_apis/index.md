@@ -1,6 +1,6 @@
 ---
 title: 'Building Performant Data APIs'
-date: '2026-07-5T10:41:15+01:00'
+date: '2026-07-05T10:41:15+01:00'
 draft: false
 summary: ''
 tags: []
@@ -18,7 +18,8 @@ Before diving into the lessons, I'll define Data API. A Data API is an API that 
 
 [Diagram?]
 
-## Lesson 1: Model the Data Before it arrives
+## Lesson 1: Model the Data Before it Arrives
+<!-- problem framing → option 1: no modelling (consequences) → option 2: pre-modelled (benefits) → recommendation -->
 
 If you were to take a single takeaway from all of this, is that with Data APIs, the infrastructure is rarely the bottleneck, the Data is.
 
@@ -32,25 +33,34 @@ The correct approach is to model the data before it arrives in your Database. Wh
 
 [Diagram]
 
-## Lesson 2: Know your database (and indexes)
+## Lesson 2: Index on the Right Columns
+<!-- why indexes matter → types of indexes → concrete before/after example (e.g. seconds → milliseconds) -->
 
 Whether your Data is well modelled or not, proper indexes based on query patterns will make the difference going from seconds to milliseconds to run queries. When initally building the MVP, we ran into some performance issues that were quickly solved by using indexes on the right columns.
 
 There are different indexes you can use, such as hash, tree search, and many others depending on the database you use. Learn the best way to combine indexes and what's more efficient in each situation.
 
 
-## Lesson 3: Know your database (Partitioning)
+## Lesson 3: Partitioning Solves the Write Problem
+<!-- the write bottleneck at scale → async index creation as first fix → partitioning by date as second fix → outcome -->
 
 Another issue we landed into early on with our Postgres Database was with an API that recieve data directly from Kafka, recieving thousands of write operations per second. While postgres can handle this without many issues, as the tables were getting large, our indexes were getting created very slowly, to the point where they could not keep up with the amount of writes. This meant that even though the data was arriving in time is was taking a very long time to actually be written, because the indexes were taking too long.
 
 The solution was to make the index creation async, which means that the data gets written and it is immediately available, but the index for the newer records are not available straight away. This means sacrificing some speed on queries querying newer data.
 
-The other part of the solution was to partition the tables for tables that had thousands of write operations per second. By partitioning by date, it meant that the indexes were only created on a subset of data, making their creation considerably faster than having to update indexes on tables many terabaytes large. On the other hand, partitioning brings its onw issues. For example, once you partition by a specific column, you need to ensure that column is a filter on the user queries. If you partition by a column that is not in the filter, it means that when there's a query coming, it is going to have to search arcoss all partitions. This is an issue we encountered, as a new query pattern arrived after our partitions were added, so those queries became rather inefficient. On top of that, when you start partitioning you need to create cron jobs to create and delete new partitions on a schedule. This adds more complexity to the platfrom, and it's worth considering when considering partitions.
+The other part of the solution was to partition the tables for tables that had thousands of write operations per second. By partitioning by date, it meant that the indexes were only created on a subset of data, making their creation considerably faster than having to update indexes on tables many terabaytes large.
+
+
+## Lesson 4: Partitioning Has a Cost
+<!-- query pattern lock-in pitfall → maintenance overhead (cron jobs) → callback: this was a patch, Lesson 1 was the real fix -->
+
+On the other hand, partitioning brings its onw issues. For example, once you partition by a specific column, you need to ensure that column is a filter on the user queries. If you partition by a column that is not in the filter, it means that when there's a query coming, it is going to have to search arcoss all partitions. This is an issue we encountered, as a new query pattern arrived after our partitions were added, so those queries became rather inefficient. On top of that, when you start partitioning you need to create cron jobs to create and delete new partitions on a schedule. This adds more complexity to the platfrom, and it's worth considering when considering partitions.
 
 One thing to note, is that for our partitioned data use case, partitioning was a patch rather than a solution. A proper fix to our problem would have involded going back to Lesson 1 and ask our users to model the streaming data before it arrived in the database. If that had happened, then we would have had fewer write operations in our database because of better filtered data arriving to the database (instead of the raw data coming straight through) and a lot of these problems woould have gone away.
 
 
-## Lesson 4: Protect your Database
+## Lesson 5: Protect Your Database
+<!-- why DBs are fragile → rate limiting → caching (when to use / when not to) -->
 
 The reason we build APIs in front of our Database is not only to do some business logic on the data, but it is to add a layer of protection to our databases. Databases can be very fragile if mis-used. If a user runs an expensive query in a for loop adding lots of load to your database, it can easily bring the database down, bringing down your whele service. This is why good to remember basic stuff like rate limiting and caching where possible.
 
