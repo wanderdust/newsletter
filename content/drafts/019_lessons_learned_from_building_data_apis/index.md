@@ -14,12 +14,45 @@ images: []
 
 Over the last 3 years at Fanduel I've been building building highly scalable Data APIs, to enable data access from different data sources with minimal effort. There's been several mistakes made along the way, and many lessons learned. I believe that these lessons learned make up for the foundations to build a good Data API from day one.
 
+Before diving into the lessons, I'll define Data API. A Data API is an API that serves some data to the user. The API backend connects to a database, such as Postgres, Redis or MongoDB, it runs a query based on the API call recived, and it serves that data to the end user.
+
+[Diagram?]
+
 ## Lesson 1: Model the Data Before it arrives
+
+If you were to take a single takeaway from all of this, is that with Data APIs, the infrastructure is rarely the bottleneck, the Data is.
+
+When building a Data API, the software engineering team usually has to work closely with the teams who own the Datasets to get the right Data to the serving Database. In our case we were closely working with Data Engineers who needed to add this data to Postgres. We made the mistake early on to not enforce data modelling before the data was introduced to the database. This meant that at query time, we had to do some complex operations such as heavy filtering and join operations which made our queries extremely slow in some cases.
+
+When building an API platform you have two options. Option 1) You load your data into your Database without prior modelling. This means that there is very litttle work on the Data Side, you add all your tables to the Database and handle the modelling at query time. The benefits of these are many, for example it requires minimal interaction with Data Engineers to model the data, and litttle planning beforehand. If you are building Real time APIs, where you need to be able to query the Data as soon as an even happens, it means you can load your events from Kafka (or Kinesis?) directly into your database and query directly from there. This is a very simple strategy. The biggest downfall of this approach is that your queries at runtime will probably look like monstosuities. Huge SQL queries, JOINining multiple tables, and doing very complex filtering. THis is a huge issue for two reasons: 1, your SLAs will go out the window. Your API will take a very long time to return results. In our case, some of our queries took from 4 to 60 seconds, wihch of course in most cases is unacceptable. Reason 2 is that your Database will suffer if there is are a lot of API requests that need to run expensive operations, which runs the risk of slowing your service. This is not a scalable solution.
+
+[Digarman of SQL queri JOIN + mulitple tables in DB for real time and cold]
+
+The correct approach is to model the data before it arrives in your Database. Whether you are working with Real time APIs or not, the Data in the Database should already be pre-modelled and ready to use. The benefit is that at runtime your queries will look like simple SELECT statements, that are really fast if you are using the correct indexes. THe "dissadvantage" is that you'll need to work closely with the Data Engineers and API consumers to ensure the Data is in the correct shape. It requires better planning across teams, but ensures efficient and Fast APIs.
+
+[Diagram]
 
 ## Lesson 2: Know your database (and indexes)
 
-## Lesson 3: Protect your Database
+Whether your Data is well modelled or not, proper indexes based on query patterns will make the difference going from seconds to milliseconds to run queries. When initally building the MVP, we ran into some performance issues that were quickly solved by using indexes on the right columns.
 
+There are different indexes you can use, such as hash, tree search, and many others depending on the database you use. Learn the best way to combine indexes and what's more efficient in each situation.
+
+
+## Lesson 3: Know your database (Partitioning)
+
+Another issue we landed into early on with our Postgres Database was with an API that recieve data directly from Kafka, recieving thousands of write operations per second. While postgres can handle this without many issues, as the tables were getting large, our indexes were getting created very slowly, to the point where they could not keep up with the amount of writes. This meant that even though the data was arriving in time is was taking a very long time to actually be written, because the indexes were taking too long.
+
+The solution was to make the index creation async, which means that the data gets written and it is immediately available, but the index for the newer records are not available straight away. This means sacrificing some speed on queries querying newer data.
+
+The other part of the solution was to partition the tables for tables that had thousands of write operations per second. By partitioning by date, it meant that the indexes were only created on a subset of data, making their creation considerably faster than having to update indexes on tables many terabaytes large. On the other hand, partitioning brings its onw issues. For example, once you partition by a specific column, you need to ensure that column is a filter on the user queries. If you partition by a column that is not in the filter, it means that when there's a query coming, it is going to have to search arcoss all partitions. This is an issue we encountered, as a new query pattern arrived after our partitions were added, so those queries became rather inefficient. On top of that, when you start partitioning you need to create cron jobs to create and delete new partitions on a schedule. This adds more complexity to the platfrom, and it's worth considering when considering partitions.
+
+One thing to note, is that for our partitioned data use case, partitioning was a patch rather than a solution. A proper fix to our problem would have involded going back to Lesson 1 and ask our users to model the streaming data before it arrived in the database. If that had happened, then we would have had fewer write operations in our database because of better filtered data arriving to the database (instead of the raw data coming straight through) and a lot of these problems woould have gone away.
+
+
+## Lesson 4: Protect your Database
+
+The reason we build APIs in front of our Database is not only to do some business logic on the data, but it is to add a layer of protection to our databases. Databases can be very fragile if mis-used. If a user runs an expensive query in a for loop adding lots of load to your database, it can easily bring the database down, bringing down your whele service. This is why good to remember basic stuff like rate limiting and caching where possible.
 
 
 
