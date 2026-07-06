@@ -39,9 +39,9 @@ The biggest challenge with the new approach was when dealing with real time APIs
 ## Lesson 2: Index on the Right Columns
 <!-- why indexes matter → types of indexes → concrete before/after example (e.g. seconds → milliseconds) -->
 
-Whether your Data is well modelled or not, proper indexes based on query patterns will make the difference going from seconds to milliseconds to run queries. When initally building the MVP, we ran into some performance issues that were quickly solved by using indexes on the right columns.
+Indexes matter a lot. Anyone who has ever worked with a database knows this. If you are new, then an index makes the difference between a query taking 4 seconds or taking 100 milliseconds. Indexes are the mechanismn in your database to "bookmark" your data, so that rather than doing a full search of your database every time you are looking for something, you can easily point your query in the right direction.
 
-There are different indexes you can use, such as hash, tree search, and many others depending on the database you use. Learn the best way to combine indexes and what's more efficient in each situation.
+Without going into too much detail, we were able to reduce the latency of some of the more complex queries from 4 seconds to 100 milliseconds by indexing the right columns based on the query patterns. It is important to know your database well to know which indexes are useful for different situations. Some scenarios will require hash indexes (such as user ids) vs tree search (date ranges) vs other options available in each individual database. There is also a benefit to using composite indexes vs individual indexes. All of this knowledge comes when you know your database well to make the right decisions for each scenario.
 
 
 ## Lesson 3: Partitioning Solves the Write Problem
@@ -78,6 +78,10 @@ The real eye opener for us, was that while partitioning fixed our immediate prob
 
 ## Lesson 5: Protect Your Database
 <!-- why DBs are fragile → rate limiting → caching (when to use / when not to) -->
+
+
+
+---
 
 The reason we build APIs in front of our Database is not only to do some business logic on the data, but it is to add a layer of protection to our databases. Databases can be very fragile if mis-used. If a user runs an expensive query in a for loop adding lots of load to your database, it can easily bring the database down, bringing down your whele service. This is why good to remember basic stuff like rate limiting and caching where possible.
 
