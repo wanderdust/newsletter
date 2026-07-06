@@ -21,7 +21,6 @@ Before diving into the lessons, I'll define Data API. A Data API is an API that 
 ## Lesson 1: Model the Data Before it Arrives
 <!-- problem framing → option 1: no modelling (consequences) → option 2: pre-modelled (benefits) → recommendation -->
 
-
 If you were to take a single takeaway from all of this, is that with Data APIs, the infrastructure is rarely the bottleneck, the Data is.
 
 When we were first building the Data API platform, we made the mistake of not enforcing the pre-modelling of data before it arrives in the database. This meant, for example that rather than doing joins, filters and any other business logic on the table before hand, we were landing the tables directly in Postgres (our database of choice for the API). This meant that every time the API was called, we were running very complex queries in some cases, such as combining tables on the fly, or doing expensive window or filtering operations. This meant that our API SLAs quickly went out the window, depending on the use case.
@@ -32,9 +31,9 @@ The reason why went with this approach to start with, was because it was the eas
 
 The solution was very simple, to model the data before it touched Postgres. THis meant that before creating an API endpoint, we would get together with the endpoint consumers and the Data Engineers to define the shape of the data. THe Data Engineers would model the Data in the warehouse before it was landed in Postgres. This involved a lot more planning work across teams, but the end result was that the tables in Postgres were ready to be queried using simple SELECT queries with minimal filters. This meant that we could serve data in ms that previously took 4 to 60 seconds to run.
 
-The biggest challenge with the new approach was when dealing with real time APIs. We had a use case where we were recieving data in real time straight from Kafka, which meant the users could query it sttraight way via the API. This made it very convenient and easy to setup, but as you can imagine, we were recieving raw data that we needed JOIN, clean and filter on the fly on each API call. Over time, we found that the only solution was to use spark in between Kafka and Postgres in order to do some aggretation operations to clean and filter the data. THis meant that the data wasn't available in Postgres within less than a second, because the Spark Jobs added a couple seconds latency to that. On the other hand, we made up a lot of time by simplifying the tables that landed in the Postgres, making API calls as fast as double digit millisecond (as compared to several seconds). This meant that overall we reduced our SLA form around 5 seconds to 2 seconds to query real time data from when it was produced to it being available for queryiyng.
+The biggest challenge with the new approach was when dealing with real time APIs. We had a use case where we were recieving data in real time straight from Kafka, which meant the users could query it sttraight way via the API. This made it very convenient and easy to setup, but as you can imagine, we were recieving raw data that we needed JOIN, clean and filter on the fly on each API call. Over time, we found that the only solution was to use spark in between Kafka and Postgres in order to do some aggretation operations to clean and filter the data. THis meant that the data wasn't available in Postgres as quickly because the transformations added a couple seconds latency. On the other hand, we made up a lot of time by simplifying the tables that landed in the Postgres, making API calls as fast as double digit millisecond. This meant that overall we reduced our SLA form around 5 seconds to 2 seconds to query real time data from when it was produced to it being available for queryiyng.
 
-[Digarman]
+[Diagram]
 
 
 ## Lesson 2: Index on the Right Columns
@@ -48,11 +47,15 @@ There are different indexes you can use, such as hash, tree search, and many oth
 ## Lesson 3: Partitioning Solves the Write Problem
 <!-- the write bottleneck at scale → async index creation as first fix → partitioning by date as second fix → outcome -->
 
-Another issue we landed into early on with our Postgres Database was with an API that recieve data directly from Kafka, recieving thousands of write operations per second. While postgres can handle this without many issues, as the tables were getting large, our indexes were getting created very slowly, to the point where they could not keep up with the amount of writes. This meant that even though the data was arriving in time is was taking a very long time to actually be written, because the indexes were taking too long.
+One of our use cases was serving streaming data as soon as it happened using a real time API. This meant several thousand writes per second landing in our Postgres Database.
 
-The solution was to make the index creation async, which means that the data gets written and it is immediately available, but the index for the newer records are not available straight away. This means sacrificing some speed on queries querying newer data.
+If you've worked with Postgres, you know that there is only one writer replica available, and if you have write heavy operations, you can be in a bad situation if not managed correctly. And this is what happened to us. One of our tables was recieving thousands or write request per second, on a database that was several Terabytes large. In principle, Postgres is capable of dealing with such a load no problem, assuming you have the right amount of compute, which we did.
 
-The other part of the solution was to partition the tables for tables that had thousands of write operations per second. By partitioning by date, it meant that the indexes were only created on a subset of data, making their creation considerably faster than having to update indexes on tables many terabaytes large.
+The problem was that the table was getting so large, the index creation was becoming slower and slower. The issue with indexes, is that as you add new indexes to your table, some of the existing indexes need to be updated too. If the table grows larger and larger, the index creation process becomes slower and slower.This was an issue, because the slow indexes were preventing the data from being available for read. Also, as the table was getting larger the indexes were getting exponentially slower, to the point where the database could not keep up wich index creation and it went down
+
+The first part of the solution was to partition the database by date. Some of our queries used the date column to filter, so it meant we could effectively redirect users to the right partitions reducing query times. The partitions also meant that we could create indexes on a much smaller table size, which was manageable enough to create the indexes fast enough.
+
+A second improvement we added was to create the indexes asynchronously. By default, Postgres creates indexes synchronously. This means that when you write the data to your database, the data is not available for querying until the index has been created. This makes sense, because it ensures your querys are always fast. With async index creation your data is available to query as soon as it's written, and the index is created in the background without blocking the data from being read. In our case, we made the tradeoff of ensuring data availability over query speed in those cases where a user would query before the index had been created for that row. In practice, this is a very unlikely scenario, but it meant that if we ran again into issues where the index creaition was slowing down, we would at least be able to serve the data without indexes blocking us.
 
 
 ## Lesson 4: Partitioning Has a Cost
