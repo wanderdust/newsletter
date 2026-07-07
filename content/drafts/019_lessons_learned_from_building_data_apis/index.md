@@ -74,3 +74,8 @@ Over time, new use cases arrived that queried the same data, which didn't use da
 Undoing any partitioning can be very hard and take a lot of effort to do, which is why it needs to be carefully considered as the right option.
 
 The real eye opener for us, was that while partitioning fixed our immediate problems, it wasn't the right solution. Instead, for the partitioned tables, we would have benefited from going back to lesson 1, and do a better modelling of our data before landing it to our database. This would have meant a lot less data being written in the database in the first place, potentially removing the need to partition in the first place, which would have saved us a lot of engineering time.
+
+
+## Closing thoughts
+
+Data APIs are all about the Data. If your data is well modelled and it has the correct indexes, you'll have a very performant API and you'll save yourself a lot of issues down the line. In our case, a lot of our challenges could have been easily solved by getting this right the first time.
