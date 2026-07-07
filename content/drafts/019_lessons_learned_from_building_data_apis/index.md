@@ -34,7 +34,7 @@ The reason why went with this approach to start with, was because it was the eas
 
 The solution was very simple, to model the data before it touched Postgres. THis meant that before creating an API endpoint, we would get together with the endpoint consumers and the Data Engineers to define the shape of the data. THe Data Engineers would model the Data in the warehouse before it was landed in Postgres. This involved a lot more planning work across teams, but the end result was that the tables in Postgres were ready to be queried using simple SELECT queries with minimal filters. This meant that we could serve data in ms that previously took 4 to 60 seconds to run.
 
-The biggest challenge with the new approach was when dealing with real time APIs. We had a use case where we were recieving data in real time straight from Kafka, which meant the users could query it sttraight way via the API. This made it very convenient and easy to setup, but as you can imagine, we were recieving raw data that we needed JOIN, clean and filter on the fly on each API call. Over time, we found that the only solution was to use spark in between Kafka and Postgres in order to do some aggretation operations to clean and filter the data. THis meant that the data wasn't available in Postgres as quickly because the transformations added a couple seconds latency. On the other hand, we made up a lot of time by simplifying the tables that landed in the Postgres, making API calls as fast as double digit millisecond. This meant that overall we reduced our SLA form around 5 seconds to 2 seconds to query real time data from when it was produced to it being available for queryiyng.
+The biggest challenge with the new approach was when dealing with large volumes of real-time data. We had a use case where we were receiving thousands of events per second directly into our system, which meant we needed to make that data queryable via the API as quickly as possible. Rather than landing raw data and doing complex joins and filters at query time, we modeled the data upstream before it arrived in Postgres. This meant the tables in Postgres were clean and simple to query, enabling us to serve that real-time data with minimal latency.
 
 ![API with modelling](./api_with_modelling.png)
 
@@ -64,7 +64,7 @@ A second improvement we added was to create the indexes asynchronously. By defau
 ## Lesson 4: Partitioning Has a Cost
 <!-- query pattern lock-in pitfall → maintenance overhead (cron jobs) → callback: this was a patch, Lesson 1 was the real fix -->
 
-Partitioning solved one of our biggest problems with large growing tables. On the other hand, it is important to consider the cost of partitioning.
+Partitioning solved one of our biggest problems with large growing tables. However, it's important to understand the ongoing costs.
 
 In theory, partitioning is a great way to split your data into smaller tables, potentially making querying more efficient and dropping older tables very easy.
 
@@ -76,7 +76,7 @@ Over time, new use cases arrived that queried the same data, which didn't use da
 
 Undoing any partitioning can be very hard and take a lot of effort to do, which is why it needs to be carefully considered as the right option.
 
-The real eye opener for us, was that while partitioning fixed our immediate problems, it wasn't the right solution. Instead, for the partitioned tables, we would have benefited from going back to lesson 1, and do a better modelling of our data before landing it to our database. This would have meant a lot less data being written in the database in the first place, potentially removing the need to partition in the first place, which would have saved us a lot of engineering time.
+The lesson here is that partitioning was a necessary solution for our write problem at the time. However, in hindsight, the real fix would have been to go back to Lesson 1: better data modelling before the data landed in our database. If we had modelled the data correctly upstream, we would have written less data in the first place, potentially avoiding the need to partition altogether. That would have saved us a lot of operational overhead.
 
 
 ## Closing thoughts
