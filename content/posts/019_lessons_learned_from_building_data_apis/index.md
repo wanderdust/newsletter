@@ -32,7 +32,7 @@ We went with this approach because it was the easier option. It meant very littl
 
 ![API with no modelling](./api_no_modelling.png)
 
-The solution was simple: model the data before it touched Postgres. Before creating an API endpoint, we'd get together with consumers and Data Engineers to define the data shape. The Data Engineers would model the data in the warehouse before landing it in Postgres. This required more planning work across teams, but the payoff was clear—tables in Postgres were now queryable with simple SELECT statements and minimal filters, serving data in milliseconds instead of 4 to 60 seconds.
+The solution was simple: model the data before it touched Postgres. Before creating an API endpoint, we'd get together with consumers and Data Engineers to define the data shape. The Data Engineers would model the data in the warehouse before landing it in Postgres. This required more planning work across teams, but the payoff was clear. Tables in Postgres were now queryable with simple SELECT statements and minimal filters, serving data in milliseconds instead of 4 to 60 seconds.
 
 The biggest challenge with the new approach was when dealing with large volumes of real-time data. We had a use case where we were receiving thousands of events per second directly into our system, which meant we needed to make that data queryable via the API as quickly as possible. Rather than landing raw data and doing complex joins and filters at query time, we modeled the data upstream before it arrived in Postgres. This meant the tables in Postgres were clean and simple to query, enabling us to serve that real-time data with minimal latency.
 
@@ -52,13 +52,13 @@ Without going into too much detail, we were able to reduce the latency of some o
 
 One of our use cases was serving streaming data as soon as it happened using a real time API. This meant several thousand writes per second landing in our Postgres Database.
 
-If you've worked with Postgres, you know there's only one writer replica available, and write-heavy operations can quickly become a bottleneck. This is what happened to us. One of our tables was receiving thousands of write requests per second on a several-Terabyte database. Postgres could handle the load—we had the compute—but something else was breaking.
+If you've worked with Postgres, you know there's only one writer replica available, and write-heavy operations can quickly become a bottleneck. This is what happened to us. One of our tables was receiving thousands of write requests per second on a several-Terabyte database. Postgres could handle the load. We had the compute. But something else was breaking.
 
 The problem: as the table grew, index creation slowed exponentially. When you add new indexes, existing ones need updating too. On a terabyte-scale table, this became unbearably slow. The slow index creation prevented data from being available for reads, and eventually the database couldn't keep up. It went down.
 
 The first part of the solution was to partition the database by date. Some of our queries used the date column to filter, so it meant we could effectively redirect users to the right partitions reducing query times. The partitions also meant that we could create indexes on a much smaller table size, which was manageable enough to create the indexes fast enough.
 
-A second improvement was async index creation. By default, Postgres creates indexes synchronously—data isn't available for querying until the index is done. With async creation, data is available immediately while indexes build in the background. We traded query speed for availability: if someone queries before the index is ready, they get a slightly slower scan. In practice, this rarely happened, but it meant we could serve data even if index creation lagged.
+A second improvement was async index creation. By default, Postgres creates indexes synchronously. Data isn't available for querying until the index is done. With async creation, data is available immediately while indexes build in the background. We traded query speed for availability: if someone queries before the index is ready, they get a slightly slower scan. In practice, this rarely happened, but it meant we could serve data even if index creation lagged.
 
 
 ## Lesson 4: Partitioning Has a Cost
@@ -68,7 +68,7 @@ Partitioning solved one of our biggest problems with large growing tables. Howev
 
 In theory, partitioning is a great way to split your data into smaller tables, potentially making querying more efficient and dropping older tables very easy.
 
-In reality, partitioning adds significant operational overhead. In Postgres, you must manage partition creation—setting up a cron job that runs constantly to create new partitions ahead of time. A partition is just an empty table you create before data arrives. This cron job becomes one of your most critical systems: if it fails, you won't have partitions ready when data arrives, and you're in trouble. You need solid visibility and alerting so your team knows immediately when it breaks.
+In reality, partitioning adds significant operational overhead. In Postgres, you must manage partition creation, setting up a cron job that runs constantly to create new partitions ahead of time. A partition is just an empty table you create before data arrives. This cron job becomes one of your most critical systems: if it fails, you won't have partitions ready when data arrives, and you're in trouble. You need solid visibility and alerting so your team knows immediately when it breaks.
 
 The other problem with partitioning is when query patterns change. For example, we partitioned by date, and this was originally a good idea because some of the queries in the API filtered by date, which meant we could effectively use partitioning to reduce the amount of data needed to be queried, potentially making query times faster.
 
