@@ -26,7 +26,7 @@ Simple, right?
 
 If you were to take a single takeaway from all of this, is that with Data APIs, the infrastructure is rarely the bottleneck, the Data is.
 
-When we were first building the Data API platform, we made the mistake of not enforcing the pre-modelling of data before it arrives in the database. Instead of doing joins, filters and business logic on the table beforehand, we landed the raw tables directly in Postgres. Every time the API was called, we ran very complex queries—combining tables on the fly, or doing expensive window and filtering operations. This meant our API SLAs quickly went out the window, depending on the use case.
+When we were first building the Data API platform, we made the mistake of not enforcing the pre-modelling of data before it arrives in the database. Instead of doing joins, filters and business logic on the table beforehand, we landed the raw tables directly in Postgres. Every time the API was called, we ran very complex queries, combining tables on the fly, or doing expensive window and filtering operations. This meant our API SLAs quickly went out the window, depending on the use case.
 
 We went with this approach because it was the easier option. It meant very little coordination with the Data Engineering teams in charge of the source Data. We didn't need to bother them with creating the table our API customers needed, and we would add this logic at query time. Over time this became a real issue, because SLAs were not good enough, which meant we needed a better approach.
 
@@ -42,7 +42,7 @@ The biggest challenge with the new approach was when dealing with large volumes 
 ## Lesson 2: Index on the Right Columns
 <!-- why indexes matter → types of indexes → concrete before/after example (e.g. seconds → milliseconds) -->
 
-Indexes matter a lot. If you're new to databases, an index makes the difference between a query taking 4 seconds or 100 milliseconds. They're the mechanism that "bookmarks" your data, so you don't have to scan everything—you point your query directly at what you need.
+Indexes matter a lot. If you're new to databases, an index makes the difference between a query taking 4 seconds or 100 milliseconds. They're the mechanism that "bookmarks" your data, so you don't have to scan everything. You point your query directly at what you need.
 
 Without going into too much detail, we were able to reduce the latency of some of the more complex queries from 4 seconds to 100 milliseconds by indexing the right columns based on the query patterns. It is important to know your database well to know which indexes are useful for different situations. Some scenarios will require hash indexes (such as user ids) vs tree search (date ranges) vs other options available in each individual database. There is also a benefit to using composite indexes vs individual indexes. All of this knowledge comes when you know your database well to make the right decisions for each scenario.
 
@@ -54,7 +54,7 @@ One of our use cases was serving streaming data as soon as it happened using a r
 
 If you've worked with Postgres, you know there's only one writer replica available, and write-heavy operations can quickly become a bottleneck. This is what happened to us. One of our tables was receiving thousands of write requests per second on a several-Terabyte database. Postgres could handle the load—we had the compute—but something else was breaking.
 
-The problem: as the table grew, index creation slowed exponentially. When you add new indexes, existing ones need updating too. On a terabyte-scale table, this became unbearably slow. The slow index creation prevented data from being available for reads, and eventually the database couldn't keep up—it went down.
+The problem: as the table grew, index creation slowed exponentially. When you add new indexes, existing ones need updating too. On a terabyte-scale table, this became unbearably slow. The slow index creation prevented data from being available for reads, and eventually the database couldn't keep up. It went down.
 
 The first part of the solution was to partition the database by date. Some of our queries used the date column to filter, so it meant we could effectively redirect users to the right partitions reducing query times. The partitions also meant that we could create indexes on a much smaller table size, which was manageable enough to create the indexes fast enough.
 
