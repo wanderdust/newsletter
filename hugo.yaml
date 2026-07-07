@@ -1,5 +1,5 @@
 baseURL: "http://drmvlfs3gt0ln.cloudfront.net/"
-title: Pablo Lopez
+title: Pablo Lopez - Software Engineer & AI Contractor
 theme: PaperMod
 pagination:
   pagerSize: 20
@@ -12,9 +12,9 @@ minify:
   minifyOutput: true
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: Pablo Lopez
-  description: "Pablo's Newsletter"
-  keywords: [Blog, Newsletter]
+  title: Pablo Lopez - Software Engineer & AI Contractor
+  description: "Building scalable backend systems, data platforms, and AI/ML infrastructure. Available for contracting in Python, AWS, and Kubernetes."
+  keywords: [Contractor, Software Engineer, Python, AWS, Data Engineering, Machine Learning]
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
   defaultTheme: light # dark, light
@@ -48,12 +48,7 @@ params:
     iconHeight: 35
   # profile-mode
   profileMode:
-    enabled: true # needs to be explicitly set
-    title: Pablo Lopez
-    subtitle: "Writing to think"
-    imageWidth: 120
-    imageHeight: 120
-    imageTitle: my image
+    enabled: false
   socialIcons:
     - name: github
       url: "https://github.com/wanderdust"
@@ -79,18 +74,14 @@ params:
     keys: ["title", "permalink", "summary", "content"]
 menu:
   main:
-    - identifier: posts
-      name: Posts
+    - identifier: services
+      name: Services
+      url: /#services
+      weight: 1
+    - identifier: blog
+      name: Writing
       url: /posts/
       weight: 5
-    - identifier: tags
-      name: Tags
-      url: /tags/
-      weight: 10
-    - identifier: Archive
-      name: Archive
-      url: /archives/
-      weight: 15
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
