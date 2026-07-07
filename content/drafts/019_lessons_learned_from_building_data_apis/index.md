@@ -12,14 +12,17 @@ cover:
 images: []
 ---
 
-Over the last 3 years at Fanduel I've been building building highly scalable Data APIs, to enable data access from different data sources with minimal effort. There's been several mistakes made along the way, and many lessons learned. I believe that these lessons learned make up for the foundations to build a good Data API from day one.
+Over the last 3 years at I've spent a lot of time building highly scalable Data APIs, to enable teams data access from different data sources with minimal effort. There's been several mistakes made along the way, and many lessons learned. I believe that these lessons learned here will make up for strong foundations to build performant Data APIs from day one.
 
-Before diving into the lessons, I'll define Data API. A Data API is an API that serves some data to the user. The API backend connects to a database, such as Postgres, Redis or MongoDB, it runs a query based on the API call recived, and it serves that data to the end user.
+Before diving into the lessons, I'll define Data API.
 
-[Diagram?]
+A Data API is an API service that serves some data to the user. The API backend connects to a database, such as Postgres, Redis or MongoDB, it runs a query based on the API call recived, and it serves that data to the end user.
+
+![Data API](./Data_api.png)
+
+Simple, right?
 
 ## Lesson 1: Model the Data Before it Arrives
-<!-- problem framing → option 1: no modelling (consequences) → option 2: pre-modelled (benefits) → recommendation -->
 
 If you were to take a single takeaway from all of this, is that with Data APIs, the infrastructure is rarely the bottleneck, the Data is.
 
@@ -27,13 +30,13 @@ When we were first building the Data API platform, we made the mistake of not en
 
 The reason why went with this approach to start with, was because it was the easier option. It meant very little coordination with the Data Engineering teams in charge of the source Data. We didn't need to bother them with creating the table our API customers needed, and we would add this logic at query time. Over time this became a real issue, because SLAs were not good enough, which meant we needed a better approach.
 
-[Diagram showing slow query]
+![API with no modelling](./api_no_modelling.png)
 
 The solution was very simple, to model the data before it touched Postgres. THis meant that before creating an API endpoint, we would get together with the endpoint consumers and the Data Engineers to define the shape of the data. THe Data Engineers would model the Data in the warehouse before it was landed in Postgres. This involved a lot more planning work across teams, but the end result was that the tables in Postgres were ready to be queried using simple SELECT queries with minimal filters. This meant that we could serve data in ms that previously took 4 to 60 seconds to run.
 
 The biggest challenge with the new approach was when dealing with real time APIs. We had a use case where we were recieving data in real time straight from Kafka, which meant the users could query it sttraight way via the API. This made it very convenient and easy to setup, but as you can imagine, we were recieving raw data that we needed JOIN, clean and filter on the fly on each API call. Over time, we found that the only solution was to use spark in between Kafka and Postgres in order to do some aggretation operations to clean and filter the data. THis meant that the data wasn't available in Postgres as quickly because the transformations added a couple seconds latency. On the other hand, we made up a lot of time by simplifying the tables that landed in the Postgres, making API calls as fast as double digit millisecond. This meant that overall we reduced our SLA form around 5 seconds to 2 seconds to query real time data from when it was produced to it being available for queryiyng.
 
-[Diagram]
+![API with modelling](./api_with_modelling.png)
 
 
 ## Lesson 2: Index on the Right Columns
@@ -79,3 +82,6 @@ The real eye opener for us, was that while partitioning fixed our immediate prob
 ## Closing thoughts
 
 Data APIs are all about the Data. If your data is well modelled and it has the correct indexes, you'll have a very performant API and you'll save yourself a lot of issues down the line. In our case, a lot of our challenges could have been easily solved by getting this right the first time.
+
+
+{{< outro >}}
