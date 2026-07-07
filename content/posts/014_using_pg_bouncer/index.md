@@ -428,3 +428,6 @@ This blog post is the product of me trying to break down all the nuances in a cl
 Resources:
 - https://www.depesz.com/2012/12/02/what-is-the-point-of-bouncing/
 - https://www.pgbouncer.org/config.html
+
+
+{{< outro >}}
