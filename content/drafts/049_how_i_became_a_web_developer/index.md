@@ -86,4 +86,10 @@ I checked my local server, and I could see that the website was running locally,
 
 ## Building the Webiste
 
-So
+I got started. I opened claude code in the terminal and fired up the agent skills framework.
+
+![claude code](./claude_code.png)
+
+I started using the `/interview-me` skill to set the original requirements. I have to say, whoever came up with this idea is a genious. This skill will ask you questions about what you want to build until it has enough confidence that it's got enough detail of all the specs. If you combine this skill with your microphone to narrate your answers, it makes for a pretty sweet workflow.
+
+Within 5 minutes I had all of the requirements defined. So I moved on to generate the spec file with the `/spec` skill. This file gathered all of the HTML files that we needed to create, 32 in total, one for each page in the website, and all the external links that needed to be preserved.
