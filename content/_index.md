@@ -11,7 +11,7 @@ Software Engineer & ML/AI specialist based in Edinburgh. 6+ years building produ
 ## What I Build
 
 **Backend & APIs**
-Production systems that handle real load. I've built fraud detection platforms scoring thousands of transactions per second, self-service data access layers serving ML teams, and APIs that don't wake you up at 3am. Focus on performance, reliability, and infrastructure that scales.
+Scalable systems that handle real load. I've built fraud detection platforms scoring thousands of transactions per second, self-service data access layers serving Data teams, and reliable data APIs.
 
 **Data Platforms**
 Data pipelines, ETL systems, warehouse infrastructure. I've designed platforms that let teams access data without coordination overhead. Built reverse ETL systems, optimized terabyte-scale queries, and managed real-time streaming into production databases.
@@ -20,19 +20,13 @@ Data pipelines, ETL systems, warehouse infrastructure. I've designed platforms t
 ML infrastructure, model deployment, LLM integration. Built MLOps frameworks, semantic search systems, computer vision models in production, and RAG systems.
 
 **Platform & Infrastructure Work**
-Kubernetes cost optimization (£60k annually), performance tuning, monitoring, incident response tooling.
+Kubernetes, cost optimisation, performance tuning, monitoring, incident response tooling.
 
 ---
 
-## Background
+## Tech Stack
 
-Contracting work: LLM fine-tuning, AI infrastructure, ML model deployment, RAG systems, semantic search.
-
-FanDuel (Platform Engineer, then Senior Platform Engineer): Built data access platforms, led fraud risk infrastructure, designed ML feature APIs for low-latency inference, architected monitoring-as-code systems.
-
-Zonda Satellite (Machine Learning Engineer): Deployed production ML models, built semantic search APIs with LLMs, created MLOps frameworks, computer vision work on satellite imagery.
-
-Patents, public speaking, technical writing. AWS Solutions Architect Professional certified. CKAD. Databricks Data Engineer certified.
+I work mainly in Python and AWS, but I build software based on solid foundations that are technology agnostic.
 
 ---
 
