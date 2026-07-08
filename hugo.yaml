@@ -20,7 +20,7 @@ params:
   defaultTheme: light # dark, light
   disableThemeToggle: true
   ShowShareButtons: true
-  ShowPostNavLinks: trued
+  ShowPostNavLinks: true
   ShowBreadCrumbs: false
   ShowCodeCopyButtons: false
   ShowRssButtonInSectionTermList: true
@@ -76,12 +76,16 @@ menu:
   main:
     - identifier: services
       name: Services
-      url: /#services
+      url: /#what-i-build
       weight: 1
     - identifier: blog
-      name: Writing
+      name: Blog
       url: /posts/
       weight: 5
+    - identifier: contact
+      name: Contact
+      url: /#contact
+      weight: 10
 # Read: https://github.com/adityatelange/hugo-PaperMod/wiki/FAQs#using-hugos-syntax-highlighter-chroma
 pygmentsUseClasses: true
 markup:
