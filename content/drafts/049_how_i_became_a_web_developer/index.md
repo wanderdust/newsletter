@@ -36,6 +36,7 @@ The requirements for this project were simple
 1. Create a clone of the website. The copy should look as similar to the original. If we were to swap them a returning customer should feel like they have landed on the same site.
 2. Create a clean repo structure that can easily be picked up by any developer that has landed on it. I made the decision of not using any frameworks, because I wanted this to be able to run without requiring any library updates in a years time. Plain HTML, CSS and Javascript.
 3. All the links, media and everything else should work as expected
+4. Make the site is mobile first. Ensure the mobile version looks good since that's what most people will use.
 
 ## The Setup
 
@@ -92,4 +93,53 @@ I got started. I opened claude code in the terminal and fired up the agent skill
 
 I started using the `/interview-me` skill to set the original requirements. I have to say, whoever came up with this idea is a genious. This skill will ask you questions about what you want to build until it has enough confidence that it's got enough detail of all the specs. If you combine this skill with your microphone to narrate your answers, it makes for a pretty sweet workflow.
 
-Within 5 minutes I had all of the requirements defined. So I moved on to generate the spec file with the `/spec` skill. This file gathered all of the HTML files that we needed to create, 32 in total, one for each page in the website, and all the external links that needed to be preserved.
+Within 5 minutes I had all of the requirements defined. So I moved on to generate the spec file with the `/spec` skill. This file gathered all of the HTML files that we needed to create, 32 in total, one for each page in the website, and all the external links that needed to be preserved. The generated spec.md document was quite long, as it is normally the case with AI generated documents, so without going too much into detail, I checked that everything in there more or less made sense, and everything looked more or less okay. After that I moved on to the planning phase.
+
+The plan phase consists on using the `/plan` skill, which creates a breakdown of the tasks to complete the whole project. In the plan you can also specify any tech choices you want to follow. In my case I made sure no frameworks were getting used. I wanted a simple HTML/CSS/Javascript site that needed litttle maintenance and could easily be handed over to any web developer.
+
+The plan document had 7 steps to build the whole thing incrementally. It would start with the landing page and the base styles. Once that was correct it would go on to build the rest of the site, re-using styles from the first step. THis looked good to me, so I asked claude to start building the website.
+
+## Human in the loop
+
+I first let claude do its own thing, and it cracked on for 10 minutes setting things up. I was using the sonnet 4.7, which I believe is quite a good model, so I was filled with confidence that I was going to get it right in one shot. After all I'd specified in the spec that it should use the dowloaded website as guide.
+
+When I first opened the first draft, to check the nav bar and styles it was all a mess. The nav bar was showing some of the options without anyone hovering on it, and the options were overlapping each other. It was obviosly not checking the actual website to see what it "looked like". So I started providing some screenshots of the issues and asking claude to fix it.
+
+As you can imagine, this was a lot of work. The idea of using AI is that it has it's own feedback loop to check its own work so that it can self evaluate if a task is complete. After hoving provided 20 different screenshots, I decided that it was enough, so I explicitly asked it to take screenshots of the website to validate its own code. And that's all that was needed, somehow Claude got hold of the screenshot tool provided by mac, and it used it to grab screenshots and self evaluating the final website results. From here on the results were much better and consistent with the original website.
+
+I still had to do a lot of manual approval of the random scripts (because I'm too much of a coward to run `--dangerously-skip-permissions`). But I could do this while focusing on other stuff, so I didn't mind it too much.
+
+## Final Refinements
+
+It had taken a whole day of having this run in the backgroing with me checking ocassionally to check some permissions, and check some of the outputs. When claude was done, it had done a reasonable job. The website looked more or less the same as the original, with some differences here and there. The biggest issue was that for some of the pages it had actually ignored the original and it had "hallucinated" its own page structure and content. Towards the end, I had to go through each page and compare it to the original, and specifically tell claude what things needed fixed.
+
+The morning of the following day I had finished clone of the website, with some improvements in the mobile version, which was looking a bit buggy in the original site.
+
+
+## I Could Have Saved Myself 80% of the work
+
+The website was finished. I had a bunch of HTML files, a single CSS file and a javascript file. I hosted the site in github pages and share it with my neighbor, he was really impressed.
+
+Next, I sat in my desk to write about how I can dedicate myself to web development now, even though I'm not a web developer. As I started writing the blog, it occurred to me that I hadn't really checked the original files. What was wrong with them in the first place? Why did I need a full rebuild?
+
+Upnon checking the files using the `ls` command, it looks surprisingly similar to my "cloned" version. A bunch of HTML files, one for each page and some image files. I open the HTML files for the original website, and the main difference between the clone and the original is that the original baked all of the CSS and javascript inside each HTML file. Other than that, the content of the HTML files are pretty much the same.
+
+The main improvements from my version is that I re-organised the images into an `assets` folder, and I created some re-usable CSS styles. I then realise, I could have asked claude to take the copy of the original website, and simply re-organise the file structure to the structure I wanted, and also to extract some of the CSS and javascript into re-usable styles that could be used across files.
+
+More importantly, none of the "improvements" I made were that relevant. I could have simply taken the dowloaded files from the original, and deploy that directly and shared the files with my neighbor to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a half.
+
+
+## Final thoughts
+
+Reflecting back on this, I think there were a few things that contributed me to overengineer the solution to this problem.
+
+First, I knew I had access to AI, and I know AI can do all of these things for me without much effort from my side beyond a little babysitting. So I didn't really considered if my approach to cloning the website was the most efficient.
+
+Second, I could see a lot of signs that the person had used AI in the first place to create the site. For some reason, I have a negative association with this, so I assumed the original work would be some sort of mess or slop. WHich is not really fair, since I was 100% using AI to generate the new version as well. I had also assumed that they would have used some framework like react or something to make things complicated. I thought that I was the smarter one by using simple HTML and CSS to build the whole thing. Turns out, that if I'd paid attention at the beggining, I'd realised the original dev had the same idea, and I could have re-used that.
+
+Finally, I think because I'm not a web developer, I didn't really have the expertise to catch some of these things early on, leading me to solving the problem using the overengineered solution.
+
+
+In the end, it wasn't too bad. It took a full day of this thing running in the background, while I was still able to do other things. The context switching was still tough, taking concentration away from the other tasks I was doing. Still, it is tough to think I could have solved the problem in 20 minutes instead of a whole day.
+
+With AI, now solving problems is more a question of time, rather than effort.
