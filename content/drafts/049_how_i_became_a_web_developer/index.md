@@ -139,13 +139,14 @@ No AI required at all.
 
 Reflecting back on this, I think there were a few things that contributed me to overengineer the solution to this problem.
 
-First, I knew I had access to AI, and I know AI can do all of these things for me without much effort from my side beyond a little babysitting. So I didn't really considered if my approach to cloning the website was the most efficient.
+First, I knew I had access to AI, and I know AI can do all of these things for me without much effort from my side beyond a little babysitting. So I didn't really consider if my approach to cloning the website was the most efficient.
 
-Second, I could see a lot of signs that the person had used AI in the first place to create the site. For some reason, I have a negative association with this, so I assumed the original work would be some sort of mess or slop. WHich is not really fair, since I was 100% using AI to generate the new version as well. I had also assumed that they would have used some framework like react or something to make things complicated. I thought that I was the smarter one by using simple HTML and CSS to build the whole thing. Turns out, that if I'd paid attention at the beggining, I'd realised the original dev had the same idea, and I could have re-used that.
+Second, I could see a lot of signs that the original dev had used AI in the first place to create the site. For some reason, I have a negative association with this, so I assumed the original work would be some sort of mess or slop. WHich is not really fair, since I was 100% using AI to generate the new version as well. I had also assumed that they would have used some framework like react or something to make things complicated. I thought that I was the smarter one by using simple HTML and CSS to build the whole thing. Turns out, that if I'd paid attention at the beggining, I'd realised the original dev had the same idea, and I could have re-used that.
 
 Finally, I think because I'm not a web developer, I didn't really have the expertise to catch some of these things early on, leading me to solving the problem using the overengineered solution.
 
-
 In the end, it wasn't too bad. It took a full day of this thing running in the background, while I was still able to do other things. The context switching was still tough, taking concentration away from the other tasks I was doing. Still, it is tough to think I could have solved the problem in 20 minutes instead of a whole day.
 
-With AI, now solving problems is more a question of time, rather than effort.
+I wish the AI was smart enough to have warned me early on.
+
+{{< outro >}}
