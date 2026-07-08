@@ -1,0 +1,57 @@
+{{- define "main" }}
+<div class="landing">
+
+  <section class="hero">
+    <h1 class="hero-headline">{{ .Params.hero.headline }}</h1>
+    {{- with .Params.hero.subhead }}
+    <p class="hero-subhead">{{ . }}</p>
+    {{- end }}
+    {{- with .Params.hero.meta }}
+    <p class="hero-meta">{{ . }}</p>
+    {{- end }}
+    {{- with .Params.hero.cta_text }}
+    <a class="hero-cta" href="{{ $.Params.hero.cta_url }}">{{ . }}</a>
+    {{- end }}
+  </section>
+
+  <section class="section" id="what-i-build">
+    <h2 class="section-title">{{ .Params.services_title }}</h2>
+    <div class="services">
+      {{- range .Params.services }}
+      <div class="service">
+        <h3 class="service-title">{{ .title }}</h3>
+        <p class="service-body">{{ .body }}</p>
+        {{- if .link }}
+        <a class="service-link" href="{{ .link }}">{{ .link_text | default "Read more" }}</a>
+        {{- end }}
+      </div>
+      {{- end }}
+    </div>
+    {{- with .Params.services_note }}
+    <p class="services-note">{{ . }}</p>
+    {{- end }}
+  </section>
+
+  <section class="section" id="stack">
+    <h2 class="section-title">{{ .Params.stack_title }}</h2>
+    <p class="section-body">{{ .Params.stack }}</p>
+  </section>
+
+  <section class="section" id="background">
+    <h2 class="section-title">{{ .Params.background_title }}</h2>
+    <p class="section-body">{{ .Params.background }}</p>
+  </section>
+
+  <section class="section contact" id="contact">
+    <h2 class="section-title">{{ .Params.contact_title }}</h2>
+    <p class="section-body">{{ .Params.contact_body }}</p>
+    <a class="contact-email" href="mailto:{{ .Params.email }}">{{ .Params.email }}</a>
+    {{- with .Params.links }}
+    <p class="contact-links">
+      {{- range $i, $l := . }}{{ if $i }} · {{ end }}<a href="{{ $l.url }}">{{ $l.text }}</a>{{ end }}
+    </p>
+    {{- end }}
+  </section>
+
+</div>
+{{- end }}

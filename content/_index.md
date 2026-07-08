@@ -1,37 +1,33 @@
 ---
-layout: "single"
+hero:
+  headline: "I build data platforms and AI systems that scale."
+  subhead: "Software engineer with 6+ years building production systems, specialising in data platforms and applied AI."
+  meta: "Edinburgh · Available for contract work"
+  cta_text: "Get in touch"
+  cta_url: "#contact"
+services_title: "What I build"
+services:
+  - title: "Self-Serve Data Platforms"
+    body: "Config-based API platforms that give teams secure, self-serve access to Databricks, Postgres, Redshift, and Trino without rebuilding an access layer each time. Lead contributor from day one, serving up to 1,000 requests per second on Kubernetes."
+  - title: "High-Performance APIs"
+    body: "Data APIs that stay fast under real load. PostgreSQL tuning that brought query latency from tens of seconds down to milliseconds, serving real-time data at thousands of events per second."
+    link: "/posts/019_lessons_learned_from_building_data_apis/"
+    link_text: "Lessons from building data APIs"
+  - title: "Applied AI & MLOps"
+    body: "LLM-powered features, RAG systems, and AI services built on solid engineering, plus MLOps pipelines that deploy, serve, and manage models across their lifecycle through CI/CD."
+services_note: "Underpinned by Kubernetes, AWS, and Terraform, with a focus on monitoring, cost optimisation, and operational excellence in production."
+stack_title: "Tech stack"
+stack: "Mainly Python and AWS, on Kubernetes. PostgreSQL, Databricks, Trino, and Spark for data; Kong and FastAPI for APIs; Bedrock, SageMaker, and MLflow for AI and ML. I build on solid foundations, so the specific tools are interchangeable."
+background_title: "Background"
+background: "MSc in Artificial Intelligence from Heriot-Watt University. Co-inventor on a US patent for a property valuation system. AWS Certified Solutions Architect Professional, Certified Kubernetes Application Developer (CKAD), and Databricks Certified Data Engineer Professional."
+contact_title: "Get in touch"
+contact_body: "Available for contract work, mostly remote and open to hybrid in Edinburgh. If you have a problem I can help with, send me a note about what you're building."
+email: "pablo.lopezsantori@gmail.com"
+links:
+  - text: "LinkedIn"
+    url: "https://linkedin.com/in/wanderdust"
+  - text: "GitHub"
+    url: "https://github.com/wanderdust"
+  - text: "Blog"
+    url: "/posts/"
 ---
-
-## Pablo Lopez Santori
-
-Software Engineer & ML/AI specialist based in Edinburgh. 6+ years building production systems at scale. Available for contract work.
-
----
-
-## What I Build
-
-**Backend & APIs**
-Scalable systems that handle real load. I've built fraud detection platforms scoring thousands of transactions per second, self-service data access layers serving Data teams, and reliable data APIs.
-
-**Data Platforms**
-Data pipelines, ETL systems, warehouse infrastructure. I've designed platforms that let teams access data without coordination overhead. Built reverse ETL systems, optimized terabyte-scale queries, and managed real-time streaming into production databases.
-
-**Machine Learning & AI**
-ML infrastructure, model deployment, LLM integration. Built MLOps frameworks, semantic search systems, computer vision models in production, and RAG systems.
-
-**Platform & Infrastructure Work**
-Kubernetes, cost optimisation, performance tuning, monitoring, incident response tooling.
-
----
-
-## Tech Stack
-
-I work mainly in Python and AWS, but I build software based on solid foundations that are technology agnostic.
-
----
-
-## Get in Touch
-
-If you think I could help with what you're building, drop me a line at [pablo.lopezsantori@gmail.com](mailto:pablo.lopezsantori@gmail.com).
-
-[LinkedIn](https://linkedin.com/in/wanderdust) · [GitHub](https://github.com/wanderdust) · [Blog](/posts/)
