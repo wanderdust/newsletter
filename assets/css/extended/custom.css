@@ -100,8 +100,8 @@ body:has(.landing) {
 /* ---------- Services grid (no boxes; structure from a top accent rule) ---------- */
 .services {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2.75rem 3rem;
 }
 
 .service-title {
