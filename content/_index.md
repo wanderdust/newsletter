@@ -1,6 +1,6 @@
 ---
 hero:
-  headline: "I build data platforms and AI systems that scale."
+  headline: "Data platforms and AI systems that scale."
   subhead: "Software engineer with 6+ years building production systems, specialising in data platforms and applied AI."
   meta: "Edinburgh · Available for contract work"
   cta_text: "Get in touch"
