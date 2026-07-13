@@ -1,5 +1,5 @@
-baseURL: "http://drmvlfs3gt0ln.cloudfront.net/"
-title: Pablo Lopez - Software Engineer & AI Contractor
+baseURL: "https://www.pablols.com/"
+title: Pablo Lopez - Software Engineer & AI Contractor | Edinburgh, UK
 theme: PaperMod
 pagination:
   pagerSize: 20
@@ -12,9 +12,9 @@ minify:
   minifyOutput: true
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  title: Pablo Lopez - Software Engineer & AI Contractor
-  description: "Building scalable backend systems, data platforms, and AI/ML infrastructure. Available for contracting in Python, AWS, and Kubernetes."
-  keywords: [Contractor, Software Engineer, Python, AWS, Data Engineering, Machine Learning]
+  title: Pablo Lopez - Software Engineer & AI Contractor | Edinburgh, UK
+  description: "Platforms and AI systems that scale. Senior software engineer and contractor with 6+ years building scalable, distributed platforms and AI systems in production with Python, AWS, and Kubernetes. Edinburgh-based, available for remote and hybrid contract work across the UK."
+  keywords: [Software Engineer Contractor, AI Contractor, Software Engineering Contractor, Contractor Edinburgh, Contractor Scotland, Contractor UK, Remote Contractor, Python, AWS, Kubernetes, Data Engineering, Data Platforms, Applied AI, LLM, MLOps, Machine Learning, Databricks, Terraform]
   images: ["<link or path of image for opengraph, twitter-cards>"]
   DateFormat: "January 2, 2006"
   defaultTheme: light # dark, light
