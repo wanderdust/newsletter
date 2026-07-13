@@ -24,7 +24,7 @@ background_title: "Background"
 background: "MSc in Artificial Intelligence from Heriot-Watt University. Co-inventor on a US patent for a property valuation system. AWS Certified Solutions Architect Professional, Certified Kubernetes Application Developer (CKAD), and Databricks Certified Data Engineer Professional."
 contact_title: "Get in touch"
 contact_body: "Available for contract work, mostly remote and open to hybrid in Edinburgh. If you have a problem I can help with, send me a note about what you're building."
-email: "pablo.lopezsantori@gmail.com"
+email: "pablo.lopez.santori@gmail.com"
 links:
   - text: "LinkedIn"
     url: "https://linkedin.com/in/lopezsantoripablo/"
