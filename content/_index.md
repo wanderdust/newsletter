@@ -27,7 +27,7 @@ contact_body: "Available for contract work, mostly remote and open to hybrid in 
 email: "pablo.lopezsantori@gmail.com"
 links:
   - text: "LinkedIn"
-    url: "https://linkedin.com/in/wanderdust"
+    url: "https://linkedin.com/in/lopezsantoripablo/"
   - text: "GitHub"
     url: "https://github.com/wanderdust"
   - text: "Blog"
