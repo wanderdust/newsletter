@@ -1,7 +1,7 @@
 ---
 hero:
   headline: "Platforms and AI systems that scale."
-  subhead: "Senior software engineer with 6+ years building scalable, distributed platforms and AI systems in production."
+  subhead: "Senior software engineer building scalable, distributed platforms and AI systems in production, from data infrastructure to applied AI."
   meta: "Edinburgh · Available for contract work"
   cta_text: "Get in touch"
   cta_url: "#contact"
