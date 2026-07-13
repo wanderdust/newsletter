@@ -13,7 +13,7 @@ cover:
 images: []
 ---
 
-This is the story of how I overengineered a whole website migration. This was originally going to be a success story of how I managed to rescue my friend's website from his web developer who was keeping it hostage. I was going to write about how I used AI to rewrite a whole website in a day, despite me not being a web developer, but in the end I realised what a fool I was.
+This is the story of how I overengineered a website project. This was originally going to be a success story of how I managed to rescue my friend's website from his web developer who was keeping it hostage. I was going to write about how I used AI to rewrite a whole website in a day, despite me not being a web developer. In the end, I came to realise I could have done this in 20 minutes, rather than taking a full day.
 
 ----
 The story begins with me and my family going to our neighbors house to take my son to a playdate with his friend. My neighbor owns a physiotherapy business, and my wife had recently visited to see their acupuncture specialist. I told him (in a nice way as possible) that I had a look at my wife's phone while she was browsing his website, and that I thought it looked a buggy and not as good as it could be, especially the mobile version. I'm not an expert web developer by any means, but even I know that these days you should design websites thinking about phone first, because that's what most people will use to book their appointments.
