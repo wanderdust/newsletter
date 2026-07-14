@@ -1,10 +1,10 @@
 ---
-title: 'How I overengineered a website because of AI'
+title: 'How I overengineered a project because of AI'
 date: '2026-07-07T08:06:07+01:00'
 draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
-tags: []
+tags: ['ai', 'reflections', 'tooling']
 categories: []
 cover:
   image: ''
