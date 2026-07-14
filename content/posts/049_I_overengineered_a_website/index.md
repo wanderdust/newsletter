@@ -128,39 +128,39 @@ It took a whole day to finish the website and have it in a reasonable state. The
 The morning of the following day I had finished the clone of the website. Everything was looking well on both web and mobile versions, almost exactly the same as the original, with minor improvements here and there.
 
 
-## I Could Have Saved Myself 80% of the work
+## I Could Have Saved Myself 95% of the work
 
-The website was finished. Like with many AI Developed projects, I hadn't spent the time going through the generated files. I simply assumed that claude was staying true to the original specs. At the end, I had a bunch of HTML files, a single CSS file and a javascript file.
+The website was finished. Like with many AI Developed projects, I hadn't spent the time going through the generated files. I simply assumed that claude was staying true to the original specs. At the end, I had a bunch of HTML files, a single CSS file and a javascript file. Just what I expected.
 
-I hosted the site in github pages and shared it with my neighbor. He was really impressed.
+I hosted the site in github pages and shared it with my neighbour. He was really impressed and also pleased to be able to own the code to his business website.
 
-The next day, I sat in my desk to write this blog on how I can dedicate myself to web development now, even though I'm not a web developer.
+I thought this story would make a great blog post. In my head, I was imagining this sort of story _"How I become a professional we developer, even though I'm not a web developer, thanks to the help of AI"_
 
 As I started writing the blog, it occurred to me that I hadn't really checked the original files. What was wrong with them in the first place? Why did I need a full rebuild? How different was the final outcome to the original stuff?
 
-Upon checking the original files using the `ls` command, it looks surprisingly similar to my "cloned" version. A bunch of HTML files, one for each page and some image files. I open the HTML files for the original website, and the main difference between the clone and the original is that the original baked all of the CSS and javascript inside each HTML file. Other than that, the content of the HTML files are pretty much the same.
+Upon checking the original files using the `ls` command, they looked surprisingly similar to my "cloned" version. A bunch of HTML files, one for each page and some image files. I opened the HTML files for the original website, and the main difference between the clone and the original is that the original baked all of the CSS and javascript inside each HTML file. Other than that, the content of the HTML files are pretty much the same.
 
 The main improvements from my version is that I re-organised the images into an `assets` folder, and I created some re-usable CSS styles. I then realise, I could have asked claude to take the copy of the original website, and simply re-organise the file structure to the structure I wanted, and also to extract some of the CSS and javascript into re-usable styles that could be used across files.
 
-More importantly, none of the "improvements" I made were that relevant. I could have simply taken the dowloaded files from the original, and deploy that directly and shared the files with my neighbor to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a half.
+More importantly, none of the "improvements" I made were that relevant. I could have simply taken the dowloaded files from the original, and deploy that directly and shared the files with my neighbor to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a bit.
 
-No AI required at all.
+I could have done this project with no AI involved at all.
 
 
 ## Final thoughts
 
-[Add thought - The AI did what I asked it to do. But It was up to me to make the correct decisions before using AI.]
+I have to say, this has been an slightly embarrassing story to share. As an experienced professional I thought I was above making mistakes like this. I let my assumptions take the best of me leading me to choose the wrong the approach to solve the problem. I let my assumptions guide me rather than using empirical evidence.
 
-Reflecting back on this, I think there were a few things that led me to overengineer the solution to this problem.
+Looking back, I can see the main factors leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclussion that because the AI had originally been generated using AI, it would not be saveagable, and it would need to be started from scratch.
 
-First, I knew I had access to AI, and I know AI can do all of these things for me without much effort from my side beyond a little babysitting. So I didn't really consider if my approach to cloning the website was the most efficient.
+In the end, the outcome wasn't too bad. Yes, it took me much longer to complete the project, but using AI made the whole thing pretty much effortless. The main downside is time "wasted" and tokens spent, that could have otherwise been saved.
 
-Second, I could see a lot of signs that the original dev had used AI in the first place to create the site. For some reason, I have a negative association with this, so I assumed the original work would be some sort of mess or slop. Which is not really fair, since I was 100% using AI to generate the new version as well. I had also assumed that they would have used some framework like react or something to make things complicated. I thought that I was the smarter one by using simple HTML and CSS to build the whole thing. Turns out, that if I'd paid attention at the beginning, I'd realised the original dev had the same idea, and I could have re-used that.
+This experience is also a good reminder to keep our assumptions in check. As new technology emerges and we learn to use the new tools, it is important to stick to the foundations, and follow good processes for project planning and definition. AI will follow along with anything you ask it to do, but it is up to ourselves as developers to define the correct processes, even before starting to write a specifications file.
 
-Finally, this was only a side project, a favour I was doing to my neighbor, which I didn't give my full attention to.
+I'll end with a quote, which after reflecting on this experience, I can't get out of my head:
 
-In the end, it wasn't too bad. It took a full day of this thing running in the background, while I was still able to do other things. The context switching was still tough, taking concentration away from the other tasks I was doing. Still, it is tough to think I could have solved the problem in 20 minutes instead of a whole day.
-
-I wish the AI was smart enough to have warned me early on.
+> _If all you have is a hammer, everything looks like a nail_
+>
+> -- [Maslow's hammer](https://en.wikipedia.org/wiki/Law_of_the_instrument)
 
 {{< outro >}}
