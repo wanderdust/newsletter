@@ -113,13 +113,13 @@ When I first opened the first draft to check the nav bar and styles, it was all 
 
 ![buggy site](./website_buggy.png)
 
-As you can imagine, this was a lot of work for something the AI should probably be able to do itself. After having provided 20 different screenshots, I decided that it was enough. I explicitly asked Claude Code to take screenshots of the website to validate its own code.
+As you can imagine, this was a lot of work for something the AI should probably be able to do itself. After having provided 20 different screenshots, I decided that it was enough. I explicitly asked Claude Code to take screenshots of the original website running locally to validate its own code.
 
 Turns out that's all that was needed, somehow Claude got hold of the screenshot tool provided by macBook, and it used it to grab screenshots and self evaluating the final website results. From here on the results were much better and consistent with the original website.
 
  ![landing site](./website_landing.png)
 
-I still had to do a lot of manual approval of the random scripts (because I'm too much of a coward to run `--dangerously-skip-permissions`). But I could do this while focusing on other stuff, so I didn't mind it too much.
+I still had to do a lot of manual approval of the random scripts it was using to grab the screenshots (because I'm too much of a coward to run `--dangerously-skip-permissions`). But I could do this while focusing on other stuff, so I didn't mind it too much.
 
 ## Final Refinements
 
