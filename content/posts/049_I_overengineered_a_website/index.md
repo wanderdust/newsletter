@@ -153,13 +153,13 @@ I have to say, this has been an slightly embarrassing story to share. As an expe
 
 Looking back, I can see the main factor leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclusion that because the AI had originally been used to build the website, it would not be salvageable, and it would need to be started from scratch.
 
-In the end, the outcome wasn't too bad. Yes, it took me much longer to complete the project, but using AI made the whole thing pretty much effortless. The main downside is time "wasted" and tokens spent, that could have otherwise been saved.
+In the end, the outcome wasn't too bad. Yes, it took me much longer to complete the project, but using AI made the whole thing pretty much effortless. The main downside is time "wasted" and tokens spent that could have otherwise been saved.
 
-This experience is also a good reminder to keep our assumptions in check. As new technology emerges and we learn to use the new tools, it is important to stick to the foundations, and follow good processes for project planning and definition. AI will follow along with anything you ask it to do, but it is up to ourselves as developers to define the correct processes, even before starting to write a specifications file.
+This experience is also a good reminder to keep my assumptions in check. As new technology emerges and we learn to use the new tools, it is important to stick to the foundations, and follow good processes for project planning and definition. AI will follow along with anything you ask it to do, but it is up to ourselves as developers to define the correct processes, even before starting to write a specifications file.
 
-We need to ensure we continue to collaborate in our teams, to ensure we identify the right approach to problems early on. AI simply follows your direction without questioning. Good engineering practices are more than simply writing code or defining architecture diagrams.
+We need to ensure we continue to collaborate in our teams, to ensure we identify the right approach and find any problems early on. AI simply follows your direction without questioning. Good engineering practices are more than simply writing code or defining architecture diagrams.
 
-I'll end with a quote, which after reflecting on this experience, I can't get out of my head:
+I'll end with a quote which I can't get out of my head:
 
 > _If all you have is a hammer, everything looks like a nail_
 >
