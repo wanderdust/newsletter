@@ -13,18 +13,20 @@ cover:
 images: []
 ---
 
-This is the story of how I overengineered a website project. This was originally going to be a success story of how I managed to rescue my friend's website from his web developer who was keeping it hostage. I was going to write about how I used AI to rewrite a whole website in a day, despite me not being a web developer. In the end, I came to realise I could have done this in 20 minutes, rather than taking a full day.
+This is the story of how I overengineered a software project. This was originally going to be a success story of how I managed to rescue my friend's website from his web developer who was keeping it hostage. I was going to write about how I used AI to rewrite a whole website in a day, despite me not being a web developer. In the end, I realised I could have done this in 20 minutes, rather than taking a full day.
 
 ----
-The story begins with me and my family going to our neighbors house to take my son to a playdate with his friend. My neighbor owns a physiotherapy business, and my wife had recently visited to see their acupuncture specialist. I told him (in a nice way as possible) that I had a look at my wife's phone while she was browsing his website, and that I thought it looked a buggy and not as good as it could be, especially the mobile version. I'm not an expert web developer by any means, but even I know that these days you should design websites thinking about phone first, because that's what most people will use to book their appointments.
+The story begins when we went to my neighbours house, for our kids to play together. My neighbour owns a physiotherapy business, and my wife had recently visited his practice to see an acupuncture specialist. I told him that I was peeking at my wife's phone when she was browsing the business website, and that I thought it looked a buggy and not as good as it could be, especially the mobile version. I'm not an expert web developer by any means, but even I know that these days you should design websites thinking mobile first, because that's what most people will use to book their appointments.
 
-He then told me he was having issues with the web developer who built and maintains their website. He told me that he wanted to be given access to the website code, because he was thinking of potentially using another web developer who was more reliable or even migrating his website to a wordpress that he could easily manage. However, the web developer didn't want to give him access to the code artifacts, he was essentially holding it hostage so he could keep his monthly maintenance fee.
+He then told me he was having issues with the web developer who built and maintains his website. He told me that he wanted access to the website code, because he was thinking of potentially using another web developer who was more reliable or even migrating his website to a wordpress that he could easily manage. However, the web developer didn't want to give him access to the code artifacts, he was essentially holding it hostage so he could keep his monthly maintenance fee.
 
-I told him that, although I'm not a professional web developer, I know my way around websites, and that I could take a look for him. With AI coding agents, it could not be too hard to make a copy of the website so that he could own the code.
+I told him that, although I'm not a professional web developer, I know my way around web development, and that I could take a look for him. I thought that with AI coding agents, it could not be too hard to make a copy of the website so that he could own the code.
 
-He also told me that the guy who had created his website had told him that he had his own "AI platform to build it". I didn't mention anything to him at the time, but it felt to me like this guy was trying to sell him some snake oil. In my head I thought he was probably just using claude, like everyone else, to build websites, and he was marketing it as something bigger than it really is.
+When I mentioned the word "AI", he said that the guy who had created his website had told him that he had used his own "AI platform to build it". I then got the feeling, that this developer was building a marketing campaign around what probably was him simply using AI coding agents, with the goal of trying to impress his clients. This already raised some alarms in my head, and made me insntantly doubt this developer.
 
-The next day, I went and had a look at his site. It seemed like a simple static website, with a bunch of HTML pages and no complex logic anywhere beyond your typical hamburger menu in the navigation section. So I decided to give it a go. I could see from 100 miles away that the dev had indeed used AI to create the website. I could tell by the shape of the cards, emojis, font colors in titles etc. So I had already formed this idea in my head that the website was going to be a mess.
+I had already formed some ideas in my head that this website was going to be using some complex and weird frameworks (even though I hadn't looked at it yet), and that the best way forward was probably going to be to build it from scratch with the help of AI.
+
+The next day, I went and had a look at his site. It seemed like a simple static website, with a bunch of HTML pages and no complex logic anywhere beyond your typical hamburger menu in the navigation section. So I decided to give it a go. I could see from 100 miles away that the dev had indeed used AI to create the website. I could tell by the shape of the cards, emojis, font colors in titles etc. The idea that this website was going to be a mess was becoming stronger and stronger in my head.
 
  Making these assumptions early on, without any proof, was going to be my downfall, but I'm getting ahead of myself.
 
@@ -40,7 +42,11 @@ The requirements for this project were simple
 
 ## The Setup
 
-I decided to use claude combined with the [agent skills](https://github.com/addyosmani/agent-skills) framework. With this framework you can break large tasks such as this one into a set of requirements and a detailed plan, that the agent can follow to complete the task.
+I decided to use Claude Code combined with the [agent skills](https://github.com/addyosmani/agent-skills) framework. I have previous experience working with a [spec driven development development lifecycle](https://www.ibm.com/think/topics/spec-driven-development), and I know this would be the best way to approach a project like this.
+
+With Spec Driven Development, I could define the requirements and expected outcomes and leave the AI to plan and lead the implementation phase.
+
+[Diagram here]
 
 ## Getting started
 
