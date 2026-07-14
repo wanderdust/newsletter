@@ -19,7 +19,7 @@ services:
     body: "I build AI-driven development frameworks that set standards for how teams build with AI, grounded in engineering discipline: guardrails, code ownership, feedback loops, and testing."
 services_note: "Underpinned by Kubernetes, AWS, and Terraform, with a focus on monitoring, cost optimisation, and operational excellence in production."
 stack_title: "Tech stack"
-stack: "Python and AWS, on Kubernetes. PostgreSQL, NoSQL, Trino, Spark and Databricks for data; Kong, AWS API Gateway, FastAPI, Docker and serverless infrastructure for APIs; Bedrock, SageMaker, MLflow, LangChain and PyTorch for AI and ML. Terraform, CI/CD, Cloudwatch & Datadog for operations. I build on solid foundations, so the specific tools are interchangeable."
+stack: "Python and SQL on AWS and Kubernetes, provisioned with Terraform. PostgreSQL, Databricks, Trino, Spark, and NoSQL for data; FastAPI, GraphQL, Kong and AWS API Gateway for APIs; Bedrock, SageMaker, MLflow, PyTorch, and LangChain for AI and ML; Datadog and Grafana for observability. I build on solid foundations, so the specific tools are interchangeable."
 background_title: "Background"
 background: "MSc in Artificial Intelligence from Heriot-Watt University. Co-inventor on a US patent for a property valuation system. AWS Certified Solutions Architect Professional, Certified Kubernetes Application Developer (CKAD), and Databricks Certified Data Engineer Professional."
 contact_title: "Get in touch"
