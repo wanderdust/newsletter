@@ -123,26 +123,26 @@ I still had to do a lot of manual approval of the random scripts it was using to
 
 ## Final Refinements
 
-It took a whole day to finish the website and have it in a reasonable state. The website looked more or less the same as the original, with some differences here and there. The biggest issue was that for some of the pages it had ignored the original and it had "hallucinated" its own page structure and content. Towards the end, I had to go through each page and compare it to the original, and specifically tell claude what things needed fixed.
+It took a whole day to finish the website and have it in a reasonable state. The website looked more or less the same as the original, with some differences here and there. The biggest issue was that for some of the pages, the coding agent had ignored the original and it had "hallucinated" its own page structure and content instead. Towards the end, I had to go through each page and compare it to the original, and specifically tell claude what things needed fixed.
 
 The morning of the following day I had finished the clone of the website. Everything was looking well on both web and mobile versions, almost exactly the same as the original, with minor improvements here and there.
 
 
 ## I Could Have Saved Myself 95% of the work
 
-The website was finished. Like with many AI Developed projects, I hadn't spent the time going through the generated files. I simply assumed that claude was staying true to the original specs. At the end, I had a bunch of HTML files, a single CSS file and a javascript file. Just what I expected.
+The website was finished. Like with many AI developed projects, I hadn't spent the time going through the generated files. I simply assumed that claude was staying true to the original specs. At the end, I had a bunch of HTML files, a single CSS file and a javascript file. Just what I expected.
 
 I hosted the site in github pages and shared it with my neighbour. He was really impressed and also pleased to be able to own the code to his business website.
 
-I thought this story would make a great blog post. In my head, I was imagining this sort of story _"How I become a professional web developer, even though I'm not a web developer, thanks to the help of AI"_
+I thought this story would make a great blog post. In my head, I was imagining this sort of story: _"How I become a professional web developer, even though I'm not a web developer, thanks to the help of AI"_
 
 As I started writing the blog, it occurred to me that I hadn't really checked the original files. What was wrong with them in the first place? Why did I need a full rebuild? How different was the final outcome to the original stuff?
 
 Upon checking the original files using the `ls` command, they looked surprisingly similar to my "cloned" version. A bunch of HTML files, one for each page and some image files. I opened the HTML files for the original website, and the main difference between the clone and the original is that the original baked all of the CSS and javascript inside each HTML file. Other than that, the content of the HTML files are pretty much the same.
 
-The main improvements from my version is that I re-organised the images into an `assets` folder, and I created some re-usable CSS styles. I then realise, I could have asked claude to take the copy of the original website, and simply re-organise the file structure to the structure I wanted, and also to extract some of the CSS and javascript into re-usable styles that could be used across files.
+The main improvements from my version is that I re-organised the images into an `assets` folder, and I created some re-usable CSS styles. I realised I could have asked claude to take the copy of the original website, and simply re-organise the file structure to the structure I wanted, and also to extract some of the CSS and javascript into re-usable styles that could be used across files.
 
-More importantly, none of the "improvements" I made were that relevant. I could have simply taken the downloaded files from the original, and deploy that directly and shared the files with my neighbour to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a bit.
+More importantly, none of the "improvements" I made were that critical. I could have simply taken the downloaded files from the original, deploy them directly to github pages and share the files with my neighbour to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a bit.
 
 I could have done this project with no AI involved at all.
 
