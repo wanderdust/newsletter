@@ -22,7 +22,7 @@ He then told me he was having issues with the web developer who built and mainta
 
 I told him that, although I'm not a professional web developer, I know my way around web development, and that I could take a look for him. I thought that with AI coding agents, it could not be too hard to make a copy of the website so that he could own the code.
 
-When I mentioned the word "AI", he said that the guy who had created his website had told him that he had used his own "AI platform to build it". I then got the feeling, that this developer was building a marketing campaign around what probably was him simply using AI coding agents, with the goal of trying to impress his clients. This already raised some alarms in my head, and made me insntantly doubt this developer.
+When I mentioned the word "AI", he said that the guy who had created his website had told him that he had used his own "AI platform to build it". I then got the feeling, that this developer was building a marketing campaign around what probably was him simply using AI coding agents, with the goal of trying to impress his clients. This already raised some alarms in my head, and made me instantly doubt this developer.
 
 I had already formed some ideas in my head that this website was going to be using some complex and weird frameworks (even though I hadn't looked at it yet), and that the best way forward was probably going to be to build it from scratch with the help of AI.
 
@@ -42,7 +42,7 @@ The requirements for this project were simple
 
 ## The Setup
 
-I decided to use Claude Code combined with the [agent skills](https://github.com/addyosmani/agent-skills) framework. I have previous experience working with a [spec driven development development lifecycle](https://www.ibm.com/think/topics/spec-driven-development), and I know this would be the best way to approach a project like this.
+I decided to use Claude Code combined with the [agent skills](https://github.com/addyosmani/agent-skills) framework. I have previous experience working with a [spec driven development lifecycle](https://www.ibm.com/think/topics/spec-driven-development), and I know this would be the best way to approach a project like this.
 
 With Spec Driven Development, I could define the requirements and expected outcomes and leave the AI to plan and lead the implementation phase.
 
@@ -109,7 +109,7 @@ The `plan.md` document had 7 steps to build the whole thing incrementally. It wo
 
 I first let claude do its own thing, and it cracked on for 10 minutes setting things up. I was using the sonnet 4.7, which I believe is quite a good model, so I was filled with confidence that I was going to get it right in one shot. After all I'd specified in the spec that it should use the downloaded website as guide. The definition of done was that everything had to look exactly the same as the original.
 
-When I first opened the first draft to check the nav bar and styles, it was all a mess. The nav bar was showing some of the options without anyone hovering on them, and the options were overlapping each other. Claude Code was obviously ignoring my instrunctions, or at least, it wasn't properly checking the final result. So I started manually providing some screenshots of the issues I was seeing and asking claude to fix it.
+When I first opened the first draft to check the nav bar and styles, it was all a mess. The nav bar was showing some of the options without anyone hovering on them, and the options were overlapping each other. Claude Code was obviously ignoring my instructions, or at least, it wasn't properly checking the final result. So I started manually providing some screenshots of the issues I was seeing and asking claude to fix it.
 
 ![buggy site](./website_buggy.png)
 
@@ -134,7 +134,7 @@ The website was finished. Like with many AI Developed projects, I hadn't spent t
 
 I hosted the site in github pages and shared it with my neighbour. He was really impressed and also pleased to be able to own the code to his business website.
 
-I thought this story would make a great blog post. In my head, I was imagining this sort of story _"How I become a professional we developer, even though I'm not a web developer, thanks to the help of AI"_
+I thought this story would make a great blog post. In my head, I was imagining this sort of story _"How I become a professional web developer, even though I'm not a web developer, thanks to the help of AI"_
 
 As I started writing the blog, it occurred to me that I hadn't really checked the original files. What was wrong with them in the first place? Why did I need a full rebuild? How different was the final outcome to the original stuff?
 
@@ -142,16 +142,16 @@ Upon checking the original files using the `ls` command, they looked surprisingl
 
 The main improvements from my version is that I re-organised the images into an `assets` folder, and I created some re-usable CSS styles. I then realise, I could have asked claude to take the copy of the original website, and simply re-organise the file structure to the structure I wanted, and also to extract some of the CSS and javascript into re-usable styles that could be used across files.
 
-More importantly, none of the "improvements" I made were that relevant. I could have simply taken the dowloaded files from the original, and deploy that directly and shared the files with my neighbor to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a bit.
+More importantly, none of the "improvements" I made were that relevant. I could have simply taken the downloaded files from the original, and deploy that directly and shared the files with my neighbour to do with them whatever he wanted. That would have saved me 95% of the work and would have taken 20 minutes instead of a day and a bit.
 
 I could have done this project with no AI involved at all.
 
 
 ## Final thoughts
 
-I have to say, this has been an slightly embarrassing story to share. As an experienced professional I thought I was above making mistakes like this. I let my assumptions take the best of me leading me to choose the wrong the approach to solve the problem. I let my assumptions guide me rather than using empirical evidence.
+I have to say, this has been an slightly embarrassing story to share. As an experienced professional I thought I was above making mistakes like this. I let my assumptions take the better of me leading me to choose the wrong the approach to solve the problem. I let my assumptions guide me rather than using empirical evidence.
 
-Looking back, I can see the main factors leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclussion that because the AI had originally been generated using AI, it would not be saveagable, and it would need to be started from scratch.
+Looking back, I can see the main factors leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclusion that because the AI had originally been generated using AI, it would not be salvageable, and it would need to be started from scratch.
 
 In the end, the outcome wasn't too bad. Yes, it took me much longer to complete the project, but using AI made the whole thing pretty much effortless. The main downside is time "wasted" and tokens spent, that could have otherwise been saved.
 
