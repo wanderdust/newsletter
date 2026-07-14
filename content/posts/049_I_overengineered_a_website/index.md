@@ -107,13 +107,15 @@ The `plan.md` document had 7 steps to build the whole thing incrementally. It wo
 
 ## Human in the loop
 
-I first let claude do its own thing, and it cracked on for 10 minutes setting things up. I was using the sonnet 4.7, which I believe is quite a good model, so I was filled with confidence that I was going to get it right in one shot. After all I'd specified in the spec that it should use the downloaded website as guide.
+I first let claude do its own thing, and it cracked on for 10 minutes setting things up. I was using the sonnet 4.7, which I believe is quite a good model, so I was filled with confidence that I was going to get it right in one shot. After all I'd specified in the spec that it should use the downloaded website as guide. The definition of done was that everything had to look exactly the same as the original.
 
-When I first opened the first draft, to check the nav bar and styles it was all a mess. The nav bar was showing some of the options without anyone hovering on it, and the options were overlapping each other. It was obviously not checking the actual website to see what it "looked like". So I started providing some screenshots of the issues and asking claude to fix it.
+When I first opened the first draft to check the nav bar and styles, it was all a mess. The nav bar was showing some of the options without anyone hovering on them, and the options were overlapping each other. Claude Code was obviously ignoring my instrunctions, or at least, it wasn't properly checking the final result. So I started manually providing some screenshots of the issues I was seeing and asking claude to fix it.
 
 ![buggy site](./website_buggy.png)
 
-As you can imagine, this was a lot of work. The idea of using AI is that it has it's own feedback loop to check its own work so that it can self evaluate if a task is complete. After having provided 20 different screenshots, I decided that it was enough, so I explicitly asked it to take screenshots of the website to validate its own code. And that's all that was needed, somehow Claude got hold of the screenshot tool provided by mac, and it used it to grab screenshots and self evaluating the final website results. From here on the results were much better and consistent with the original website.
+As you can imagine, this was a lot of work for something the AI should probably be able to do itself. After having provided 20 different screenshots, I decided that it was enough. I explicitly asked Claude Code to take screenshots of the website to validate its own code.
+
+Turns out that's all that was needed, somehow Claude got hold of the screenshot tool provided by macBook, and it used it to grab screenshots and self evaluating the final website results. From here on the results were much better and consistent with the original website.
 
  ![landing site](./website_landing.png)
 
