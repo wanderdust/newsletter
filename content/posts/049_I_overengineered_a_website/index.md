@@ -50,9 +50,9 @@ With Spec Driven Development, I could define the requirements and expected outco
 
 ## Getting started
 
-The first thing I wanted to do was to download the existing website locally for reference. I had already formed a plan in my head, I would clone the website locally and use it for reference to build the clone. I would write the new version from scratch. I had already formed the idea that the original clone would not be usable.
+The first thing I wanted to do was to download the original website locally so I could use it as reference. My plan was to run it locally and let the coding agent reference the content and styles to make the new clone look exactly the same.
 
-The command that claude suggested was this. I asked it to run it for me and run the website in localhost.
+The command that claude suggested to clone the site was this. I asked it to run it for me and run the website in localhost.
 
 ```shell
   wget --mirror --convert-links --adjust-extension --page-requisites --no-parent https://example.com
@@ -85,7 +85,7 @@ psychology.html
 ...
 ```
 
-I checked my local server, and I could see that the website was running locally, and it looked exactly like the original, so I was ready to migrate.
+I checked my local server, and I could see that the website was running locally, so I was ready to migrate.
 
 ## Building the Website
 
@@ -95,11 +95,15 @@ I got started. I opened claude code in the terminal and fired up the agent skill
 
 I started using the `/interview-me` skill to set the original requirements. I have to say, whoever came up with this idea is a genius. This skill will ask you questions about what you want to build until it has enough confidence that it's got enough detail of all the specs. If you combine this skill with your microphone to narrate your answers, it makes for a pretty sweet workflow.
 
-Within 5 minutes I had all of the requirements defined. So I moved on to generate the spec file with the `/spec` skill. This file gathered all of the HTML files that we needed to create, 32 in total, one for each page in the website, and all the external links that needed to be preserved. The generated spec.md document was quite long, as it is normally the case with AI generated documents, so without going too much into detail, I checked that everything in there more or less made sense, and everything looked more or less okay. After that I moved on to the planning phase.
+Within 5 minutes I had all of the requirements defined. So I moved on to generate the specification file - containing all the requirements in writing - by using the `/spec` skill.
+
+The `spec.md` file gathered all of the HTML files that we needed to create, 32 in total, one for each page in the website. It also contained a list of all the external links that needed to be preserved, such as the booking links handled by 3rd party services.
+
+The generated `spec.md` document was quite long, as it is normally the case with AI generated documents, so without going too much into detail, I checked that everything in there more or less made sense. After I was sure everything was in order, I moved on to the planning phase.
 
 The plan phase consists on using the `/plan` skill, which creates a breakdown of the tasks to complete the whole project. In the plan you can also specify any tech choices you want to follow. In my case I made sure no frameworks were getting used. I wanted a simple HTML/CSS/Javascript site that needed little maintenance and could easily be handed over to any web developer.
 
-The plan document had 7 steps to build the whole thing incrementally. It would start with the landing page and the base styles. Once that was correct it would go on to build the rest of the site, re-using styles from the first step. This looked good to me, so I asked claude to start building the website.
+The `plan.md` document had 7 steps to build the whole thing incrementally. It would start with the landing page and the base styles. Once that was correct it would go on to build the rest of the site, re-using styles from the first step. This looked good to me, so I asked claude code to start building the website.
 
 ## Human in the loop
 
