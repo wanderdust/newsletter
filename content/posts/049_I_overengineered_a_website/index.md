@@ -38,7 +38,7 @@ The requirements for this project were simple
 2. Create a clean repo structure that can easily be picked up by any developer that has landed on it.
 3. No frameworks. Plain HTML + CSS + JavaScript so we would not need to worry about library updates in the years to come.
 4. All the links, media and everything else should work as per the original site.
-5. Make the site is mobile first. Ensure the mobile version looks good since that's what most people will use.
+5. Make the site mobile first. Ensure the mobile version looks good since that's what most people will use.
 
 ## The Setup
 
