@@ -46,7 +46,7 @@ I decided to use Claude Code combined with the [agent skills](https://github.com
 
 With Spec Driven Development, I could define the requirements and expected outcomes and leave the AI to plan and lead the implementation phase.
 
-[Diagram here]
+{{< figure src="./spec_driven_development.png" title="Spec driven development lifecycle" >}}
 
 ## Getting started
 
@@ -142,6 +142,8 @@ No AI required at all.
 
 
 ## Final thoughts
+
+[Add thought - The AI did what I asked it to do. But It was up to me to make the correct decisions before using AI.]
 
 Reflecting back on this, I think there were a few things that led me to overengineer the solution to this problem.
 
