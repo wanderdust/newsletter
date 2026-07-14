@@ -157,6 +157,8 @@ In the end, the outcome wasn't too bad. Yes, it took me much longer to complete 
 
 This experience is also a good reminder to keep our assumptions in check. As new technology emerges and we learn to use the new tools, it is important to stick to the foundations, and follow good processes for project planning and definition. AI will follow along with anything you ask it to do, but it is up to ourselves as developers to define the correct processes, even before starting to write a specifications file.
 
+We need to ensure we continue to collaborate in our teams, to ensure we identify the right approach to problems early on. AI simply follows your direction without questioning. Good engineering practices are more than simply writing code or defining architecture diagrams.
+
 I'll end with a quote, which after reflecting on this experience, I can't get out of my head:
 
 > _If all you have is a hammer, everything looks like a nail_
