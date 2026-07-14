@@ -1,7 +1,7 @@
 ---
 title: 'How I overengineered a website because of AI'
 date: '2026-07-07T08:06:07+01:00'
-draft: true
+draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
 tags: []
