@@ -151,7 +151,7 @@ I could have done this project with no AI involved at all.
 
 I have to say, this has been an slightly embarrassing story to share. As an experienced professional I thought I was above making mistakes like this. I let my assumptions take the better of me leading me to choose the wrong the approach to solve the problem. I let my assumptions guide me rather than using empirical evidence.
 
-Looking back, I can see the main factors leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclusion that because the AI had originally been generated using AI, it would not be salvageable, and it would need to be started from scratch.
+Looking back, I can see the main factors leading me to choosing the "wrong" approach was that I have some negative connotations about AI usage, even though I use AI agents heavily myself. I prematurely reached the conclusion that because the AI had originally been used to build the website, it would not be salvageable, and it would need to be started from scratch.
 
 In the end, the outcome wasn't too bad. Yes, it took me much longer to complete the project, but using AI made the whole thing pretty much effortless. The main downside is time "wasted" and tokens spent, that could have otherwise been saved.
 
