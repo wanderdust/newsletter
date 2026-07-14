@@ -101,9 +101,9 @@ The `spec.md` file gathered all of the HTML files that we needed to create, 32 i
 
 The generated `spec.md` document was quite long, as it is normally the case with AI generated documents, so without going too much into detail, I checked that everything in there more or less made sense. After I was sure everything was in order, I moved on to the planning phase.
 
-The plan phase consists on using the `/plan` skill, which creates a breakdown of the tasks to complete the whole project. In the plan you can also specify any tech choices you want to follow. In my case I made sure no frameworks were getting used. I wanted a simple HTML/CSS/Javascript site that needed little maintenance and could easily be handed over to any web developer.
+The planning phase consists on using the `/plan` skill, which creates a breakdown of the tasks to complete the project. In the plan you can also specify any tech choices you want to follow. In my case I made sure no frameworks were getting used. I wanted a simple HTML/CSS/Javascript site that needed little maintenance and could easily be handed over to any web developer.
 
-The `plan.md` document had 7 steps to build the whole thing incrementally. It would start with the landing page and the base styles. Once that was correct it would go on to build the rest of the site, re-using styles from the first step. This looked good to me, so I asked claude code to start building the website.
+The `plan.md` document had 7 steps to build the project incrementally. It would start with the landing page and the base styles. Once that was correct it would go on to build the rest of the site, re-using styles from the first step. This looked good to me, so I asked claude code to start building the website.
 
 ## Human in the loop
 
