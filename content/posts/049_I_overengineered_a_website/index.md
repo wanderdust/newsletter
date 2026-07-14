@@ -1,5 +1,5 @@
 ---
-title: 'How I overengineered a project because of AI'
+title: 'How to over-engineer a project with AI'
 date: '2026-07-07T08:06:07+01:00'
 draft: false
 summary: ''
@@ -16,17 +16,17 @@ images: []
 This is the story of how I overengineered a software project because I made the wrong assumptions too early. This was originally going to be a success story of how I managed to rescue my friend's website from his web developer who was keeping it hostage. I was going to write about how I used AI to rewrite a whole website in a day, despite me not being a web developer. In the end, I realised I could have done this in 20 minutes, rather than taking a full day.
 
 ----
-The story begins when we went to my neighbours house, for our kids to play together. My neighbour owns a physiotherapy business, and my wife had recently visited his practice to see an acupuncture specialist. I told him that I was peeking at my wife's phone when she was browsing the business website, and that I thought it looked a buggy and not as good as it could be, especially the mobile version. I'm not an expert web developer by any means, but even I know that these days you should design websites thinking mobile first, because that's what most people will use to book their appointments.
+The story begins when we went to my neighbours house, for our kids to play together. My neighbour owns a physiotherapy business, and my wife had recently visited his practice to see an acupuncture specialist. I told him that I was peeking at my wife's phone when she was browsing the business website, and that I thought it looked a bit buggy and not as good as it could be, especially the mobile version. I'm not an expert web developer by any means, but even I know that these days you should design websites thinking mobile first, because that's what most people will use to book their appointments.
 
-He then told me he was having issues with the web developer who built and maintains his website. He told me that he wanted access to the website code, because he was thinking of potentially using another web developer who was more reliable or even migrating his website to a wordpress that he could easily manage. However, the web developer didn't want to give him access to the code artifacts, he was essentially holding it hostage so he could keep his monthly maintenance fee.
+He then told me he was having issues with the web developer who built and maintains his website. He told me that he wanted access to the website code because he was thinking of potentially using another web developer who was more reliable or even migrating his website to a wordpress that he could easily manage. However, the web developer didn't want to give him access to the code artifacts, he was essentially holding it hostage so he could keep his monthly maintenance fee.
 
-I told him that, although I'm not a professional web developer, I know my way around web development, and that I could take a look for him. I thought that with AI coding agents, it could not be too hard to make a copy of the website so that he could own the code.
+I told him that, although I'm not a professional web developer, I know my way around web development, and that I could take a look for him. I thought that with AI coding agents it could not be too hard to make a copy of the website so that he could own the code.
 
-When I mentioned the word "AI", he said that the guy who had created his website had told him that he had used his own "AI platform to build it". I then got the feeling, that this developer was building a marketing campaign around what probably was him simply using AI coding agents, with the goal of trying to impress his clients. This already raised some alarms in my head, and made me instantly doubt this developer.
+When I mentioned the word "AI", he said that the guy who had created his website had told him that he had used his own "AI platform to build it". I then got the feeling that this developer was building a marketing campaign around what was probably him using AI coding agents, with the goal of trying to impress his clients. This already raised some alarms in my head, and made me instantly doubt this developer.
 
-I had already formed some ideas in my head that this website was going to be using some complex and weird frameworks (even though I hadn't looked at it yet), and that the best way forward was probably going to be to build it from scratch with the help of AI.
+I was already forming some ideas in my head that this website was going to be a mess, and that the best way forward was probably going to be to build it from scratch with the help of AI.
 
-The next day, I went and had a look at his site. It seemed like a simple static website, with a bunch of HTML pages and no complex logic anywhere beyond your typical hamburger menu in the navigation section. So I decided to give it a go. I could see from 100 miles away that the dev had indeed used AI to create the website. I could tell by the shape of the cards, emojis, font colors in titles etc. The idea that this website was going to be a mess was becoming stronger and stronger in my head.
+The next day, I went and had a look at his site. It seemed like a simple static website, with a bunch of HTML pages and no complex logic anywhere beyond your typical hamburger menu in the navigation section. So I decided to give it a go. I could see from 100 miles away that the original developer had indeed used AI to create the website. I could tell by the shape of the cards, emojis, font colors in titles etc. The idea that this website was going to be a mess was becoming stronger and stronger in my head.
 
  Making these assumptions early on, without any proof, was going to be my downfall, but I'm getting ahead of myself.
 
