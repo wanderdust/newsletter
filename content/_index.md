@@ -2,9 +2,15 @@
 hero:
   headline: "Platforms and AI systems that scale."
   subhead: "Senior software engineer building scalable, distributed platforms and AI systems in production, from data infrastructure to applied AI."
-  meta: "Edinburgh · Available for contract work"
   cta_text: "Get in touch"
   cta_url: "#contact"
+# Commercials — shown in the hero meta line and the contact section.
+location: "Edinburgh, UK"
+engagement: "Outside IR35 · Remote or hybrid"
+# Availability: flip `available` between true / false to switch the on-page status.
+available: true
+available_text: "Available for new engagements"
+unavailable_text: "Currently booked — enquire about upcoming availability"
 services_title: "What I build"
 services:
   - title: "Self-Serve Platforms"
@@ -23,7 +29,7 @@ stack: "Python and SQL on AWS and Kubernetes, provisioned with Terraform. Postgr
 background_title: "Background"
 background: "MSc in Artificial Intelligence from Heriot-Watt University. Co-inventor on a US patent for a property valuation system. AWS Certified Solutions Architect Professional, Certified Kubernetes Application Developer (CKAD), and Databricks Certified Data Engineer Professional."
 contact_title: "Get in touch"
-contact_body: "Available for contract work, mostly remote and open to hybrid in Edinburgh. If you have a problem I can help with, send me a note about what you're building."
+contact_body: "Most engagements are remote, with hybrid possible around Edinburgh, and I work outside IR35. If you have a problem I can help with, send me a note about what you're building."
 email: "pablo.lopez.santori@gmail.com"
 links:
   - text: "LinkedIn"

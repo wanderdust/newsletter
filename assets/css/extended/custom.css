@@ -57,6 +57,41 @@ body:has(.landing) {
     margin: 1rem 0 0;
 }
 
+.availability {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--secondary);
+    margin: 1rem 0 0;
+}
+
+.availability-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--secondary);
+    flex: none;
+}
+
+.availability.is-available {
+    color: var(--accent);
+}
+
+.availability.is-available .availability-dot {
+    background: var(--accent);
+}
+
+.availability.is-booked .availability-dot {
+    background: var(--tertiary);
+}
+
+.contact .availability {
+    margin: 0 0 1.5rem;
+}
+
 .hero-cta {
     display: inline-block;
     margin-top: 2rem;

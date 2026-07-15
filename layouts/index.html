@@ -6,9 +6,15 @@
     {{- with .Params.hero.subhead }}
     <p class="hero-subhead">{{ . }}</p>
     {{- end }}
-    {{- with .Params.hero.meta }}
-    <p class="hero-meta">{{ . }}</p>
+    {{- $meta := slice }}
+    {{- with .Params.location }}{{ $meta = $meta | append . }}{{ end }}
+    {{- with .Params.engagement }}{{ $meta = $meta | append . }}{{ end }}
+    {{- with $meta }}
+    <p class="hero-meta">{{ delimit . " · " }}</p>
     {{- end }}
+    <p class="availability {{ if .Params.available }}is-available{{ else }}is-booked{{ end }}">
+      <span class="availability-dot"></span>{{ cond .Params.available .Params.available_text .Params.unavailable_text }}
+    </p>
     {{- with .Params.hero.cta_text }}
     <a class="hero-cta" href="{{ $.Params.hero.cta_url }}">{{ . }}</a>
     {{- end }}
@@ -44,6 +50,9 @@
 
   <section class="section contact" id="contact">
     <h2 class="section-title">{{ .Params.contact_title }}</h2>
+    <p class="availability {{ if .Params.available }}is-available{{ else }}is-booked{{ end }}">
+      <span class="availability-dot"></span>{{ cond .Params.available .Params.available_text .Params.unavailable_text }}
+    </p>
     <p class="section-body">{{ .Params.contact_body }}</p>
     <a class="contact-email" href="mailto:{{ .Params.email }}">{{ .Params.email }}</a>
     {{- with .Params.links }}
