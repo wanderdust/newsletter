@@ -54,9 +54,6 @@ params:
       url: "https://github.com/wanderdust"
     - name: buymeacoffee
       url: "https://buymeacoffee.com/pablolopeza"
-  analytics:
-    google:
-      SiteVerificationTag: "G-X9HF8XB2LH"
   cover:
     hidden: true # hide everywhere but not in structured data
     hiddenInList: true # hide on list pages and home
