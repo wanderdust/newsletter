@@ -1,7 +1,7 @@
 ---
 title: 'Can You Use Databricks SQL Warehouse in Production APIs?'
-date: '2026-07-15T14:45:08+01:00'
-draft: true
+date: '2026-07-19T14:45:08+01:00'
+draft: false
 summary: 'I load tested a Databricks SQL Warehouse as the backend for a high concurrency API, to find out whether you can skip the operational database. Here is what the numbers showed, and the more useful lesson underneath them.'
 tags: ['data-engineering', 'postgres', 'aws']
 categories: []
