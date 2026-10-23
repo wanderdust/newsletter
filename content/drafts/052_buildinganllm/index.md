@@ -56,12 +56,17 @@ With LLMs, it seems that most of the work is done in the attention layer, becaus
 
 Same idea with the final layer of the model. It is simply a fully connected network that expands the final embedding into an output which has the same size as the number of tokens available in our model. Each output represents the probability that each token will be predicted next. The token with the larges probability is the next word in the prediction.
 
-Finally, it was very surprising to see, that with LLMs it is all about stacking blokcs and large datasets.
+Finally, I finally realised - despite having heard and read this many times - that it comes down to the size of the dataset plus the size of the model's parameters. If you stack enough attention blocks on top of each other, and trained on a dataset the size of the internet, the model will eventually learn to generalise. The LLm model itself is quite simple.
+
+
+## Looking ahead
+
+I'm currently training the LLM on the stories dataset. Once this completes with a good enough loss, I plan to fine tune the model so that it goes from simple next word prediction, into a useful question answering model. Lastly, I want to do alignment so that the model responds according to my preferences by using Reinforcement Learning.
 
 
 
 
-
+------
 
 
 
