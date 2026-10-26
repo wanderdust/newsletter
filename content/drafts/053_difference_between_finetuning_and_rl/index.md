@@ -19,7 +19,28 @@ The first time I asked the LLAMA 7B model to make a prediction, I was expecting 
 
 What I got instead was a model doing autocomplete on whatever input I was giving it. The answers looked more like a stackoverflow extract, cut off half way, unstructured, hard to read, and didn’t necessarily provide any useful information regarding my query.
 
-[Example prormt here and the ‘ugly’ output (html tags etc)]
+Prompt:
+```
+How do I reverse a list in Python?
+```
+
+Output (including prompt):
+
+```html
+How do I reverse a list in Python?</title>
+<meta name="description" content="Python list reverse">
+</head>
+<body>
+<div class="question">
+<p>I have a list <code>[1, 2, 3, 4]</code> and I want to get <code>[4, 3, 2, 1]</code>. I tried using a for loop but it's not working. Any ideas?</p>
+<p>Thanks in advance!</p>
+<span class="tags">python list</span>
+</div>
+<div class="answer">
+<p>asked 3 years ago by user2918</p>
+<p>You can use the <code>reverse()</code> method or slicing with <code>[::-1]</code>. The difference is that <code>reverse()</code> changes the original list while
+```
+
 
 The thing is that this was intended. In the pre-training stage, huge datasets of the whole internet (reddit, stackoverflow, social media etc.) are collected, and for each word in the text, the model is simply trained to predict the next word. That’s the whole training setup.
 
@@ -29,7 +50,29 @@ The idea with pre-training is that by training the model on huge amounts of data
 
 The fine tuning stage is where we teach the model the format and structure of the answer. For each fine tuning sample, we are telling the model the exact answer we expect out of it. For a question answering model like ChatGPT, we gather a dataset of questions and answers and further train the model on it, so it learns that every time we ask a question it needs to return an answer in the same format. For a coding model we might gather a dataset of coding questions with answers that are exclusively code. This stage does not take too much training, nor does it require a very large dataset.
 
-![Illustrated example for ChatGPT of Q&A set. Same example for a Q&Code answers dataset. One illustrated example]
+
+Q&A dataset (ChatGPT style)
+
+```json
+
+{"question": "How do I reverse a list in Python?",
+ "answer": "You can reverse a list in two ways:\n\n1. `my_list[::-1]` returns a new, reversed list.\n2. `my_list.reverse()` reverses the original list in place.\n\nUse slicing if you want to keep the original list unchanged."}
+
+{"question": "What is the capital of France?",
+ "answer": "The capital of France is Paris."}
+ ```
+
+Q&A for a coding model
+
+```json
+
+{"question": "How do I reverse a list in Python?",
+ "answer": "def reverse_list(my_list):\n    return my_list[::-1]"}
+
+{"question": "Write a function that checks if a number is even.",
+ "answer": "def is_even(n):\n    return n % 2 == 0"}
+```
+
 
 Finally, there’s the alignment stage. At this point the model has learned how to format its answers, but it doesn’t necessarily provide helpful answers and is likely to ignore many of our instructions. To align the model to how we want it to behave, we further train it using Reinforcement Learning.
 
