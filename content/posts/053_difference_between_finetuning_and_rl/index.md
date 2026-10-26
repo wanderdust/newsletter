@@ -1,10 +1,10 @@
 ---
 title: 'Difference between Fine Tuning and RL'
-date: '2026-10-25T12:13:26Z'
-draft: true
+date: '2026-10-26T12:13:26Z'
+draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
-tags: []
+tags: [ai]
 categories: []
 cover:
   image: ''
@@ -44,9 +44,9 @@ How do I reverse a list in Python?</title>
 <p>asked 3 years ago by user2918</p>
 <p>You can use the <code>reverse()</code> method or slicing with <code>[::-1]</code>. The difference is that <code>reverse()</code> changes the original list while
 ```
-Basically a very unhelpful autocomplete model.
+Basically a not very useful autocomplete model.
 
-The thing is that this was intended. In the pre-training stage, huge datasets of the whole internet (reddit, stackoverflow, social media etc.) are collected, and for each word in the text, the model is simply trained to predict the next word. That’s the whole training setup.
+But this was intended. In the pre-training stage, huge datasets of the whole internet (reddit, stackoverflow, social media etc.) are collected, and for each word in the text, the model is simply trained to predict the next word. That’s the whole training setup.
 
 
 {{< figure src="./llm-sft.png" alt="Supervised learning process" caption="During Supervised training the model is tasked with predicting the next word" >}}
