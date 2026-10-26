@@ -78,13 +78,15 @@ Finally, there’s the alignment stage. At this point the model has learned how 
 
 During both pre-training and fine tuning the model is trained word by word: we have a ‘labelled’ dataset of what the next word should be, and we check if the model has predicted the correct word. Based on the result the model learns until it is able to replicate the training dataset into human-like outputs. With Reinforcement Learning we don’t have a labelled dataset; instead we let the model produce a full answer and score it based on specific criteria.
 
-![Examplel of how the model produces an answer and then we have some criteria we evaluate it on]
+{{< figure src="./rl-llms.png" alt="Reinforcement learning process" caption="Reinforcement learning process" >}}
 
 For a Q&A model like ChatGPT, we may score answers based on criteria such as: did the response answer the actual question? Was it easily readable? Was the markdown correctly formatted? Answers that match the criteria get a higher score, and we take points away when some or all of the criteria isn’t met.
 
 Notice how we don’t tell the model exactly what it needs to do. Its only goal is to maximise the score for every answer, so it starts identifying patterns that produce answers that get high scores.
 
-This is called the alignment stage because we are ranking every answer based on how helpful it is, not just scoring the format, but also the content and anything else that might be relevant for the use case. For ChatGPT, some of the criteria might be an actual person ranking answers based on how they ‘feel’ and whether they are easily readable and useful. This human in the loop is the evaluator, which is what is known as Reinforcement Learning with Human in the Loop. Over time the model learns to create answers that ‘humans’ find agreeable.
+This is called the alignment stage because we are ranking every answer based on how helpful it is, not just scoring the format, but also the content and anything else that might be relevant for the use case.
+
+For ChatGPT, some of the criteria might be an actual person ranking answers based on how they ‘feel’ and whether they are easily readable and useful. This human in the loop is the evaluator, which is what is known as Reinforcement Learning with Human Feedback. Over time the model learns to create answers that ‘humans’ find helpful and agreeable.
 
 But humans don’t always need to be involved. For a coding LLM, the criteria might be things like: Does the code run? Does the code achieve the task that was asked of it? Is the code broken down into functions? You may also decide to have an LLM judging some of the criteria, such as whether the answer actually answered the original question.
 
