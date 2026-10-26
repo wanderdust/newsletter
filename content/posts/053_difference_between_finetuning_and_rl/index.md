@@ -1,5 +1,5 @@
 ---
-title: 'Difference between Fine Tuning and RL'
+title: 'Difference between Fine Tuning and RL for LLMs'
 date: '2026-10-26T12:13:26Z'
 draft: false
 summary: ''
