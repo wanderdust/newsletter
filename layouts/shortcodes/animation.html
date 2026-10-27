@@ -1,0 +1,10 @@
+{{- /*
+  Embeds a standalone HTML animation from static/ in an iframe that sizes itself to its content.
+  Usage: {{< animation src="animations/kv-cache-runs.html" title="K,V caching: two runs" >}}
+  Optional: autoplay="true" starts it the first time it scrolls into view.
+*/ -}}
+{{- $src := .Get "src" | relURL -}}
+{{- if eq (.Get "autoplay") "true" }}{{ $src = printf "%s?autoplay" $src }}{{ end -}}
+<iframe class="animation-embed" src="{{ $src }}" title="{{ .Get "title" | default "Animation" }}" loading="lazy" scrolling="no"
+  style="display:block;width:100%;height:{{ .Get "height" | default "600px" }};border:0;margin:1.5rem 0;background:transparent"
+  onload="try{var f=this,d=f.contentDocument,r=function(){f.style.height=Math.ceil(d.body.getBoundingClientRect().height)+'px'};r();new ResizeObserver(r).observe(d.body)}catch(e){}"></iframe>

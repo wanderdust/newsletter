@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Every iteration redoes the whole sentence</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column of explanation; each example is a fixed 880px "stage" scaled to fit, so it records identically at any size. */
+:root{
+  --bg:#f5f5f8; --panel:#ffffff; --ink:#1c1a29; --muted:#6c6982; --line:#dad8e5; --hatch:#cfccdd;
+  --q:#3c74d6; --k:#d6544b; --v:#279a64; --att:#6847cc; --tok:#e3a33a; --llm:#dfe8fb;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#111017; --panel:#1a1922; --ink:#ecebf4; --muted:#9a97b0; --line:#34323f; --hatch:#3d3b4b;
+  --q:#6d9cf2; --k:#f07c73; --v:#4cc68c; --att:#9a80f4; --tok:#e9b250; --llm:#23304a; }}
+:root[data-theme="dark"]{
+  --bg:#111017; --panel:#1a1922; --ink:#ecebf4; --muted:#9a97b0; --line:#34323f; --hatch:#3d3b4b;
+  --q:#6d9cf2; --k:#f07c73; --v:#4cc68c; --att:#9a80f4; --tok:#e9b250; --llm:#23304a; }
+
+body{background:transparent;color:var(--ink);font:400 16px/1.6 var(--sans);
+  padding-left:2px;padding-right:2px;padding-block:6px}
+main{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:48px}
+header h1{font:600 2rem/1.15 var(--sans);margin:0 0 10px;text-wrap:balance;letter-spacing:-.01em}
+header p,section>p{margin:0;max-width:66ch;color:var(--muted)}
+kbd{font:500 .8em var(--mono);border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--panel);color:var(--ink)}
+section{display:flex;flex-direction:column;gap:14px}
+section h2{font:600 1.3rem/1.25 var(--sans);margin:0;text-wrap:balance}
+section h2 .n{font:500 .8rem var(--mono);color:var(--att);letter-spacing:.06em;margin-right:8px;vertical-align:2px}
+
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{font:500 14px var(--sans);border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:7px;padding:7px 14px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--att);border-color:var(--att);color:#fff;min-width:96px}
+.btn:focus-visible,select:focus-visible{outline:2px solid var(--att);outline-offset:2px}
+.toolbar label{font:500 13px var(--sans);color:var(--muted);display:flex;align-items:center;gap:6px}
+select{font:500 13px var(--mono);border:1px solid var(--line);border-radius:6px;padding:5px 6px;background:var(--panel);color:var(--ink)}
+
+.fitbox{width:100%;min-width:0}
+.wrap{margin:0 auto;position:relative}
+.stage{position:absolute;left:0;top:0;width:880px;box-sizing:border-box;transform-origin:0 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 26px 18px;display:flex;flex-direction:column;gap:16px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.phase{font:500 12px var(--mono);letter-spacing:.04em;padding:4px 10px;border-radius:99px;background:color-mix(in srgb,var(--att) 14%,transparent);color:var(--att)}
+.stepno{font:400 12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.eq{font:400 14px/1.5 var(--mono);min-height:22px;color:var(--ink)}
+.eq b{color:var(--att);font-weight:600}
+.eq .zero{opacity:.6}
+.eq .zero b{color:var(--k)}
+.sw{display:inline-block;width:11px;height:15px;border-radius:2px;vertical-align:-3px;margin:0 1px;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 12%,transparent)}
+.caption{font:500 17px/1.45 var(--sans);min-height:50px;max-width:74ch;color:var(--ink)}
+.caption q{font-weight:600}
+sub{font-size:.72em}
+.off{opacity:0!important}
+.ghost{opacity:.22}
+
+/* colour per matrix kind */
+.q{--c:var(--q)} .k{--c:var(--k)} .v{--c:var(--v)} .o,.s,.a{--c:var(--att)}
+
+/* matrices */
+.lines{display:flex;flex-direction:column;gap:18px}
+.line{display:flex;align-items:flex-end;justify-content:center;gap:10px}
+.blk{display:grid;grid-template-columns:auto auto;grid-template-rows:auto 16px auto;column-gap:6px;row-gap:3px}
+.ttl{grid-column:1/-1;grid-row:1;font:500 11px var(--mono);letter-spacing:.05em;color:var(--ink);text-align:center;white-space:nowrap}
+.ttl i{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);margin-right:6px}
+.cl{grid-column:2;grid-row:2;display:flex;gap:4px;padding:0 7px}
+.cl span{width:34px;text-align:center;font:500 10.5px var(--mono);color:var(--muted);transition:opacity .4s}
+.rl{grid-column:1;grid-row:3;display:flex;flex-direction:column;gap:4px}
+.rl span{height:28px;line-height:28px;text-align:right;font:500 12.5px var(--sans);transition:opacity .4s}
+.mat{grid-column:2;grid-row:3;display:grid;grid-template-columns:repeat(4,34px);gap:4px;padding:0 7px;position:relative}
+.mat::before,.mat::after{content:"";position:absolute;top:-3px;bottom:-3px;width:5px;border:1.5px solid var(--muted)}
+.mat::before{left:0;border-right:0}
+.mat::after{right:0;border-left:0}
+.mc{width:34px;height:28px;box-sizing:border-box;border-radius:4px;display:grid;place-items:center;font:500 12px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);transition:opacity .4s,background .3s,transform .2s}
+.mc.blank{box-shadow:inset 0 0 0 1px var(--line)}
+.mc.mask{background:repeating-linear-gradient(135deg,var(--hatch) 0 2px,transparent 2px 6px);color:var(--muted)}
+.mc.raw{box-shadow:inset 0 0 0 1.5px var(--muted);color:var(--muted)}
+.mc.sel{outline:2px solid var(--ink);outline-offset:1px}
+.mc.tgt{outline:2px dashed var(--ink);outline-offset:1px}
+.mc.pair{box-shadow:0 0 0 3px var(--att);transform:scale(1.1);z-index:1}
+.mc.pairz{box-shadow:0 0 0 3px var(--k);transform:scale(1.1);z-index:1}
+.op{font:400 20px var(--mono);color:var(--muted);height:124px;display:grid;place-items:center;width:18px}
+.strip{position:absolute;display:flex;flex-direction:column;gap:4px;padding:3px;background:var(--panel);border-radius:7px;box-shadow:0 6px 18px rgba(0,0,0,.2),0 0 0 1.5px var(--ink);z-index:6}
+.rowfly{position:absolute;display:flex;gap:4px;padding:0;z-index:6;pointer-events:none}
+.matfly{position:absolute;z-index:6;pointer-events:none;background:var(--panel)}
+.strike{position:absolute;height:0;border-top:2px solid var(--ink);z-index:4;transition:opacity .4s}
+.cachebox{position:absolute;border:1.5px dashed var(--muted);border-radius:8px;background:color-mix(in srgb,var(--muted) 8%,transparent);pointer-events:none;transition:opacity .5s;z-index:0}
+.cachebox b{position:absolute;left:8px;bottom:-9px;background:var(--panel);padding:0 5px;font:600 10px var(--mono);letter-spacing:.08em;color:var(--ink);white-space:nowrap}
+.badges{display:flex;flex-direction:column;gap:4px;width:104px}
+.badges div{height:28px;display:flex;align-items:center}
+.badge{font:500 11px var(--mono);color:var(--v);border:1px solid var(--v);border-radius:99px;padding:1px 8px;white-space:nowrap;transition:opacity .4s}
+
+/* iterations */
+.flow{position:relative;height:300px}
+.box{position:absolute;border:2px solid var(--ink);border-radius:6px}
+.box b{position:absolute;right:6px;top:-20px;font:500 11px var(--mono);letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+.llm{position:absolute;border-radius:14px;background:var(--llm);display:grid;place-items:center;font:600 18px var(--sans);color:var(--q);letter-spacing:.06em}
+.chip{position:absolute;width:76px;height:40px;border-radius:8px;display:grid;place-items:center;font:500 19px var(--sans);transition:opacity .45s,background .3s,color .3s,box-shadow .3s;z-index:3}
+.chip.in{background:var(--tok);color:#2a1d05}
+.chip.pr{background:var(--panel);box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink)}
+.chip.kept{background:var(--v);color:#fff;box-shadow:none}
+.chip.gone{opacity:.32;text-decoration:line-through}
+.chip.again{box-shadow:inset 0 0 0 2px var(--tok)}
+.arrow{position:absolute;width:3px;background:var(--ink);transform-origin:top;z-index:2;transition:opacity .3s}
+.arrow::after{content:"";position:absolute;left:-5px;bottom:-1px;border-left:6.5px solid transparent;border-right:6.5px solid transparent;border-top:10px solid var(--ink)}
+.stat{font:500 12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
+.stat b{color:var(--ink)}
+.note{position:absolute;font:500 12px var(--mono);color:var(--tok);transition:opacity .4s;white-space:nowrap}
+
+/* recording view */
+body.recording{overflow:hidden}
+section.rec{position:fixed;inset:0;z-index:100;background:var(--bg);display:flex;align-items:center;justify-content:center;gap:0}
+section.rec>:not(.fitbox){display:none}
+.hint{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:101;font:500 13px var(--sans);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;transition:opacity .6s;pointer-events:none}
+.notes{border-top:1px solid var(--line);padding-top:20px}
+.notes ul{margin:0;padding-left:20px;max-width:66ch;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+
+body{margin:0}
+</style>
+</head>
+<body>
+<section id="ex0">
+    <div class="toolbar">
+      <button class="btn primary play" type="button">Play</button>
+      <button class="btn restart" type="button">Restart</button>
+      <label for="speed0">Speed <select id="speed0" class="speed"><option value="0.5">0.5×</option><option value="0.75">0.75×</option><option value="1" selected>1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select></label>
+    </div>
+    <div class="fitbox"><div class="wrap"><div class="stage"></div></div></div>
+  </section>
+<script>
+(() => {
+const T = ['The','boy','who','lived'];
+const ATT = [[1,0,0,0],[.5,.5,0,0],[.3,.2,.5,0],[.1,.3,.5,.1]];
+const D = 4;
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const R = rng(11);
+const vecD = () => Array.from({length:D}, () => .1 + .9*R());
+const VALS = T.map(() => ({q:vecD(), k:vecD(), v:vecD()}));
+const fmt = w => w.toFixed(1);
+const pct = x => Math.round(12 + 80*Math.max(0,Math.min(1,x)));
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const ABORT = Symbol('abort');
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const range = n => [...Array(n).keys()];
+const dot = (a,b) => a.reduce((s,x,i)=>s+x*b[i],0);
+const sw = (col,val) => `<i class="sw" style="background:color-mix(in srgb, var(--${col}) ${pct(val)}%, var(--panel))"></i>`;
+
+function el(tag, cls, html){const e=document.createElement(tag); if(cls) e.className=cls; if(html!=null) e.innerHTML=html; return e;}
+
+class Player{
+  constructor(section, build, steps){
+    this.sec=section; this.stage=section.querySelector('.stage'); this.wrap=section.querySelector('.wrap'); this.fitbox=section.querySelector('.fitbox');
+    this.build=build; this.steps=steps; this.speed=1; this.paused=false; this.run=null; this.anims=new Set(); this.state='idle'; this.played=false;
+    this.playBtn=section.querySelector('.play');
+    this.playBtn.onclick=()=>this.toggle();
+    section.querySelector('.restart').onclick=()=>this.start(false);
+    section.querySelector('.speed').onchange=e=>{this.speed=+e.target.value};
+    const rb=section.querySelector('.recbtn'); if(rb) rb.onclick=()=>enterRec(this);
+    this.stage.addEventListener('click',()=>{ if(this.sec.classList.contains('rec')) this.toggle(); });
+  }
+  toggle(){
+    if(this.state==='playing'){this.paused=true; this.anims.forEach(a=>a.pause()); this.setState('paused');}
+    else if(this.state==='paused'){this.paused=false; this.anims.forEach(a=>a.play()); this.setState('playing');}
+    else this.start(false);
+  }
+  setState(s){this.state=s; this.playBtn.textContent = s==='playing'?'Pause': s==='paused'?'Resume': this.played?'Replay':'Play';}
+  async start(instant){
+    if(this.run) this.run.dead=true;
+    const run={dead:false}; this.run=run; this.paused=false; this.instant=instant;
+    this.anims.forEach(a=>a.cancel()); this.anims.clear();
+    this.E=this.build(this.stage); this.fit();
+    if(!instant) this.played=true;
+    this.setState(instant?'idle':'playing');
+    try{
+      for(let i=0;i<this.steps.length;i++){
+        const s=this.steps[i];
+        if(s.phase) this.stage.querySelector('.phase').textContent=s.phase;
+        this.stage.querySelector('.stepno').textContent=`step ${i+1} of ${this.steps.length}`;
+        this.cap(s.cap); this.fit();
+        await s.fn(this,this.E);
+        if(run.dead) throw ABORT;
+      }
+      this.setState('done');
+    }catch(e){ if(e!==ABORT) throw e; }
+  }
+  async wait(ms){
+    const run=this.run; if(this.instant) return;
+    let left=ms;
+    while(true){ if(run.dead) throw ABORT; if(left<=0) return; await sleep(30); if(!this.paused) left-=30*this.speed; }
+  }
+  anim(e,kf,ms,easing='cubic-bezier(.45,0,.25,1)'){
+    if(this.instant) return Promise.resolve();
+    if(RM) return this.wait(ms*.3);
+    const a=e.animate(kf,{duration:ms/this.speed,easing,fill:'forwards'});
+    if(this.paused) a.pause();
+    this.anims.add(a); a.onfinish=()=>this.anims.delete(a);
+    return this.wait(ms);
+  }
+  fit(){
+    const W=this.stage.offsetWidth, H=this.stage.offsetHeight;
+    const rec=this.sec.classList.contains('rec');
+    const s = rec ? Math.min(innerWidth*.94/W, innerHeight*.9/H) : Math.min(1, this.fitbox.clientWidth/W);
+    this.scale=s; this.stage.style.transform=`scale(${s})`;
+    this.wrap.style.width=W*s+'px'; this.wrap.style.height=H*s+'px';
+  }
+  cap(html){this.stage.querySelector('.caption').innerHTML=html;}
+  eqStart(html){const e=this.stage.querySelector('.eq'); if(!e) return; e.innerHTML=html; e.dataset.n=0;}
+  eqAdd(html){const e=this.stage.querySelector('.eq'); const plus=+e.dataset.n>0?' + ':''; e.insertAdjacentHTML('beforeend',plus+html); e.dataset.n=(+e.dataset.n||0)+1;}
+  on(e){ if(!e.classList.contains('off')) return; e.classList.remove('off'); if(!this.instant&&!RM) e.animate([{transform:'scale(.75)'},{transform:'scale(1)'}],{duration:340/this.speed,easing:'cubic-bezier(.3,1.4,.6,1)'}); }
+  ghost(e){e.classList.add('ghost');}
+  pulse(e){ if(this.instant||RM) return; e.animate([{transform:'scale(1)'},{transform:'scale(1.18)'},{transform:'scale(1)'}],{duration:420/this.speed,easing:'ease-out'}); }
+  rel(e){const s=this.stage.getBoundingClientRect(), r=e.getBoundingClientRect(), k=this.scale; return {x:(r.left-s.left)/k, y:(r.top-s.top)/k, w:r.width/k, h:r.height/k};}
+  // cell states
+  clr(c){c.classList.remove('blank','mask','raw','fill','w'); c.textContent=''; c.style.background=''; c.style.color='';}
+  fill(c,val){this.clr(c); c.classList.add('fill'); c.style.background=`color-mix(in srgb, var(--c) ${pct(val)}%, var(--panel))`;}
+  weight(c,w){this.clr(c); c.classList.add('w'); c.textContent=fmt(w); c.style.background=`color-mix(in srgb, var(--att) ${pct(w)}%, var(--panel))`; c.style.color=w>=.45?'#fff':'var(--ink)';}
+  mask(c){this.clr(c); c.classList.add('mask'); c.textContent='0';}
+  raw(c){this.clr(c); c.classList.add('raw'); c.textContent='?';}
+  blank(c){this.clr(c); c.classList.add('blank');}
+}
+
+/* ---------- shared matrix pieces ---------- */
+function mkBlock(kind, title, rows, cols){
+  const b=el('div','blk '+kind);
+  const ttl=el('div','ttl',`<i></i>${title}`); b.append(ttl);
+  const cl=el('div','cl'); const clabs=range(4).map(j=>{const s=el('span','off',cols?cols[j]:''); cl.append(s); return s;}); b.append(cl);
+  const rl=el('div','rl'); const rlabs=range(4).map(i=>{const s=el('span','off',rows?rows[i]:''); rl.append(s); return s;}); if(rows) b.append(rl);
+  const m=el('div','mat'); const cells=range(4).map(()=>range(4).map(()=>{const c=el('div','mc blank off'); m.append(c); return c;})); b.append(m);
+  return {el:b, ttl, cl:clabs, rl:rlabs, m, c:cells};
+}
+const op = s => el('div','op',s);
+// Row of A (index i) times each column of B, one result per column, written into Rm[i][j].
+async function sweep(p,o){
+  const {A,i,ks,B,cols,Rm,kind,compute,show,head,term,mode='fast',zero,onZero}=o;
+  const row=ks.map(k=>A[i][k]);
+  if(p.instant){ cols.forEach(j=>show(Rm[i][j],compute(j))); return; }
+  row.forEach(c=>c.classList.add('sel'));
+  const strip=el('div','strip '+kind);
+  row.forEach(c=>{const s=c.cloneNode(true); s.classList.remove('sel','ghost','off','tgt','pair','pairz'); strip.append(s);});
+  p.stage.append(strip);
+  const place=j=>{const r=p.rel(B[ks[0]][j]); return {x:r.x-strip.offsetWidth-6, y:r.y-3};};
+  const a0=p.rel(row[0]), a1=p.rel(row[row.length-1]);
+  const rcx=(a0.x+a1.x+a1.w)/2, rcy=a0.y+a0.h/2;
+  let pos=place(cols[0]); strip.style.left=pos.x+'px'; strip.style.top=pos.y+'px';
+  const W=strip.offsetWidth, H=strip.offsetHeight;
+  await p.anim(strip,[{transform:`translate(${rcx-(pos.x+W/2)}px,${rcy-(pos.y+H/2)}px) rotate(-90deg)`},{transform:'translate(0,0) rotate(0deg)'}], 800);
+  const sc=[...strip.children];
+  let zeroShown=false;
+  for(let n=0;n<cols.length;n++){
+    const j=cols[n];
+    if(n>0){const np=place(j); const dx=pos.x-np.x; pos=np; strip.style.left=pos.x+'px'; await p.anim(strip,[{transform:`translate(${dx}px,0)`},{transform:'translate(0,0)'}], mode==='fast'?260:360,'ease-in-out');}
+    const col=ks.map(k=>B[k][j]); col.forEach(c=>c.classList.add('sel')); Rm[i][j].classList.add('tgt');
+    p.eqStart(head(j));
+    if(mode==='fast'){
+      ks.forEach((k,x)=>{const z=zero&&zero(k); const cls=z?'pairz':'pair'; sc[x].classList.add(cls); col[x].classList.add(cls); p.eqAdd(term(k,j));});
+      await p.wait(420);
+      ks.forEach((k,x)=>{sc[x].classList.remove('pair','pairz'); col[x].classList.remove('pair','pairz');});
+    } else {
+      const d = mode==='slow' ? 420 : 200;
+      for(let x=0;x<ks.length;x++){
+        const k=ks[x], z=zero&&zero(k), cls=z?'pairz':'pair';
+        sc[x].classList.add(cls); col[x].classList.add(cls); p.eqAdd(term(k,j));
+        if(z&&onZero&&!zeroShown){zeroShown=true; onZero();}
+        await p.wait(z&&mode==='slow'?d*2:d);
+        sc[x].classList.remove(cls); col[x].classList.remove(cls);
+      }
+    }
+    show(Rm[i][j],compute(j)); p.pulse(Rm[i][j]);
+    await p.wait(mode==='slow'?600:mode==='medium'?380:240);
+    col.forEach(c=>c.classList.remove('sel')); Rm[i][j].classList.remove('tgt');
+  }
+  await p.anim(strip,[{opacity:1},{opacity:0}],260);
+  strip.remove(); row.forEach(c=>c.classList.remove('sel'));
+}
+// Fly a copy of some cells (as a row) or a whole element to a target position.
+async function flyCopy(p, src, dstFirst, isRow){
+  if(p.instant) return;
+  let g, a;
+  if(isRow){ g=el('div','rowfly a'); src.forEach(c=>{const s=c.cloneNode(true); s.classList.remove('sel','ghost','tgt'); g.append(s);}); a=p.rel(src[0]); }
+  else { g=src.cloneNode(true); g.classList.add('matfly'); a=p.rel(src); }
+  const b=p.rel(dstFirst);
+  g.style.left=a.x+'px'; g.style.top=a.y+'px'; p.stage.append(g);
+  await p.anim(g,[{transform:'translate(0,0)'},{transform:`translate(${b.x-a.x}px,${b.y-a.y}px)`}],900);
+  g.remove();
+}
+function cacheBox(p, tl, br, label, top){
+  const a=p.rel(tl), b=p.rel(br);
+  const box=el('div','cachebox off',`<b${top?' style="top:-9px;bottom:auto"':''}>${label}</b>`);
+  Object.assign(box.style,{left:a.x-6+'px',top:a.y-6+'px',width:b.x+b.w-a.x+12+'px',height:b.y+b.h-a.y+12+'px'});
+  p.stage.append(box); box.offsetWidth; box.classList.remove('off');
+}
+function strike(p, first, last){
+  const a=p.rel(first), b=p.rel(last);
+  const s=el('div','strike'); Object.assign(s.style,{left:a.x-4+'px',width:b.x+b.w-a.x+8+'px',top:a.y+a.h/2-1+'px'});
+  p.stage.append(s);
+}
+const outVal = (i,j,ks) => ks.reduce((s,k)=>s+ATT[i][k]*VALS[k].v[j],0);
+const avTerm = i => (k,j) => `<span class="${ATT[i][k]===0?'zero':''}"><b>${fmt(ATT[i][k])}</b>×${sw('v',VALS[k].v[j])}</span>`;
+
+/* ---------- Example 0: iterations ---------- */
+const IN=['The','cat','ate','the','pie'];
+const P1=['dog','ate','the','pie'], P2=['dog','ate','the','pie','and'];
+function build0(stage){
+  stage.innerHTML='<div class="topline"><span class="phase"></span><span class="stat"></span><span class="stepno"></span></div><div class="flow"></div><div class="caption"></div>';
+  const f=stage.querySelector('.flow');
+  const X0=192, PITCH=92, CW=76;
+  const x=i=>X0+i*PITCH;
+  const E={inp:[],arr:[],pr:[],stat:stage.querySelector('.stat'),done:0,used:0};
+  const ib=el('div','box','<b>Input</b>'); Object.assign(ib.style,{left:X0-14+'px',top:'8px',width:5*CW+4*16+28+'px',height:'56px'}); f.append(ib);
+  const llm=el('div','llm','LLM'); Object.assign(llm.style,{left:'110px',top:'108px',width:'608px',height:'72px'}); f.append(llm); E.llm=llm;
+  const pb=el('div','box','<b>Predictions</b>'); Object.assign(pb.style,{left:X0-14+'px',top:'228px',width:5*CW+4*16+28+'px',height:'56px'}); f.append(pb);
+  for(let i=0;i<5;i++){
+    const c=el('div','chip in off',IN[i]); Object.assign(c.style,{left:x(i)+'px',top:'16px'}); f.append(c); E.inp.push(c);
+    const a=el('div','arrow off'); Object.assign(a.style,{left:x(i)+CW/2-1.5+'px',top:'58px',height:'174px'}); f.append(a); E.arr.push(a);
+    const pr=el('div','chip pr off',''); Object.assign(pr.style,{left:x(i)+'px',top:'236px'}); f.append(pr); E.pr.push(pr);
+  }
+  const note=el('div','note off','same as iteration 1'); Object.assign(note.style,{left:X0+'px',top:'287px'}); f.append(note); E.note=note;
+  E.setStat=()=>{E.stat.innerHTML=`positions computed <b>${E.done}</b> · predictions used <b>${E.used}</b>`;};
+  E.setStat();
+  return E;
+}
+async function runModel(p,E,n,words){
+  p.pulse(E.llm);
+  for(let i=0;i<n;i++){
+    const a=E.arr[i]; a.classList.remove('off');
+    p.anim(a,[{transform:'scaleY(0)'},{transform:'scaleY(1)'}],520,'ease-in');
+    await p.wait(170);
+  }
+  await p.wait(380);
+  for(let i=0;i<n;i++){ E.pr[i].textContent=words[i]; p.on(E.pr[i]); E.done++; E.setStat(); await p.wait(130); }
+}
+const steps0=[
+  {phase:'Iteration 1', cap:'The model gets the prompt <q>The cat ate the</q>.', fn:async(p,E)=>{
+    for(let i=0;i<4;i++){p.on(E.inp[i]); await p.wait(220);} await p.wait(1200);}},
+  {cap:'Every position goes through the model, and every position predicts the word that comes after it.', fn:async(p,E)=>{
+    await runModel(p,E,4,P1); await p.wait(2000);}},
+  {cap:'At inference we only need the last prediction, <q>pie</q>. The other three are thrown away.', fn:async(p,E)=>{
+    for(let i=0;i<3;i++) E.pr[i].classList.add('gone');
+    E.pr[3].classList.add('kept'); E.used++; E.setStat(); p.pulse(E.pr[3]); await p.wait(2800);}},
+  {phase:'Iteration 2', cap:'<q>pie</q> is appended to the input, and the whole sequence goes through the model again.', fn:async(p,E)=>{
+    await flyCopy(p,E.pr[3],E.inp[4]);
+    E.inp[4].classList.remove('off');
+    E.arr.forEach(a=>a.classList.add('off')); E.pr.forEach(c=>c.classList.add('off'));
+    await p.wait(500);
+    E.pr.forEach(c=>c.classList.remove('gone','kept','again'));
+    await p.wait(900);}},
+  {cap:'The first four positions produce exactly the same predictions as before. All of that work is done a second time.', fn:async(p,E)=>{
+    await runModel(p,E,5,P2);
+    for(let i=0;i<4;i++) E.pr[i].classList.add('again');
+    p.on(E.note); await p.wait(2800);}},
+  {cap:'Only <q>and</q> is new. Everything to its left has now been computed twice and thrown away twice.', fn:async(p,E)=>{
+    for(let i=0;i<4;i++){E.pr[i].classList.add('gone');}
+    E.pr[4].classList.add('kept'); E.used++; E.setStat(); p.pulse(E.pr[4]); await p.wait(3000);}},
+  {cap:'With a sentence of 1,000 tokens, the last iteration would redo 999 positions to get one new word. K,V caching avoids most of this work.', fn:async(p,E)=>{ await p.wait(3500);}},
+];
+
+/* ---------- Example 1: two runs ---------- */
+function build1(stage){
+  stage.innerHTML='<div class="topline"><span class="phase"></span><span class="stepno"></span></div><div class="lines"><div class="line l1"></div><div class="line l2"></div></div><div class="eq"></div><div class="caption"></div>';
+  const l1=stage.querySelector('.l1'), l2=stage.querySelector('.l2');
+  const E={};
+  E.Q=mkBlock('q','Q · queries',T,null);
+  E.K=mkBlock('k','Kᵀ · keys',null,T);
+  E.S=mkBlock('s','Q·Kᵀ · scores',T,T);
+  E.A=mkBlock('a','attention weights',T,T);
+  E.V=mkBlock('v','V · values',T,null);
+  E.O=mkBlock('o','output',T,null);
+  l1.append(E.Q.el,op('×'),E.K.el,op('='),E.S.el);
+  l2.append(E.A.el,op('×'),E.V.el,op('='),E.O.el);
+  return E;
+}
+// show token t's row/column slots (labels + blank cells) in every matrix
+function openToken(p,E,t){
+  [E.Q.rl[t],E.K.cl[t],E.S.rl[t],E.S.cl[t],E.A.rl[t],E.A.cl[t],E.V.rl[t],E.O.rl[t]].forEach(e=>p.on(e));
+  for(let d=0;d<4;d++){p.on(E.Q.c[t][d]); p.on(E.K.c[d][t]); p.on(E.V.c[t][d]); p.on(E.O.c[t][d]);}
+  for(let x=0;x<=t;x++){p.on(E.S.c[t][x]); p.on(E.S.c[x][t]); p.on(E.A.c[t][x]); p.on(E.A.c[x][t]);}
+}
+const qkSweep=(p,E,i,n,mode)=>sweep(p,{A:E.Q.c,i,ks:range(D),B:E.K.c,cols:range(n),Rm:E.S.c,kind:'q',mode,
+  compute:j=>dot(VALS[i].q,VALS[j].k)/D*1.6, show:(c,v)=>p.fill(c,v),
+  head:j=>`score<sub>${T[i]},${T[j]}</sub> = `, term:(k,j)=>`${sw('q',VALS[i].q[k])}×${sw('k',VALS[j].k[k])}`});
+const avSweep=(p,E,i,n,mode)=>sweep(p,{A:E.A.c,i,ks:range(n),B:E.V.c,cols:range(D),Rm:E.O.c,kind:'a',mode,
+  compute:j=>outVal(i,j,range(n)), show:(c,v)=>p.fill(c,v),
+  head:j=>`out<sub>${T[i]},${j+1}</sub> = `, term:avTerm(i), zero:k=>ATT[i][k]===0});
+const steps1=[
+  {phase:'Run 1 · prefill', cap:'The prompt <q>The boy who</q> goes in. Each token is projected into a query (a row of Q), a key (a column of Kᵀ) and a value (a row of V).', fn:async(p,E)=>{
+    for(let t=0;t<3;t++){ openToken(p,E,t); await p.wait(250);
+      for(let d=0;d<4;d++){p.fill(E.Q.c[t][d],VALS[t].q[d]); p.fill(E.K.c[d][t],VALS[t].k[d]); p.fill(E.V.c[t][d],VALS[t].v[d]);}
+      await p.wait(450);}
+    await p.wait(1500);}},
+  {cap:'Attention scores: each row of Q times each column of Kᵀ. Pair the numbers up, multiply each pair, add them up.', fn:async(p,E)=>{
+    await qkSweep(p,E,0,3,'slow');}},
+  {cap:'The same for the other rows of Q.', fn:async(p,E)=>{
+    await qkSweep(p,E,1,3,'fast'); await qkSweep(p,E,2,3,'fast'); p.eqStart(''); await p.wait(600);}},
+  {cap:'Scale, mask and softmax. Scores for later tokens are masked to 0, and each row becomes weights that add up to 1.', fn:async(p,E)=>{
+    E.S.ttl.innerHTML='<i></i>softmax(mask(Q·Kᵀ))';
+    for(let i=0;i<3;i++){for(let j=0;j<3;j++) j<=i ? p.weight(E.S.c[i][j],ATT[i][j]) : p.mask(E.S.c[i][j]); await p.wait(300);}
+    await p.wait(1000);
+    await flyCopy(p,E.S.m,E.A.m);
+    for(let i=0;i<3;i++) for(let j=0;j<3;j++) j<=i ? p.weight(E.A.c[i][j],ATT[i][j]) : p.mask(E.A.c[i][j]);
+    await p.wait(1200);}},
+  {cap:'Output: each row of attention times each column of V. Row <q>The</q> first.', fn:async(p,E)=>{
+    await avSweep(p,E,0,3,'slow');}},
+  {cap:'Then rows <q>boy</q> and <q>who</q>, the same way.', fn:async(p,E)=>{
+    await avSweep(p,E,1,3,'fast'); await avSweep(p,E,2,3,'fast'); p.eqStart(''); await p.wait(600);}},
+  {cap:'Run 1 ends. Only the last output row is used to predict the next token, <q>lived</q>.', fn:async(p,E)=>{
+    for(let i=0;i<2;i++) E.O.c[i].forEach(c=>p.ghost(c));
+    E.O.c[2].forEach(c=>p.pulse(c)); await p.wait(3000);}},
+  {phase:'Run 2 · decode with K,V cache', cap:'<q>lived</q> is appended. It gets one new row of Q, one new column of Kᵀ and one new row of V.', fn:async(p,E)=>{
+    openToken(p,E,3); for(let x=0;x<3;x++){E.S.c[x][3].classList.add('off'); E.A.c[x][3].classList.add('off');}
+    await p.wait(500);
+    for(let d=0;d<4;d++){p.fill(E.Q.c[3][d],VALS[3].q[d]); p.fill(E.K.c[d][3],VALS[3].k[d]); p.fill(E.V.c[3][d],VALS[3].v[d]);}
+    await p.wait(2400);}},
+  {cap:'The old queries are never needed again. The old keys and values have not changed, so they are read from the cache.', fn:async(p,E)=>{
+    for(let i=0;i<3;i++){E.Q.c[i].forEach(c=>p.ghost(c)); strike(p,E.Q.c[i][0],E.Q.c[i][3]); E.S.c[i].forEach(c=>p.ghost(c)); E.A.c[i].forEach(c=>p.ghost(c)); E.O.c[i].forEach(c=>p.ghost(c));}
+    await p.wait(900);
+    cacheBox(p,E.K.c[0][0],E.K.c[3][2],'K CACHE'); cacheBox(p,E.V.c[0][0],E.V.c[2][3],'V CACHE',true);
+    await p.wait(3200);}},
+  {cap:'Scores for <q>lived</q>: its query row times all four key columns, three cached and one new.', fn:async(p,E)=>{
+    await qkSweep(p,E,3,4,'medium'); p.eqStart('');}},
+  {cap:'Mask and softmax turn that one row into weights. Nothing ahead of <q>lived</q> exists, so nothing is masked.', fn:async(p,E)=>{
+    for(let j=0;j<4;j++){p.weight(E.S.c[3][j],ATT[3][j]); await p.wait(160);}
+    await p.wait(700);
+    await flyCopy(p,E.S.c[3],E.A.c[3][0],true);
+    for(let j=0;j<4;j++){p.on(E.A.c[3][j]); p.weight(E.A.c[3][j],ATT[3][j]);}
+    await p.wait(900);}},
+  {cap:'Output for <q>lived</q>: its attention row times each column of V, cached rows and new.', fn:async(p,E)=>{
+    await avSweep(p,E,3,4,'medium');}},
+  {cap:'Run 2 computed one query, one key, one value, one row of scores and one row of output. Everything else was reused.', fn:async(p,E)=>{
+    E.O.c[3].forEach(c=>p.pulse(c)); await p.wait(4000);}},
+];
+
+/* ---------- Example 2: mask ---------- */
+function build2(stage){
+  stage.innerHTML='<div class="topline"><span class="phase"></span><span class="stepno"></span></div><div class="lines"><div class="line l2"></div></div><div class="eq"></div><div class="caption"></div>';
+  const l=stage.querySelector('.l2');
+  const E={};
+  E.A=mkBlock('a','attention weights',T,T);
+  E.V=mkBlock('v','V · values',T,null);
+  E.O=mkBlock('o','output',null,null);
+  const bw=el('div','badges'); E.badge=range(4).map(()=>{const w=el('div'); const b=el('span','badge off','same as run 1'); w.append(b); bw.append(w); return b;});
+  const bb=el('div','blk'); bb.style.gridTemplateRows='auto 16px auto'; const sp=el('div','ttl','&nbsp;'); bb.append(sp,el('div','cl'),Object.assign(bw,{style:'grid-column:2;grid-row:3'}));
+  l.append(E.A.el,op('×'),E.V.el,op('='),E.O.el,bb);
+  // run-1 state
+  for(let i=0;i<3;i++){
+    [E.A.rl[i],E.A.cl[i],E.V.rl[i]].forEach(e=>e.classList.remove('off'));
+    for(let j=0;j<3;j++){const c=E.A.c[i][j]; c.classList.remove('off'); j<=i ? Player.prototype.weight.call({clr:Player.prototype.clr},c,ATT[i][j]) : Player.prototype.mask.call({clr:Player.prototype.clr},c);}
+    for(let d=0;d<4;d++){const v=E.V.c[i][d], o=E.O.c[i][d]; v.classList.remove('off'); o.classList.remove('off');
+      Player.prototype.fill.call({clr:Player.prototype.clr},v,VALS[i].v[d]); Player.prototype.fill.call({clr:Player.prototype.clr},o,outVal(i,d,range(3)));}
+  }
+  return E;
+}
+const avSweep2=(p,E,i,mode,onZero)=>sweep(p,{A:E.A.c,i,ks:range(4),B:E.V.c,cols:range(D),Rm:E.O.c,kind:'a',mode,onZero,
+  compute:j=>outVal(i,j,range(4)), show:(c,v)=>p.fill(c,v),
+  head:j=>`out<sub>${T[i]},${j+1}</sub> = `, term:avTerm(i), zero:k=>ATT[i][k]===0});
+const steps2=[
+  {phase:'After run 1', cap:'After run 1: each output row is a row of attention times the columns of V.', fn:async(p,E)=>{
+    for(let i=0;i<3;i++){E.A.c[i].slice(0,3).forEach(c=>c.classList.add('sel')); E.O.c[i].forEach(c=>p.pulse(c)); await p.wait(650); E.A.c[i].forEach(c=>c.classList.remove('sel'));}
+    await p.wait(1200);}},
+  {phase:'Run 2', cap:'<q>lived</q> arrives. Its key adds a column to the attention matrix, and its value adds a row to V.', fn:async(p,E)=>{
+    p.on(E.A.cl[3]);
+    for(let i=0;i<3;i++){p.raw(E.A.c[i][3]); p.on(E.A.c[i][3]); await p.wait(220);}
+    await p.wait(500);
+    p.on(E.A.rl[3]); for(let j=0;j<4;j++){p.weight(E.A.c[3][j],ATT[3][j]); p.on(E.A.c[3][j]);}
+    await p.wait(400); p.on(E.V.rl[3]); for(let d=0;d<4;d++){p.fill(E.V.c[3][d],VALS[3].v[d]); p.on(E.V.c[3][d]); p.blank(E.O.c[3][d]); p.on(E.O.c[3][d]);}
+    await p.wait(2600);}},
+  {cap:'Earlier tokens are not allowed to attend to a later token. The mask sets their new weights to 0.', fn:async(p,E)=>{
+    for(let i=0;i<3;i++){p.mask(E.A.c[i][3]); p.pulse(E.A.c[i][3]); await p.wait(500);}
+    await p.wait(2000);}},
+  {cap:'Suppose we recompute the output for <q>who</q> anyway. Its row now has four weights, so it pairs up with all four values in each column of V.', fn:async(p,E)=>{
+    E.O.c[2].forEach(c=>p.blank(c)); await p.wait(600);
+    await avSweep2(p,E,2,'slow',()=>p.cap('The fourth pair is 0 × V<sub>lived</sub>. It adds nothing, so every cell of <q>who</q>’s output is exactly what run 1 produced.'));
+    p.eqStart(''); p.on(E.badge[2]); await p.wait(3000);}},
+  {cap:'Same for <q>The</q> and <q>boy</q>: their weight on V<sub>lived</sub> is also 0.', fn:async(p,E)=>{
+    for(const i of [1,0]){ await avSweep2(p,E,i,'fast'); p.on(E.badge[i]); await p.wait(400);}
+    p.eqStart(''); await p.wait(1500);}},
+  {cap:'Only <q>lived</q> has a real weight on V<sub>lived</sub>, so its output row is the only new one.', fn:async(p,E)=>{
+    await avSweep2(p,E,3,'medium'); await p.wait(800);}},
+  {cap:'Earlier outputs never change, so we never recompute them. The new output needs only the new query plus every key and value, which is exactly what the cache holds.', fn:async(p,E)=>{
+    E.O.c[3].forEach(c=>p.pulse(c)); await p.wait(4000);}},
+];
+
+/* ---------- wiring ---------- */
+const players=[['ex0',build0,steps0],['ex1',build1,steps1],['ex2',build2,steps2]].filter(([id])=>document.getElementById(id)).map(([id,b,s])=>new Player(document.getElementById(id),b,s));
+// Follow the blog's light/dark toggle (PaperMod puts class "dark" on body) when embedded on the same site
+try{ const pd=parent!==window&&parent.document; if(pd&&pd.getElementById('theme-toggle')){ const sync=()=>document.documentElement.dataset.theme=pd.body.classList.contains('dark')?'dark':'light'; sync(); new MutationObserver(sync).observe(pd.body,{attributes:true,attributeFilter:['class']}); } }catch(e){}
+// ?autoplay starts the animation the first time it scrolls into view
+if(/autoplay/.test(location.search)&&'IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ io.disconnect(); players.forEach(p=>p.start(false)); } }),{threshold:.6}); io.observe(document.body); }
+let recP=null; const hint=(document.getElementById('hint')||document.createElement('div')); let hintT;
+function enterRec(p){
+  recP=p; p.sec.classList.add('rec'); document.body.classList.add('recording'); p.fit();
+  hint.classList.remove('off'); clearTimeout(hintT); hintT=setTimeout(()=>hint.classList.add('off'),2500);
+}
+function exitRec(){ if(!recP) return; recP.sec.classList.remove('rec'); document.body.classList.remove('recording'); const p=recP; recP=null; hint.classList.add('off'); p.fit(); }
+addEventListener('keydown',e=>{
+  if(!recP) return;
+  if(e.key==='Escape') exitRec();
+  else if(e.key===' '){e.preventDefault(); recP.toggle();}
+  else if(e.key==='r'||e.key==='R') recP.start(false);
+});
+addEventListener('resize',()=>players.forEach(p=>p.fit()));
+players.forEach(p=>p.start(true));
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>players.forEach(p=>{ if(p.state!=='playing'&&p.state!=='paused') p.start(true); else p.fit(); }));
+})();
+</script>
+</body>
+</html>

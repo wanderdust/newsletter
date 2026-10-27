@@ -13,6 +13,7 @@ cover:
 images: []
 ---
 
+{{< figure src="./kv-whiteboard.jpg" width="700" align="center" alt="K,V caching mechanism on my whiteboard" caption="K,V caching mechanism on my whiteboard. The token under the dotted line represents the newest token" >}}
 
 If you've been following my previous blogs, you might have seen that I've been going on an LLM training journey.
 
@@ -25,13 +26,13 @@ Essentially, when you are making predictions with an LLM, you predict each new w
 
 Because of how LLMs work, the LLM doesn't just predict the last word. For each word in the sentence, it predicts a next word. This is useful during training, but during inference, we only care about the last word. What this means is that for every iteration we re-compute a lot of the same operations that we then discard at the end.
 
-[Example]
+{{< animation src="animations/kv-iterations.html" title="Every iteration redoes the whole sentence" >}}
 
 
 So there's an opportunity to save ourselves some expensive compute by only calculating the values that we need each time. More specifically, in the attention mechanism, we only need to calculate the scores once for word/token. On any subsequent predictions, we only need to compute the attention score for the new word.
 
 
-[Example of how attention is calculated for a 3 word sentence on the first pass. Then show how a new example flows (calculate Q,K,V, get attention scores and add them to the Values vector.)]
+{{< animation src="animations/kv-cache-runs.html" title="K,V caching: two runs, one cache" >}}
 
 By skipping having to re-compute the attention score for the previous tokens, it is already big saver resource wise! If we had a million tokens to compute, we'd only need to calculate the attention score for the last one. Think of the compute savings!
 
@@ -41,7 +42,7 @@ Since the Keys and Values from previous tokens does not change from run to run, 
 
 The reason this works is because we use a mask in the attenion scores to hide any tokens ahead of the current tokens. That means that even though the attention matrix changes its values (new values added), because the token always comes after from the earlier words, the mask makes sure it does not affect the updated values * attention vector.
 
-[Example showing this]
+{{< animation src="animations/kv-cache-mask.html" title="Why the mask keeps old outputs fixed" >}}
 
 This mask is the reason why we can skip computing the values each time.
 
