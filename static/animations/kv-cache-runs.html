@@ -42,7 +42,12 @@ select{font:500 13px var(--mono);border:1px solid var(--line);border-radius:6px;
 .wrap{margin:0 auto;position:relative}
 .stage{position:absolute;left:0;top:0;width:880px;box-sizing:border-box;transform-origin:0 0;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px 26px 18px;display:flex;flex-direction:column;gap:16px}
 .topline{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.phase{font:500 12px var(--mono);letter-spacing:.04em;padding:4px 10px;border-radius:99px;background:color-mix(in srgb,var(--att) 14%,transparent);color:var(--att)}
+.phase{font:600 15px var(--sans);letter-spacing:.01em;padding:6px 16px;border-radius:99px;background:color-mix(in srgb,var(--att) 16%,transparent);color:var(--att);box-shadow:inset 0 0 0 1.5px var(--att);transition:background .4s,color .4s}
+.phase.alt{background:var(--att);color:#fff}
+.scrim{position:absolute;inset:0;border-radius:12px;background:color-mix(in srgb,var(--panel) 80%,transparent);display:grid;place-items:center;z-index:20}
+.runcard{text-align:center;padding:22px 44px;border-radius:12px;background:var(--panel);border:2px solid var(--att);box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.rc1{font:600 36px/1.1 var(--sans);color:var(--att)}
+.rc2{font:500 14px var(--mono);color:var(--muted);margin-top:8px}
 .stepno{font:400 12px var(--mono);color:var(--muted);font-variant-numeric:tabular-nums}
 .eq{font:400 14px/1.5 var(--mono);min-height:22px;color:var(--ink)}
 .eq b{color:var(--att);font-weight:600}
@@ -65,14 +70,14 @@ sub{font-size:.72em}
 .ttl{grid-column:1/-1;grid-row:1;font:500 11px var(--mono);letter-spacing:.05em;color:var(--ink);text-align:center;white-space:nowrap}
 .ttl i{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);margin-right:6px}
 .cl{grid-column:2;grid-row:2;display:flex;gap:4px;padding:0 7px}
-.cl span{width:34px;text-align:center;font:500 10.5px var(--mono);color:var(--muted);transition:opacity .4s}
+.cl span{width:30px;text-align:center;font:500 10.5px var(--mono);color:var(--muted);transition:opacity .4s}
 .rl{grid-column:1;grid-row:3;display:flex;flex-direction:column;gap:4px}
-.rl span{height:28px;line-height:28px;text-align:right;font:500 12.5px var(--sans);transition:opacity .4s}
-.mat{grid-column:2;grid-row:3;display:grid;grid-template-columns:repeat(4,34px);gap:4px;padding:0 7px;position:relative}
+.rl span{height:30px;line-height:30px;text-align:right;font:500 12.5px var(--sans);transition:opacity .4s}
+.mat{grid-column:2;grid-row:3;display:grid;grid-template-columns:repeat(4,30px);gap:4px;padding:0 7px;position:relative}
 .mat::before,.mat::after{content:"";position:absolute;top:-3px;bottom:-3px;width:5px;border:1.5px solid var(--muted)}
 .mat::before{left:0;border-right:0}
 .mat::after{right:0;border-left:0}
-.mc{width:34px;height:28px;box-sizing:border-box;border-radius:4px;display:grid;place-items:center;font:500 12px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);transition:opacity .4s,background .3s,transform .2s}
+.mc{width:30px;height:30px;box-sizing:border-box;border-radius:4px;display:grid;place-items:center;font:500 12px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);transition:opacity .4s,background .3s,transform .2s}
 .mc.blank{box-shadow:inset 0 0 0 1px var(--line)}
 .mc.mask{background:repeating-linear-gradient(135deg,var(--hatch) 0 2px,transparent 2px 6px);color:var(--muted)}
 .mc.raw{box-shadow:inset 0 0 0 1.5px var(--muted);color:var(--muted)}
@@ -80,7 +85,7 @@ sub{font-size:.72em}
 .mc.tgt{outline:2px dashed var(--ink);outline-offset:1px}
 .mc.pair{box-shadow:0 0 0 3px var(--att);transform:scale(1.1);z-index:1}
 .mc.pairz{box-shadow:0 0 0 3px var(--k);transform:scale(1.1);z-index:1}
-.op{font:400 20px var(--mono);color:var(--muted);height:124px;display:grid;place-items:center;width:18px}
+.op{font:400 20px var(--mono);color:var(--muted);height:132px;display:grid;place-items:center;width:18px}
 .strip{position:absolute;display:flex;flex-direction:column;gap:4px;padding:3px;background:var(--panel);border-radius:7px;box-shadow:0 6px 18px rgba(0,0,0,.2),0 0 0 1.5px var(--ink);z-index:6}
 .rowfly{position:absolute;display:flex;gap:4px;padding:0;z-index:6;pointer-events:none}
 .matfly{position:absolute;z-index:6;pointer-events:none;background:var(--panel)}
@@ -88,8 +93,17 @@ sub{font-size:.72em}
 .cachebox{position:absolute;border:1.5px dashed var(--muted);border-radius:8px;background:color-mix(in srgb,var(--muted) 8%,transparent);pointer-events:none;transition:opacity .5s;z-index:0}
 .cachebox b{position:absolute;left:8px;bottom:-9px;background:var(--panel);padding:0 5px;font:600 10px var(--mono);letter-spacing:.08em;color:var(--ink);white-space:nowrap}
 .badges{display:flex;flex-direction:column;gap:4px;width:104px}
-.badges div{height:28px;display:flex;align-items:center}
+.badges div{height:30px;display:flex;align-items:center}
 .badge{font:500 11px var(--mono);color:var(--v);border:1px solid var(--v);border-radius:99px;padding:1px 8px;white-space:nowrap;transition:opacity .4s}
+
+/* token band + matrix layout */
+.band{display:grid;grid-template-columns:auto repeat(3,auto);column-gap:22px;row-gap:4px;justify-content:center;align-items:center}
+.bh{font:500 11px var(--mono);letter-spacing:.05em;text-align:center;color:var(--ink)}
+.bh i{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--c);margin-right:6px}
+.tokc{justify-self:end;font:600 13px var(--sans);background:var(--tok);color:#2a1d05;border-radius:6px;padding:4px 10px;transition:opacity .45s}
+.vecrow{display:flex;gap:4px;transition:opacity .45s}
+#ex1 .stage{width:1000px}
+.line.chain{gap:8px;margin-top:6px}
 
 /* iterations */
 .flow{position:relative;height:300px}
@@ -174,10 +188,15 @@ class Player{
     if(!instant) this.played=true;
     this.setState(instant?'idle':'playing');
     try{
+      let pn=0;
       for(let i=0;i<this.steps.length;i++){
         const s=this.steps[i];
-        if(s.phase) this.stage.querySelector('.phase').textContent=s.phase;
         this.stage.querySelector('.stepno').textContent=`step ${i+1} of ${this.steps.length}`;
+        if(s.phase){
+          const ph=this.stage.querySelector('.phase'); pn++;
+          ph.textContent=s.phase; ph.classList.toggle('alt',pn%2===0);
+          if(!instant) await this.runCard(s.phase);
+        }
         this.cap(s.cap); this.fit();
         await s.fn(this,this.E);
         if(run.dead) throw ABORT;
@@ -204,6 +223,15 @@ class Player{
     const s = rec ? Math.min(innerWidth*.94/W, innerHeight*.9/H) : Math.min(1, this.fitbox.clientWidth/W);
     this.scale=s; this.stage.style.transform=`scale(${s})`;
     this.wrap.style.width=W*s+'px'; this.wrap.style.height=H*s+'px';
+  }
+  async runCard(phase){
+    const [a,b]=phase.split(' · ');
+    const sc=el('div','scrim'); sc.append(el('div','runcard',`<div class="rc1">${a}</div>${b?`<div class="rc2">${b}</div>`:''}`));
+    this.stage.append(sc);
+    await this.anim(sc,[{opacity:0},{opacity:1}],350,'ease-out');
+    await this.wait(1300);
+    await this.anim(sc,[{opacity:1},{opacity:0}],400,'ease-in');
+    sc.remove();
   }
   cap(html){this.stage.querySelector('.caption').innerHTML=html;}
   eqStart(html){const e=this.stage.querySelector('.eq'); if(!e) return; e.innerHTML=html; e.dataset.n=0;}
@@ -357,77 +385,104 @@ const steps0=[
 ];
 
 /* ---------- Example 1: two runs ---------- */
+const sfill=(c,v)=>Player.prototype.fill.call({clr:Player.prototype.clr},c,v);
 function build1(stage){
-  stage.innerHTML='<div class="topline"><span class="phase"></span><span class="stepno"></span></div><div class="lines"><div class="line l1"></div><div class="line l2"></div></div><div class="eq"></div><div class="caption"></div>';
-  const l1=stage.querySelector('.l1'), l2=stage.querySelector('.l2');
-  const E={};
+  stage.innerHTML='<div class="topline"><span class="phase"></span><span class="stepno"></span></div><div class="band"></div><div class="line chain"></div><div class="eq"></div><div class="caption"></div>';
+  const band=stage.querySelector('.band'), ln=stage.querySelector('.chain');
+  const E={tok:[],bq:[],bk:[],bv:[]};
+  band.append(el('div'));
+  [['q','query'],['k','key'],['v','value']].forEach(([k,t])=>band.append(el('div','bh '+k,`<i></i>${t}`)));
+  for(let t=0;t<4;t++){
+    E.tok[t]=el('div','tokc off',T[t]); band.append(E.tok[t]);
+    for(const k of ['q','k','v']){
+      const r=el('div','vecrow '+k+' off');
+      for(let d=0;d<D;d++){const c=el('div','mc'); r.append(c); sfill(c,VALS[t][k][d]);}
+      band.append(r); E['b'+k][t]=r;
+    }
+  }
   E.Q=mkBlock('q','Q · queries',T,null);
   E.K=mkBlock('k','Kᵀ · keys',null,T);
-  E.S=mkBlock('s','Q·Kᵀ · scores',T,T);
-  E.A=mkBlock('a','attention weights',T,T);
+  E.A=mkBlock('a','Q·Kᵀ',null,T);
   E.V=mkBlock('v','V · values',T,null);
-  E.O=mkBlock('o','output',T,null);
-  l1.append(E.Q.el,op('×'),E.K.el,op('='),E.S.el);
-  l2.append(E.A.el,op('×'),E.V.el,op('='),E.O.el);
+  E.O=mkBlock('o','output',null,null);
+  ln.append(E.Q.el,op('×'),E.K.el,op('='),E.A.el,op('×'),E.V.el,op('='),E.O.el);
   return E;
 }
-// show token t's row/column slots (labels + blank cells) in every matrix
+// show token t's slots (labels + blank cells) in every matrix
 function openToken(p,E,t){
-  [E.Q.rl[t],E.K.cl[t],E.S.rl[t],E.S.cl[t],E.A.rl[t],E.A.cl[t],E.V.rl[t],E.O.rl[t]].forEach(e=>p.on(e));
+  [E.Q.rl[t],E.K.cl[t],E.A.cl[t],E.V.rl[t],E.O.rl[t]].forEach(e=>p.on(e));
   for(let d=0;d<4;d++){p.on(E.Q.c[t][d]); p.on(E.K.c[d][t]); p.on(E.V.c[t][d]); p.on(E.O.c[t][d]);}
-  for(let x=0;x<=t;x++){p.on(E.S.c[t][x]); p.on(E.S.c[x][t]); p.on(E.A.c[t][x]); p.on(E.A.c[x][t]);}
+  for(let x=0;x<=t;x++){p.on(E.A.c[t][x]); p.on(E.A.c[x][t]);}
 }
-const qkSweep=(p,E,i,n,mode)=>sweep(p,{A:E.Q.c,i,ks:range(D),B:E.K.c,cols:range(n),Rm:E.S.c,kind:'q',mode,
+async function flyVec(p,src,targets,kind,rot){
+  if(p.instant) return;
+  const a=p.rel(src), f=p.rel(targets[0]), l=p.rel(targets[targets.length-1]);
+  const g=src.cloneNode(true); g.className='rowfly '+kind; g.style.left=a.x+'px'; g.style.top=a.y+'px'; p.stage.append(g);
+  const dx=(f.x+l.x+l.w)/2-(a.x+a.w/2), dy=(f.y+l.y+l.h)/2-(a.y+a.h/2);
+  await p.anim(g,[{transform:'translate(0,0) rotate(0deg)'},{transform:`translate(${dx}px,${dy}px) rotate(${rot?90:0}deg)`}],1100);
+  g.remove();
+}
+async function stackTok(p,E,t){
+  await Promise.all([
+    flyVec(p,E.bq[t],E.Q.c[t],'q',false),
+    flyVec(p,E.bk[t],E.K.c.map(r=>r[t]),'k',true),
+    flyVec(p,E.bv[t],E.V.c[t],'v',false)]);
+  for(let d=0;d<4;d++){p.fill(E.Q.c[t][d],VALS[t].q[d]); p.fill(E.K.c[d][t],VALS[t].k[d]); p.fill(E.V.c[t][d],VALS[t].v[d]);}
+  [E.bq[t],E.bk[t],E.bv[t]].forEach(e=>p.ghost(e));
+}
+async function showVecs(p,E,t){
+  p.on(E.tok[t]); await p.wait(250);
+  for(const k of ['bq','bk','bv']){p.on(E[k][t]); await p.wait(160);}
+}
+const qkSweep=(p,E,i,n,mode)=>sweep(p,{A:E.Q.c,i,ks:range(D),B:E.K.c,cols:range(n),Rm:E.A.c,kind:'q',mode,
   compute:j=>dot(VALS[i].q,VALS[j].k)/D*1.6, show:(c,v)=>p.fill(c,v),
   head:j=>`score<sub>${T[i]},${T[j]}</sub> = `, term:(k,j)=>`${sw('q',VALS[i].q[k])}×${sw('k',VALS[j].k[k])}`});
 const avSweep=(p,E,i,n,mode)=>sweep(p,{A:E.A.c,i,ks:range(n),B:E.V.c,cols:range(D),Rm:E.O.c,kind:'a',mode,
   compute:j=>outVal(i,j,range(n)), show:(c,v)=>p.fill(c,v),
   head:j=>`out<sub>${T[i]},${j+1}</sub> = `, term:avTerm(i), zero:k=>ATT[i][k]===0});
 const steps1=[
-  {phase:'Run 1 · prefill', cap:'The prompt <q>The boy who</q> goes in. Each token is projected into a query (a row of Q), a key (a column of Kᵀ) and a value (a row of V).', fn:async(p,E)=>{
-    for(let t=0;t<3;t++){ openToken(p,E,t); await p.wait(250);
-      for(let d=0;d<4;d++){p.fill(E.Q.c[t][d],VALS[t].q[d]); p.fill(E.K.c[d][t],VALS[t].k[d]); p.fill(E.V.c[t][d],VALS[t].v[d]);}
-      await p.wait(450);}
-    await p.wait(1500);}},
-  {cap:'Attention scores: each row of Q times each column of Kᵀ. Pair the numbers up, multiply each pair, add them up.', fn:async(p,E)=>{
+  {phase:'Run 1 · prefill', cap:'The prompt <q>The boy who</q> goes in. Each token’s embedding is multiplied by three learned weight matrices, which gives it three vectors: a query, a key and a value.', fn:async(p,E)=>{
+    for(let t=0;t<3;t++){await showVecs(p,E,t); await p.wait(300);}
+    await p.wait(2200);}},
+  {cap:'Stack them into matrices. The queries become the rows of Q, the keys become the columns of Kᵀ, and the values become the rows of V.', fn:async(p,E)=>{
+    for(let t=0;t<3;t++) openToken(p,E,t);
+    await p.wait(700);
+    for(let t=0;t<3;t++){await stackTok(p,E,t); await p.wait(250);}
+    await p.wait(1600);}},
+  {cap:'Attention scores: each cell is one row of Q times one column of Kᵀ. Pair the numbers up, multiply each pair, add them up.', fn:async(p,E)=>{
     await qkSweep(p,E,0,3,'slow');}},
   {cap:'The same for the other rows of Q.', fn:async(p,E)=>{
     await qkSweep(p,E,1,3,'fast'); await qkSweep(p,E,2,3,'fast'); p.eqStart(''); await p.wait(600);}},
-  {cap:'Scale, mask and softmax. Scores for later tokens are masked to 0, and each row becomes weights that add up to 1.', fn:async(p,E)=>{
-    E.S.ttl.innerHTML='<i></i>softmax(mask(Q·Kᵀ))';
-    for(let i=0;i<3;i++){for(let j=0;j<3;j++) j<=i ? p.weight(E.S.c[i][j],ATT[i][j]) : p.mask(E.S.c[i][j]); await p.wait(300);}
-    await p.wait(1000);
-    await flyCopy(p,E.S.m,E.A.m);
-    for(let i=0;i<3;i++) for(let j=0;j<3;j++) j<=i ? p.weight(E.A.c[i][j],ATT[i][j]) : p.mask(E.A.c[i][j]);
-    await p.wait(1200);}},
-  {cap:'Output: each row of attention times each column of V. Row <q>The</q> first.', fn:async(p,E)=>{
+  {cap:'Scale, mask and softmax, in place. Scores for later tokens are masked to 0, and each row becomes attention scores that add up to 1.', fn:async(p,E)=>{
+    E.A.ttl.innerHTML='<i></i>attention scores';
+    for(let i=0;i<3;i++){for(let j=0;j<3;j++) j<=i ? p.weight(E.A.c[i][j],ATT[i][j]) : p.mask(E.A.c[i][j]); await p.wait(300);}
+    await p.wait(2000);}},
+  {cap:'Output: each cell is one row of attention scores times one column of V. Row <q>The</q> first.', fn:async(p,E)=>{
     await avSweep(p,E,0,3,'slow');}},
   {cap:'Then rows <q>boy</q> and <q>who</q>, the same way.', fn:async(p,E)=>{
     await avSweep(p,E,1,3,'fast'); await avSweep(p,E,2,3,'fast'); p.eqStart(''); await p.wait(600);}},
   {cap:'Run 1 ends. Only the last output row is used to predict the next token, <q>lived</q>.', fn:async(p,E)=>{
     for(let i=0;i<2;i++) E.O.c[i].forEach(c=>p.ghost(c));
     E.O.c[2].forEach(c=>p.pulse(c)); await p.wait(3000);}},
-  {phase:'Run 2 · decode with K,V cache', cap:'<q>lived</q> is appended. It gets one new row of Q, one new column of Kᵀ and one new row of V.', fn:async(p,E)=>{
-    openToken(p,E,3); for(let x=0;x<3;x++){E.S.c[x][3].classList.add('off'); E.A.c[x][3].classList.add('off');}
-    await p.wait(500);
-    for(let d=0;d<4;d++){p.fill(E.Q.c[3][d],VALS[3].q[d]); p.fill(E.K.c[d][3],VALS[3].k[d]); p.fill(E.V.c[3][d],VALS[3].v[d]);}
-    await p.wait(2400);}},
+  {phase:'Run 2 · decode with K,V cache', cap:'<q>lived</q> is appended and gets its own query, key and value.', fn:async(p,E)=>{
+    for(let t=0;t<3;t++) p.ghost(E.tok[t]);
+    await showVecs(p,E,3); await p.wait(2000);}},
+  {cap:'Its query becomes a new row of Q, its key a new column of Kᵀ, and its value a new row of V.', fn:async(p,E)=>{
+    openToken(p,E,3); for(let x=0;x<3;x++) E.A.c[x][3].classList.add('off');
+    await p.wait(600); await stackTok(p,E,3); await p.wait(1600);}},
   {cap:'The old queries are never needed again. The old keys and values have not changed, so they are read from the cache.', fn:async(p,E)=>{
-    for(let i=0;i<3;i++){E.Q.c[i].forEach(c=>p.ghost(c)); strike(p,E.Q.c[i][0],E.Q.c[i][3]); E.S.c[i].forEach(c=>p.ghost(c)); E.A.c[i].forEach(c=>p.ghost(c)); E.O.c[i].forEach(c=>p.ghost(c));}
+    for(let i=0;i<3;i++){E.Q.c[i].forEach(c=>p.ghost(c)); strike(p,E.Q.c[i][0],E.Q.c[i][3]); E.A.c[i].forEach(c=>p.ghost(c)); E.O.c[i].forEach(c=>p.ghost(c));}
     await p.wait(900);
     cacheBox(p,E.K.c[0][0],E.K.c[3][2],'K CACHE'); cacheBox(p,E.V.c[0][0],E.V.c[2][3],'V CACHE',true);
     await p.wait(3200);}},
   {cap:'Scores for <q>lived</q>: its query row times all four key columns, three cached and one new.', fn:async(p,E)=>{
     await qkSweep(p,E,3,4,'medium'); p.eqStart('');}},
-  {cap:'Mask and softmax turn that one row into weights. Nothing ahead of <q>lived</q> exists, so nothing is masked.', fn:async(p,E)=>{
-    for(let j=0;j<4;j++){p.weight(E.S.c[3][j],ATT[3][j]); await p.wait(160);}
-    await p.wait(700);
-    await flyCopy(p,E.S.c[3],E.A.c[3][0],true);
-    for(let j=0;j<4;j++){p.on(E.A.c[3][j]); p.weight(E.A.c[3][j],ATT[3][j]);}
-    await p.wait(900);}},
-  {cap:'Output for <q>lived</q>: its attention row times each column of V, cached rows and new.', fn:async(p,E)=>{
+  {cap:'Mask and softmax turn that row into attention scores. Nothing comes after <q>lived</q>, so nothing is masked.', fn:async(p,E)=>{
+    for(let j=0;j<4;j++){p.weight(E.A.c[3][j],ATT[3][j]); p.pulse(E.A.c[3][j]); await p.wait(200);}
+    await p.wait(1500);}},
+  {cap:'Output for <q>lived</q>: its row of attention scores times each column of V, cached rows and new.', fn:async(p,E)=>{
     await avSweep(p,E,3,4,'medium');}},
-  {cap:'Run 2 computed one query, one key, one value, one row of scores and one row of output. Everything else was reused.', fn:async(p,E)=>{
+  {cap:'Run 2 computed one query, one key, one value, one row of attention scores and one row of output. Everything else was reused.', fn:async(p,E)=>{
     E.O.c[3].forEach(c=>p.pulse(c)); await p.wait(4000);}},
 ];
 
