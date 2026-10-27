@@ -1,0 +1,32 @@
+# Cloudflare Pages redirects for post URLs that changed.
+# Each post has two rules: one for the bare path and one for anything under it (trailing slash, images).
+
+# Old unnumbered slugs, renamed with numeric prefixes (June 2025)
+/posts/career_transition_into_ai            /posts/001_career_transition_into_ai/            301
+/posts/career_transition_into_ai/*          /posts/001_career_transition_into_ai/:splat      301
+/posts/kubernetes_exam                      /posts/002_kubernetes_exam/                      301
+/posts/kubernetes_exam/*                    /posts/002_kubernetes_exam/:splat                301
+/posts/navigating_database_indexes          /posts/003_navigating_database_indexes/          301
+/posts/navigating_database_indexes/*        /posts/003_navigating_database_indexes/:splat    301
+/posts/test_driven_development              /posts/005_test_driven_development/              301
+/posts/test_driven_development/*            /posts/005_test_driven_development/:splat        301
+/posts/locust_postgres                      /posts/006_locust_postgres/                      301
+/posts/locust_postgres/*                    /posts/006_locust_postgres/:splat                301
+/posts/postgres_bad_partitions              /posts/007_postgres_bad_partitions/              301
+/posts/postgres_bad_partitions/*            /posts/007_postgres_bad_partitions/:splat        301
+/posts/reverse_etl_databricks_to_postgres   /posts/008_reverse_etl_databricks_to_postgres/   301
+/posts/reverse_etl_databricks_to_postgres/* /posts/008_reverse_etl_databricks_to_postgres/:splat 301
+/posts/neovim_and_tmux                      /posts/009_neovim_and_tmux/                      301
+/posts/neovim_and_tmux/*                    /posts/009_neovim_and_tmux/:splat                301
+/posts/postgres_replication                 /posts/011_postgres_replication/                 301
+/posts/postgres_replication/*               /posts/011_postgres_replication/:splat           301
+
+# Renamed or merged posts
+/posts/016_postgres_ha_vs_scalability       /posts/016_replicas_vs_standby/                  301
+/posts/016_postgres_ha_vs_scalability/*     /posts/016_replicas_vs_standby/:splat            301
+/posts/019_building_a_self_service_data_api   /posts/019_lessons_learned_from_building_data_apis/        301
+/posts/019_building_a_self_service_data_api/* /posts/019_lessons_learned_from_building_data_apis/:splat  301
+/posts/023_load_testing_databricks_sql_warehose   /posts/051_serving_apis_from_your_data_warehouse/        301
+/posts/023_load_testing_databricks_sql_warehose/* /posts/051_serving_apis_from_your_data_warehouse/:splat  301
+/posts/049_how_i_became_a_web_developer     /posts/049_i_overengineered_a_website/           301
+/posts/049_how_i_became_a_web_developer/*   /posts/049_i_overengineered_a_website/:splat     301
