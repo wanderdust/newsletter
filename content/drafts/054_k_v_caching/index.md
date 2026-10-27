@@ -36,7 +36,7 @@ So there's an opportunity to save ourselves some expensive compute by only calcu
 
 By skipping having to re-compute the attention score for the previous tokens, it is already a big saver resource-wise! If we had a million tokens to compute, we'd only need to calculate the attention score for the last one. Think of the compute savings!
 
-But there's one catch. Even though we don't need to calculate the previous attention scores when a new word comes in, we still need the key and query values to compute the results of the new token. This is where K,V caching helps.
+But there's one catch. Even though we don't need to calculate the previous attention scores when a new word comes in, we still need the keys and values to compute the results of the new token. This is where K,V caching helps.
 
 Since the Keys and Values from previous tokens do not change from run to run, we can cache them to save us from re-computing them each time. Then they are readily accessible to calculate the attention scores of the newest word.
 
