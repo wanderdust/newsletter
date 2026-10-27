@@ -40,7 +40,7 @@ But there's one catch. Even though we don't need to calculate the previous atten
 
 Since the Keys and Values from previous tokens do not change from run to run, we can cache them to save us from re-computing them each time. Then they are readily accessible to calculate the attention scores of the newest word.
 
-The reason this works is because we use a mask in the attention scores to hide any tokens ahead of the current token. That means that even though the attention matrix changes its values (new values are added), the mask makes sure it does not affect the updated values * attention vector, because the new token always comes after the earlier words.
+The reason this works is because we use a mask in the attention scores to hide any tokens ahead of the current token. That means that even though the attention matrix changes its values (new values are added), the mask makes sure it does not affect the outputs from previous tokens (attention * value vector), because the new token always comes after the previous tokens.
 
 {{< animation src="animations/kv-cache-mask.html" title="Why the mask keeps old outputs fixed" >}}
 
