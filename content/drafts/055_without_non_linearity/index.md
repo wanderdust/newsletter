@@ -1,7 +1,7 @@
 ---
 title: "Without non-linear functions, models can't learn complex patterns"
 date: '2026-10-28T12:54:22Z'
-draft: true 
+draft: true
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
 tags: ['ai']
@@ -118,5 +118,7 @@ For \(x \ge 1\) the second neuron's sum goes negative, so ReLU clips it to 0 and
 As you can see, adding non-linearity helps the model create more complex patterns.
 
 Now the more neurons we add to the model, the more complex the patterns become, because each extra ReLU neuron can add another bend!
+
+You can try doing this yourself by hand with different model shapes and sizes. Keep in mind that adding more than a single input will increase the dimensional space, making it tricky to visualise the results!
 
 Non-linear functions can be anything you like, such as exponentials etc. However, we use ones such as ReLU and GELU because they're cheap to compute and don't squash gradients the way older functions like sigmoid do, which makes deep models much easier to train!
