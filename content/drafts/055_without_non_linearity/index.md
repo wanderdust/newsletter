@@ -1,7 +1,7 @@
 ---
 title: "Without non-linear functions, models can't learn complex patterns"
 date: '2026-10-28T12:54:22Z'
-draft: true
+draft: false
 summary: ''
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
 tags: ['ai']
