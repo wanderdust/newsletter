@@ -1,5 +1,5 @@
 ---
-title: "Without non-linear functions, models can't learn complex patterns"
+title: "Pen and Paper Series: Without non-linear functions, models can't learn complex patterns"
 date: '2026-10-28T12:54:22Z'
 draft: false
 summary: ''
@@ -14,7 +14,9 @@ cover:
 images: []
 ---
 
-This is a basic fact about what makes neural networks useful. If we don't add non-linear functions such as ReLU to the model outputs, a model will just end up as a simple linear model, no matter how complex the model might seem at a first glance.
+Without non-linear functions, neural networks can't learn complex patterns.
+
+This is a basic fact about what makes neural networks useful. If we don't add non-linear functions such as ReLU to the hidden layer outputs outputs, a model will just end up as a simple linear model, no matter how complex the model might seem at a first glance.
 
 The purpose of this blog is to clearly prove this. But before I can get to the proof, I'll set the scene first.
 
@@ -122,3 +124,9 @@ Now the more neurons we add to the model, the more complex the patterns become, 
 You can try doing this yourself by hand with different model shapes and sizes. Keep in mind that adding more than a single input will increase the dimensional space, making it tricky to visualise the results!
 
 Non-linear functions can be anything you like, such as exponentials etc. However, we use ones such as ReLU and GELU because they're cheap to compute and don't squash gradients the way older functions like sigmoid do, which makes deep models much easier to train!
+
+# Appendix
+
+Pen and paper drafts
+
+{{< figure src="./handwritten-notes.jpg" width="600" align="center" alt="handwritten notes" >}}
