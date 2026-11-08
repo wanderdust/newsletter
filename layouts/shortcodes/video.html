@@ -1,0 +1,24 @@
+{{- /*
+  Usage (inside a page bundle, next to the .mp4):
+    {{< video src="clip.mp4" poster="clip_poster.jpg" alt="..." caption="..." >}}
+  Autoplays muted, looped and inline (behaves like a GIF).
+  Add controls="true" to show controls and not autoplay (better for long clips).
+*/ -}}
+{{- $src := .Get "src" -}}
+{{- $poster := .Get "poster" -}}
+{{- with .Page.Resources.Get $src }}{{ $src = .RelPermalink }}{{ end -}}
+{{- if $poster }}{{ with .Page.Resources.Get $poster }}{{ $poster = .RelPermalink }}{{ end }}{{ end -}}
+{{- $controls := eq (.Get "controls") "true" -}}
+<figure class="video-figure" style="margin: 2rem 0; text-align: center;">
+  <video
+    {{- if $controls }} controls preload="metadata"{{ else }} autoplay muted loop playsinline preload="metadata"{{ end }}
+    {{- with $poster }} poster="{{ . }}"{{ end }}
+    {{- with .Get "alt" }} aria-label="{{ . }}"{{ end }}
+    style="max-width: 100%; height: auto; border-radius: 6px; image-rendering: pixelated;">
+    <source src="{{ $src }}" type="video/mp4">
+    {{ with .Get "alt" }}{{ . }}{{ end }}
+  </video>
+  {{- with .Get "caption" }}
+  <figcaption><p>{{ . | markdownify }}</p></figcaption>
+  {{- end }}
+</figure>
