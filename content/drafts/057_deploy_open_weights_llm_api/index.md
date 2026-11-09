@@ -29,4 +29,4 @@ Structure of the blog post
 
 7) Calling the model via PI harness from my laptop to use as coding agent.
 
-8) Commentary on scalability for real prod envs (lots of GPU required, KEDA for proper autoscaling needs), monitoring
+8) Commentary on scalability for real prod envs (lots of GPU required, KEDA for proper autoscaling needs), monitoring, costs
