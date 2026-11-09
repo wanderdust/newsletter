@@ -2,7 +2,7 @@
 title: "Teaching an Agent to Play Space Invaders, Revisited"
 date: '2026-11-08T20:03:45Z'
 draft: false
-description: "In 2019 I tried to teach a Deep Q-Network to play Space Invaders and ran out of credits with an agent barely better than random. In 2026 I finally finished it on a home-lab RTX 2060."
+description: "In 2019 I tried to teach a Deep Q-Network to play Space Invaders and ran out of EC2 credits with an agent barely better than random. In 2026 I finally finished it on a home-lab RTX 2060."
 summary: "In 2019 I tried to teach a Deep Q-Network to play Space Invaders and ran out of credits with an agent barely better than random. In 2026 I finally finished it on a home-lab RTX 2060."
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
 tags: ['ai']
