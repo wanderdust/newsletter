@@ -207,6 +207,8 @@ Training ran on my RTX 2060 with a single script I could leave running in the ba
 
 Each attempt was better than the last. The 2019 wasn't any better than random play. The newer version with the smaller model was capable of deliberate gameplay to almost beat the first screen of aliens. The larger model was able to beat several screen of aliens with deliberate, strategic play.
 
+### Performance comparison
+
 | Attempt | Network | Training steps | Best average score |
 | --- | --- | --- | --- |
 | 2019, Keras | Nature-sized, with dueling head | about 29 million (estimated) | about 190 |
