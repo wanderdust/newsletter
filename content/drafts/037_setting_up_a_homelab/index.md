@@ -1,6 +1,6 @@
 ---
 title: '037_setting_up_a_homelab'
-date: '2025-11-26T19:48:55Z'
+date: '2026-11-09T08:48:55Z'
 draft: false
 summary: ''
 tags: []
@@ -11,6 +11,27 @@ cover:
   caption: ''
 images: []
 ---
+
+Sections
+
+1) Hardware
+
+2) Setting up one machine
+  - Ubuntu server
+  - Fixed IP
+  - Install k3s
+
+
+
+
+
+
+
+
+
+
+
+------ OLD STUFF BELOW
 
 1) The hardware
 - Compute nodes (thinkpads)
