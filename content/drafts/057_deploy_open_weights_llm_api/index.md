@@ -134,3 +134,48 @@ export API_KEY ....
 
 ```
 
+Then we can run pi harness, and if everything went well, you'll see your model being loaded. We can start using it for coding tasks. In this example I ask it to some tests for my project.
+
+[video with pi working]
+
+
+## Testing the performance
+
+When I first started using the model, I realised that I ran out of context after a few prompts. Coding agents require a generous context size, and it is not very useful it only allows a handful of prompts before it errors out. I check my settings and I find out two issues. First, my context size is set to 3k (get correct figure), which is clearly not large enough. The bigger issue is that I originally had LLM_Parallell (get correct name) set to 2, which means the context size available for that node gets halfed. So all I'm getting is 1.5k context size which is not great. For reference 1.5k tokens is around ~1,100 words which is about 2 pages in an essay. The context size includes the response too. A 1.5K slot can't take a 1-page essay and write a 1-page response.
+
+[Add screenshot if I have it]
+
+Qwen 3.5 can hold up to 262K tokens, but because context size is loaded into memory as KV caching, I'm limited to the amount of context I can take. LLama.cpp reserves the memory it needs ot startup as the instance starts, so I can use nvtop to check the amount of memory used by nvtop. The amouth of memory is the model size + the context size. 
+
+The following image is the nvtop with my initial setup (2 concurrent, 3k)
+
+[nvtop]
+
+Since I'm the only user, I set LLM_parallel to 1, this will give access to the full context size for all my sessinos. However, 3k context size is still very small. Based on my nvtop, my memory usage is already pretty close to 100%. What I do is use fp8 (check that is the actual thing I used) instead the q16 (check if that's the correct one from initial setup.). THis helps reduce memory and I can increase my context size to 6k (get exact number).
+
+When I redeploy the pods, I can see that nvtop shows that it still fits the memory, with my new config
+
+[nvtop]
+
+When I run pi on my laptop, I can test the new context size, which is about 4x the original context size. As you can see, the ctx size is now larger at the bottom right side of the screen (highlight), which makes the model much more useful.
+
+[pi dev screenshot running a task]
+
+
+6k context size is still relatiely small for coding tasks. The model needs to look at many files and outputs from the different commands. The context piles up very quickly. To make a coding agent useful you need a very large context size. As I try the model on more complex tasks, such a small MVP web application, it is capable of running the first couple of tasks succesfully, but it starts to run out of context size after the 3rd or 4th prompt. If I take a look at kubernetes, I can se ethe instances are rebooting mid sesnions, likely because they are running out of memory since the memory is already very tight from startup
+
+[pods restart image]
+
+## Toughts on the model
+
+THe model applies what I tell it too literally. 
+## Lessons learned from this project
+
+Overall I was limited by my hardware. With my 6GB vRAM on my GPU card I'm not really able to deploy a useful LLM. When I first approached this project, I wanted to learn what it takes to deploy an open weights model via an API. What I found out is that this is the easiy part. Like with most systems in productions, the tricky part is to get right the node size, model size, and number of instances and autoscaling to be able to run a system smoothly and without issues for users when using these models. These can only be achieved by testing these models in production and having good monitoring of resource usage, sla (ie are there quehed responses) that give us enough insights to improve the deployments over time.
+
+Even though I wasn't able to try the largest more capable model, I can arleayd see how capable open models are at being able to tackle many coding tasks if used well. They are not as close as the frontier models from OpenAI or Cladue, but that may not be required for many everyday tasks.
+
+
+
+TODO 
+- Using nvtop to check the best ctx_size. Ctx size is 
