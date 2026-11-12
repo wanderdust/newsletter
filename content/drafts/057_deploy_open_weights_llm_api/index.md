@@ -16,8 +16,6 @@ cover:
 images: []
 ---
 
-<!-- TODO: cover image (maybe nvtop_ctx_81920.png or a photo of the box). The title is a suggestion. -->
-
 Open weights models are becoming more and more capable, and many organisations are wondering whether they should deploy and manage their own. Earlier this year the [CEO of IBM](https://www.theregister.com/systems/2026/10/22/ibm-ceo-says-open-weight-models-are-now-irresistibly-good-and-cheap-on-prem/5304640) said that open weights models are getting good enough to use them instead of the closed ones. Running your own model also makes sense if you want your data to stay within your company and not go to third parties.
 
 The purpose of this article is to find out what it takes to deploy an open weights model behind an API. I'll be using Kubernetes to manage the deployment and scaling. Once the model is deployed, I'll use the [Pi](https://pi.dev) coding agent to test the model's coding capabilities and speed.
@@ -26,7 +24,7 @@ The purpose of this article is to find out what it takes to deploy an open weigh
 
 This project runs on my own GPU home lab running Ubuntu Server. The machine has an RTX 2060 with 6 GB of VRAM, which is a fairly old card by today's standards, but good enough to run some of the smaller models. The rest of the box is a Ryzen 5 3600 (12 threads) and 15 GB of RAM.
 
-For reference, the RTX 2060 is the same generation as the T4 in AWS's g4dn.xlarge, which costs about $0.53/hour on-demand, or roughly $380/month if left running. The T4 has 16 GB of VRAM though, so it can fit a bigger model than my card. <!-- TODO: double-check the current g4dn.xlarge price. -->
+For reference, the RTX 2060 is the same generation as the T4 in AWS's g4dn.xlarge, which costs about $0.53/hour on-demand, or roughly $380/month if left running. The T4 has 16 GB of VRAM though, so it can fit a bigger model than my card.
 
 The VRAM on my graphics card is what limits the model size. I also only have one GPU, which means I can't scale to more than one instance. In a production environment you'd have several nodes available when you need to scale.
 
@@ -46,12 +44,9 @@ I use [K3s](https://k3s.io), a lightweight version of Kubernetes, in my home lab
 
 {{< figure src="kubernetes_diagram.png" alt="kubernetes diagram" caption="Kubernetes resources in this deployment" align=center >}}
 
-
 The Deployment defines the image, storage and configuration used by the pods. At the container level you define which image the pods run, and which environment variables and config to load. For the image I'm using [llama.cpp](https://github.com/ggml-org/llama.cpp)'s `llama-server` (`ghcr.io/ggml-org/llama.cpp:server-cuda`), a ready-to-use HTTP server for open weights models. Each pod requests one GPU (`nvidia.com/gpu: 1`), and the model is downloaded on startup into a volume mounted at `/models`.
 
 ```yaml
-# ConfigMap "llm-config" and Secret "llm-secrets" are created by
-# apps/llm/deploy.sh from config/model.env and .env (so the secret never lives in git).
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -74,7 +69,7 @@ spec:
     spec:
       runtimeClassName: nvidia   # k3s-specific: use the NVIDIA container runtime
       nodeSelector:
-        homelab/gpu: "true"      # only GPU nodes (label set by cluster/setup.sh)
+        homelab/gpu: "true"      # only schedule on GPU nodes
       tolerations:               # allowed onto the GPU node once it's tainted
         - key: homelab/gpu
           operator: Exists
@@ -125,9 +120,8 @@ spec:
           persistentVolumeClaim:
             claimName: llm-models
 ```
-<!-- TODO: deployment config. Bits worth keeping visible: runtimeClassName nvidia, requests cpu 1 / memory 2Gi / nvidia.com/gpu 1, limits memory 4Gi / gpu 1, envFrom llm-config + llm-secrets, LLAMA_CACHE=/models, startup probe on /health (period 10s, failureThreshold 90), strategy Recreate. -->
 
-During the first deploy the model needs to download the image and the model. The image, of 2.6 GB took about 10 minutes to dowload. Then, once the container starts, llama-server downloads the model, which took almost another 13 minutes. This is why the startup probe needs a generous budget.
+During the first deploy, the node needs to pull the image and download the model. The 2.6 GB image took about 10 minutes to download. Then, once the container starts, llama-server downloads the model, which took almost another 13 minutes. This is why the startup probe needs a generous budget.
 
 The Deployment is coupled with a Service, which is the interface we use to talk to the pods. The Service gives us a single IP and port, and does basic load balancing across the pods running the LLM. In K3s, a Service of type `LoadBalancer` is exposed on the node's IP, so the API is available on my home network at `192.168.1.149:8080`.
 
@@ -175,8 +169,6 @@ First, CPU usage is not the right metric to track. A better metric would be GPU 
 Second, I only have one GPU. Even when autoscaling triggers (which it does), the new pod can't start because there are no more GPUs available, so it stays in `Pending`. On the first deploy, the CPU spike from loading the model was enough to trigger it: the HPA scaled to 2 replicas, and scaled back down to 1 six minutes later. I set up the HPA for illustrative purposes, and to check that it does work with these settings.
 
 ```yaml
-# TODO: paste apps/llm/k8s/hpa.yaml
-
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -188,7 +180,7 @@ spec:
     kind: Deployment
     name: llm
   minReplicas: 1
-  maxReplicas: 1
+  maxReplicas: 2
   metrics:
     - type: Resource
       resource:
@@ -209,19 +201,13 @@ Finally, there's the Secret, which holds the API key needed to call the API. As 
 
 ```yaml
 apiVersion: v1
-data:
-  LLAMA_API_KEY: aBcD123################
 kind: Secret
 metadata:
-  annotations:
-    kubectl.kubernetes.io/last-applied-configuration: |
-      {"apiVersion":"v1","data":{"LLAMA_API_KEY":"YzA1ZjhkMWYwYzc5YzkzY2U3MmQyN2E4ZmIyNjE5OWNlYzdmYmI0MzgxMzI0NTA4MDgyZWI1MjZhMGU4NjU1MQ=="},"kind":"Secret","metadata":{"annotations":{},"name":"llm-secrets","namespace":"llm"}}
-  creationTimestamp: "2026-11-06T15:18:19Z"
   name: llm-secrets
   namespace: llm
-  resourceVersion: "2568"
-  uid: 264f1065-7db5-48de-b4ed-d854517e8c20
 type: Opaque
+data:
+  LLAMA_API_KEY: <base64-encoded API key>
 ```
 
 Once the model is deployed, we can call the API using the home lab's IP and port:
@@ -268,7 +254,6 @@ As we can see, the response is split into many small chunks, one per token: `"6"
 One thing worth knowing is that the API is stateless. Calling it again won't remember the previous conversation unless we send it again in the next call. This is why context grows so large as conversations get longer and longer: every request carries the whole history.
 
 ```json
-// TODO: replace with a real second call that includes the history, e.g.
 {"model": "qwen3.5-4b", "messages": [
   {"role": "user", "content": "Count to 10"},
   {"role": "assistant", "content": "1, 2, 3, 4, 5, 6, 7, 8, 9, 10"},
@@ -304,7 +289,6 @@ To make this similar to a real production setup, I install Pi on my laptop rathe
 Once Pi is installed, add the model to `~/.pi/agent/models.json`:
 
 ```json
-// TODO: replace with your real ~/.pi/agent/models.json
 {
   "providers": {
     "homelab": {
@@ -319,7 +303,7 @@ Once Pi is installed, add the model to `~/.pi/agent/models.json`:
 }
 ```
 
-And don't forget to add the API key to your environment. The `contextWindow` is used for pi to know when to compact the conversation. I set it to the same as the server.
+The `contextWindow` tells Pi when to compact the conversation, so I set it to match the server. `apiKey` is the name of the environment variable that holds the key, so don't forget to set it.
 
 Pi hides providers it can't authenticate with, so if the variable isn't set the model won't show up at all. To make sure it loads automatically, add it to your `~/.bashrc` or `~/.zshrc`:
 
@@ -327,10 +311,9 @@ Pi hides providers it can't authenticate with, so if the variable isn't set the 
 export LLM_KEY=...
 ```
 
-Then we can run Pi, and if everything went well, we'll see our model loaded. We can start using it for coding tasks. In this example I ask it to write some tests for my project.
+Then we can run Pi, and if everything went well, we'll see our model loaded. We can start using it for coding tasks. In this example I ask it to build a simple "hello world" web page.
 
-{{< video src="pi-demo.mov" poster="TODO_pi_working_poster.jpg" alt="TODO" caption="Sending a prompt to the model with pi harness" controls="true" >}}
-<!-- TODO: video of Pi working on a task. -->
+{{< video src="pi-demo.mp4" poster="pi-demo_poster.jpg" alt="Pi running on my laptop, using the home lab model to write a hello world HTML page" caption="Pi on my laptop, using the model served from the home lab." controls="true" >}}
 
 When Pi is working, the GPU runs flat out. Each agent turn kept it at 97% utilisation and 158 of its 160 W for around 45 seconds.
 
@@ -338,13 +321,15 @@ When Pi is working, the GPU runs flat out. Each agent turn kept it at 97% utilis
 
 ## Testing the performance
 
-When I first started using the model, I ran out of context after a few prompts. Coding agents need a generous context size, and a model isn't very useful if it only allows a handful of prompts before it errors out.
+When I first started using the model, my sessions broke down after a few prompts. Coding agents need a generous context size, and a model isn't very useful if it only allows a handful of prompts before it errors out.
 
 {{< figure src="pi_truncated_at_16k.png" alt="A Pi session where the model fixes a bug, then fails with a connection error and repeated 'Response was truncated before completion' messages, with the status bar at 72.2% of 16k" caption="Pi after a few prompts: a connection error, then every response is truncated. The status bar in the bottom left shows 72.2% of the 16k context used." align=center >}}
 
-The cause was that the context size was being depleted very quickly, which meant the response could not be fully generated.
+There were two problems here. The connection error came from the pod restarting mid-session, most likely because it ran out of memory.
 
-The underlying problem was context. When I checked my settings, I found two issues. First, the context size was initially set to 32,768 tokens. The bigger issue was that `LLAMA_ARG_N_PARALLEL` was set to 2, which means the context gets split in half between the two slots. So all I was getting was 16,384 tokens per request.
+The truncated responses were a context problem. The context wasn't full yet, but there wasn't enough room left for the model to finish its answers.
+
+When I checked my settings, I found why the context was so small. The total context size was only 32,768 tokens, and `LLAMA_ARG_N_PARALLEL` was set to 2, which splits the context in half between two slots. So each request only got 16,384 tokens.
 
 16k tokens sounds like a lot: it's around 12,000 words. But a coding agent burns through it fast. The system prompt and tool definitions go in every request, and so does every file the model reads and every command output. In one session the context doubled from about 6,000 to 12,000 tokens in a few minutes, and the server logs showed all the requests going to slot 0. Slot 1 was never used.
 
@@ -370,7 +355,7 @@ LLAMA_ARG_CACHE_TYPE_K=q8_0
 LLAMA_ARG_CACHE_TYPE_V=q8_0
 ```
 
-When I redeployed the pods, my changes didn't show up. I made the rookie mistake of restarting the pods without ensuring the new configmap was updated. It turned out the ConfigMap in the cluster still had the old settings, and the server logs still showed 2 slots of 16k each. I can't count the number of times this same issue has happened to me before.
+When I redeployed the pods, my changes didn't show up. I made the rookie mistake of restarting the pods without making sure the ConfigMap was updated. It turned out the ConfigMap in the cluster still had the old settings, and the server logs still showed 2 slots of 16k each. I can't count the number of times this same issue has happened to me before.
 
 {{< figure src="configmap_vs_model_env.png" alt="Terminal showing the ConfigMap in the cluster with CTX_SIZE 32768 and N_PARALLEL 2, the model.env file with CTX_SIZE 81920 and N_PARALLEL 1, and the server log showing n_slots = 2 and n_ctx_slot = 16384" caption="The ConfigMap in the cluster (top) doesn't match `model.env` in the repo (middle), and the server log (bottom) confirms the pod is still running 2 slots of 16,384 tokens." align=center >}}
 <!-- TODO: add one sentence on what caused the stale ConfigMap and how you fixed it. -->
@@ -388,13 +373,11 @@ For an extra 0.6 GB of memory, each request gets 5x the context.
 
 When I run Pi on my laptop with the new config, you can see the larger context size in the bottom left of the screen, which makes the model much more useful.
 
-{{< figure src="pi-80k-context.png" alt="TODO" caption="PI with 82k context" align=center >}}
-<!-- TODO: Pi screenshot running a task with the 80k context visible in the status bar (highlight it). -->
+{{< figure src="pi-80k-context.png" alt="Pi's status bar showing 4.3% of an 82k context window used" caption="Pi's status bar with the new 82k context window." align=center >}}
 
-80k is about as far as I can push the model in my case. It is still not very much context size, about one fourth of the total context this model can take, but it still lets me run some coding tasks as long as I don't make conversations too long or try to run very complex tasks. For a truly useful coding agent I'd want to use a larger model deployed in an instance that can handle the model and context size.
+80k is about as far as I can push the model in my case. It is still not very much context size, about a third of the total context this model can take, but it still lets me run some coding tasks as long as I don't make conversations too long or try to run very complex tasks. For a truly useful coding agent I'd want to use a larger model deployed in an instance that can handle the model and context size.
 
-After using the model for some tasks, it feels fine. It is capable of doing most of the tasks I ask it, as long as they are not very complex. The main thing I've noticed is that it takes my prompts too literally. This one is tricky for models to understand, but just because I ask for something, it doesn't mean I want that exactly. In same cases I want the model to take some liberties to do the right thing, rather than the exact thing mentioned. This is something I feel like frontier models such as sonnet or opus are much better at.
-
+After using the model for some tasks, it feels fine. It is capable of doing most of the tasks I ask it, as long as they are not very complex. The main thing I've noticed is that it takes my prompts too literally. This one is tricky for models to understand, but just because I ask for something, it doesn't mean I want that exactly. In some cases I want the model to take some liberties to do the right thing, rather than the exact thing mentioned. This is something I feel like frontier models such as Claude Sonnet or Opus are much better at.
 
 ## Scaling this for production
 
@@ -406,7 +389,7 @@ With one GPU I couldn't really scale anything, but the setup makes it clear what
 
 **Scaling up is slow.** A new pod on a fresh node needs to pull a 2.6 GB image and download the model before it can serve a single request. On my first deploy that took over 20 minutes. In production you'd want images pre-pulled and models on shared storage, so a new replica only has to load the model into memory.
 
-**Idle replicas still cost a whole GPU.** The memory is reserved at startup, so an idle replica holds its GPU whether anyone is using it or not. On AWS, every replica running 24/7 on a g4dn.xlarge is roughly $380/month. Check usage metrics based on the actual usage (requests per second, concurrent users) not just based on memory allocation.
+**Idle replicas still cost a whole GPU.** The memory is reserved at startup, so an idle replica holds its GPU whether anyone is using it or not. On AWS, every replica running 24/7 on a g4dn.xlarge is roughly $380/month. Size the number of replicas on actual usage (requests per second, concurrent users), not just on memory allocation.
 
 **Monitoring and access.** You'd want to track queued requests, time to first token, tokens per second and GPU memory, and put a gateway in front of the API for per-user keys and rate limits.
 
