@@ -1,7 +1,7 @@
 ---
 title: 'Deploying an Open Weights LLM as an API on a 6 GB GPU'
 date: '2026-11-09T08:56:30Z'
-draft: true
+draft: false
 description: "What it takes to serve an open weights coding model over an API with Kubernetes, and use it as a coding agent from my laptop, on a home-lab RTX 2060."
 summary: "What it takes to serve an open weights coding model over an API with Kubernetes, and use it as a coding agent from my laptop, on a home-lab RTX 2060."
 # Valid tags: ai, aws, career, certifications, data-engineering, kubernetes, postgres, reflections, security, serverless, testing, tooling
@@ -20,7 +20,7 @@ images: []
 
 Open weights models are becoming more and more capable, and many organisations are wondering whether they should deploy and manage their own. Earlier this year the [CEO of IBM](https://www.theregister.com/systems/2026/10/22/ibm-ceo-says-open-weight-models-are-now-irresistibly-good-and-cheap-on-prem/5304640) said that open weights models are getting good enough to use them instead of the closed ones. Running your own model also makes sense if you want your data to stay within your company and not go to third parties.
 
-The purpose of this article is to find out what it takes to deploy an open weights model behind an API. I'll be using Kubernetes to manage the deployment and scaling. Once the model is deployed, I'll use the [Pi](https://pi.dev) coding agent to test the model's coding capabilities and speed. 
+The purpose of this article is to find out what it takes to deploy an open weights model behind an API. I'll be using Kubernetes to manage the deployment and scaling. Once the model is deployed, I'll use the [Pi](https://pi.dev) coding agent to test the model's coding capabilities and speed.
 
 ## The hardware
 
@@ -228,7 +228,7 @@ When I first started using the model, I ran out of context after a few prompts. 
 
 {{< figure src="pi_truncated_at_16k.png" alt="A Pi session where the model fixes a bug, then fails with a connection error and repeated 'Response was truncated before completion' messages, with the status bar at 72.2% of 16k" caption="Pi after a few prompts: a connection error, then every response is truncated. The status bar in the bottom left shows 72.2% of the 16k context used." align=center >}}
 
-The cause was that the context size was being depleted very quickly, which meant the response could not be fully generated. 
+The cause was that the context size was being depleted very quickly, which meant the response could not be fully generated.
 
 The underlying problem was context. When I checked my settings, I found two issues. First, the context size was initially set to 32,768 tokens. The bigger issue was that `LLAMA_ARG_N_PARALLEL` was set to 2, which means the context gets split in half between the two slots. So all I was getting was 16,384 tokens per request.
 
@@ -285,7 +285,7 @@ If I take a look at Kubernetes, I can also see the pods restarting mid-session.
 
 ## Thoughts on the model
 
-The model applies what I tell it too literally. 
+The model applies what I tell it too literally.
 
 <!-- TODO: add elaborate. -->
 
