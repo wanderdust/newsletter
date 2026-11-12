@@ -1,5 +1,5 @@
 ---
-title: 'Deploying an Open Weights LLM as an API on a 6 GB GPU'
+title: 'Deploying an Open Weights LLM as an API in Kubernetes'
 date: '2026-11-09T08:56:30Z'
 draft: false
 description: "What it takes to serve an open weights coding model over an API with Kubernetes, and use it as a coding agent from my laptop, on a home-lab RTX 2060."
