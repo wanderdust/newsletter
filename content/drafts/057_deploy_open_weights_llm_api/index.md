@@ -30,9 +30,6 @@ For reference, the RTX 2060 is the same generation as the T4 in AWS's g4dn.xlarg
 
 The VRAM on my graphics card is what limits the model size. I also only have one GPU, which means I can't scale to more than one instance. In a production environment you'd have several nodes available when you need to scale.
 
-{{< figure src="TODO_homelab_box.jpg" alt="TODO" caption="TODO" align=center >}}
-<!-- TODO: optional photo of the home-lab box (same machine as the Space Invaders post, could link to it here). -->
-
 ## The model
 
 For the model I'll use [Qwen3.5 with 4 billion parameters](https://huggingface.co/unsloth/Qwen3.5-4B-GGUF), quantised to 4 bits (Q4_K_M). It's a small model that can write code and use tools, which is the kind of model you'd deploy internally for software engineers to use with a coding agent like Pi.
@@ -45,18 +42,88 @@ The next size up is the 9 billion parameter model, which sits at about 5.7 GB be
 
 The model is deployed as a centralised API service in Kubernetes. Users (me) call it with a URL and an API key to use the model for coding tasks.
 
-{{< figure src="TODO_architecture_diagram.png" alt="TODO" caption="TODO" align=center >}}
-<!-- TODO: diagram 1, the big picture: laptop (Pi) -> home network -> k3s Service (LoadBalancer, 192.168.1.149:8080) -> llama-server pod -> RTX 2060. -->
-
 I use [K3s](https://k3s.io), a lightweight version of Kubernetes, in my home lab. The deployment consists of a Deployment, a ConfigMap, a Secret, a Service and an HPA (Horizontal Pod Autoscaler), plus a PersistentVolumeClaim to keep the model files between restarts.
 
-{{< figure src="TODO_k8s_resources_diagram.png" alt="TODO" caption="TODO" align=center >}}
-<!-- TODO: diagram 2, the k8s resources: Deployment (with ConfigMap + Secret as env, PVC at /models), Service in front, HPA pointing at the Deployment. -->
+{{< figure src="kubernetes_diagram.png" alt="kubernetes diagram" caption="Kubernetes resources in this deployment" align=center >}}
+
 
 The Deployment defines the image, storage and configuration used by the pods. At the container level you define which image the pods run, and which environment variables and config to load. For the image I'm using [llama.cpp](https://github.com/ggml-org/llama.cpp)'s `llama-server` (`ghcr.io/ggml-org/llama.cpp:server-cuda`), a ready-to-use HTTP server for open weights models. Each pod requests one GPU (`nvidia.com/gpu: 1`), and the model is downloaded on startup into a volume mounted at `/models`.
 
 ```yaml
-# TODO: paste apps/llm/k8s/deployment.yaml
+# ConfigMap "llm-config" and Secret "llm-secrets" are created by
+# apps/llm/deploy.sh from config/model.env and .env (so the secret never lives in git).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llm
+  namespace: llm
+  labels:
+    app: llm
+spec:
+  # No "replicas:" here on purpose: the HPA owns the replica count.
+  # Setting it would make every `kubectl apply` reset the count to that value.
+  strategy:
+    type: Recreate           # one GPU: old pod must release it before the new one starts
+  selector:
+    matchLabels:
+      app: llm
+  template:
+    metadata:
+      labels:
+        app: llm
+    spec:
+      runtimeClassName: nvidia   # k3s-specific: use the NVIDIA container runtime
+      nodeSelector:
+        homelab/gpu: "true"      # only GPU nodes (label set by cluster/setup.sh)
+      tolerations:               # allowed onto the GPU node once it's tainted
+        - key: homelab/gpu
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: llama-server
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda   # pin a build tag in real use
+          envFrom:
+            - configMapRef:
+                name: llm-config
+            - secretRef:
+                name: llm-secrets
+          env:
+            - name: LLAMA_CACHE
+              value: /models
+            - name: LLAMA_ARG_HOST
+              value: 0.0.0.0
+            - name: LLAMA_ARG_PORT
+              value: "8080"
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: "1"             # HPA % is measured against this
+              memory: 2Gi
+            limits:
+              memory: 4Gi
+              nvidia.com/gpu: 1    # schedule only where a GPU is free
+          volumeMounts:
+            - name: models
+              mountPath: /models
+          # /health returns 503 while the model loads, 200 when ready.
+          startupProbe:            # allow up to 15 min for first download + load
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+            failureThreshold: 90
+          readinessProbe:          # only receive traffic when ready
+            httpGet: { path: /health, port: http }
+            periodSeconds: 10
+          livenessProbe:           # restart if it hangs
+            httpGet: { path: /health, port: http }
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+      volumes:
+        - name: models
+          persistentVolumeClaim:
+            claimName: llm-models
 ```
 <!-- TODO: deployment config. Bits worth keeping visible: runtimeClassName nvidia, requests cpu 1 / memory 2Gi / nvidia.com/gpu 1, limits memory 4Gi / gpu 1, envFrom llm-config + llm-secrets, LLAMA_CACHE=/models, startup probe on /health (period 10s, failureThreshold 90), strategy Recreate. -->
 
@@ -65,7 +132,19 @@ During the first deploy the model needs to download the image and the model. The
 The Deployment is coupled with a Service, which is the interface we use to talk to the pods. The Service gives us a single IP and port, and does basic load balancing across the pods running the LLM. In K3s, a Service of type `LoadBalancer` is exposed on the node's IP, so the API is available on my home network at `192.168.1.149:8080`.
 
 ```yaml
-# TODO: paste apps/llm/k8s/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: llm
+  namespace: llm
+spec:
+  type: LoadBalancer
+  selector:
+    app: llm
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
 ```
 
 The environment variables are loaded from a ConfigMap. This is where the model parameters live: which model to use, the context size, how many GPU layers to offload and so on. llama-server reads any `LLAMA_ARG_*` environment variable as a command line argument, so the whole model configuration lives in one file. This is the initial setup, using the Qwen3.5 4B model with a context size of 32,768 tokens:
@@ -97,14 +176,52 @@ Second, I only have one GPU. Even when autoscaling triggers (which it does), the
 
 ```yaml
 # TODO: paste apps/llm/k8s/hpa.yaml
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: llm
+  namespace: llm
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: llm
+  minReplicas: 1
+  maxReplicas: 1
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 180   # ignore the CPU spike while the model loads
+    scaleDown:
+      stabilizationWindowSeconds: 300   # avoid flapping; model loads are slow
 ```
 
 {{< figure src="k9s_pod_restarts_and_pending_replica.png" alt="k9s showing two llm pods: one running at 100% of its CPU request, and a second replica stuck in Pending" caption="The HPA in action: the running pod is at 100% of its 1 CPU request, so a second replica is created. With no second GPU, it stays in `Pending`." align=center >}}
 
-Finally, there's the Secret, which holds the API key needed to call the API. I generate it from a gitignored `.env` file so the key never ends up in git. As everyone using Kubernetes knows, secrets are not really secret: the values are only base64 encoded. In a production environment it's better to load your secrets from a secrets vault instead.
+Finally, there's the Secret, which holds the API key needed to call the API. As everyone using Kubernetes knows, secrets are not really secret: the values are only base64 encoded. In a production environment it's better to load your secrets from a secrets vault instead.
 
-```bash
-# TODO: paste the kubectl create secret command from apps/llm/deploy.sh (with the key redacted)
+```yaml
+apiVersion: v1
+data:
+  LLAMA_API_KEY: aBcD123################
+kind: Secret
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","data":{"LLAMA_API_KEY":"YzA1ZjhkMWYwYzc5YzkzY2U3MmQyN2E4ZmIyNjE5OWNlYzdmYmI0MzgxMzI0NTA4MDgyZWI1MjZhMGU4NjU1MQ=="},"kind":"Secret","metadata":{"annotations":{},"name":"llm-secrets","namespace":"llm"}}
+  creationTimestamp: "2026-11-06T15:18:19Z"
+  name: llm-secrets
+  namespace: llm
+  resourceVersion: "2568"
+  uid: 264f1065-7db5-48de-b4ed-d854517e8c20
+type: Opaque
 ```
 
 Once the model is deployed, we can call the API using the home lab's IP and port:
@@ -184,9 +301,6 @@ To make the model useful, I'll use the [Pi](https://pi.dev) coding agent. Pi is 
 
 To make this similar to a real production setup, I install Pi on my laptop rather than on the machine running the model. This is the same as if you deployed the model on EC2 and ran the agent from your local machine.
 
-{{< figure src="TODO_pi_diagram.png" alt="TODO" caption="TODO" align=center >}}
-<!-- TODO: diagram 3, or reuse diagram 1: laptop running Pi -> HTTP + API key -> 192.168.1.149:8080 -> llama-server. Shows that the agent and its tools run on the laptop, only the model runs on the server. -->
-
 Once Pi is installed, add the model to `~/.pi/agent/models.json`:
 
 ```json
@@ -215,7 +329,7 @@ export LLM_KEY=...
 
 Then we can run Pi, and if everything went well, we'll see our model loaded. We can start using it for coding tasks. In this example I ask it to write some tests for my project.
 
-{{< video src="TODO_pi_working.mp4" poster="TODO_pi_working_poster.jpg" alt="TODO" caption="TODO" controls="true" >}}
+{{< video src="pi-demo.mov" poster="TODO_pi_working_poster.jpg" alt="TODO" caption="Sending a prompt to the model with pi harness" controls="true" >}}
 <!-- TODO: video of Pi working on a task. -->
 
 When Pi is working, the GPU runs flat out. Each agent turn kept it at 97% utilisation and 158 of its 160 W for around 45 seconds.
@@ -274,20 +388,13 @@ For an extra 0.6 GB of memory, each request gets 5x the context.
 
 When I run Pi on my laptop with the new config, you can see the larger context size in the bottom left of the screen, which makes the model much more useful.
 
-{{< figure src="TODO_pi_80k_context.png" alt="TODO" caption="TODO" align=center >}}
+{{< figure src="pi-80k-context.png" alt="TODO" caption="PI with 82k context" align=center >}}
 <!-- TODO: Pi screenshot running a task with the 80k context visible in the status bar (highlight it). -->
 
-80k of context is still relatively small for coding tasks. The model needs to look at many files and outputs from different commands, and the context piles up very quickly. As I try the model on more complex tasks, such as a small MVP web application, it manages the first couple of tasks successfully, but starts to run out of context after the 5th or 6th prompt.
-<!-- TODO: re-run the MVP web app test on the 80k config and check this still holds. -->
+80k is about as far as I can push the model in my case. It is still not very much context size, about one fourth of the total context this model can take, but it still lets me run some coding tasks as long as I don't make conversations too long or try to run very complex tasks. For a truly useful coding agent I'd want to use a larger model deployed in an instance that can handle the model and context size.
 
-If I take a look at Kubernetes, I can also see the pods restarting mid-session.
-<!-- TODO: add the restart reason (kubectl describe pod -> Last State, or kubectl logs --previous) and a screenshot. It isn't RAM: the k9s screenshot shows the pod at 19% of its memory limit. -->
+After using the model for some tasks, it feels fine. It is capable of doing most of the tasks I ask it, as long as they are not very complex. The main thing I've noticed is that it takes my prompts too literally. This one is tricky for models to understand, but just because I ask for something, it doesn't mean I want that exactly. In same cases I want the model to take some liberties to do the right thing, rather than the exact thing mentioned. This is something I feel like frontier models such as sonnet or opus are much better at.
 
-## Thoughts on the model
-
-The model applies what I tell it too literally.
-
-<!-- TODO: add elaborate. -->
 
 ## Scaling this for production
 
