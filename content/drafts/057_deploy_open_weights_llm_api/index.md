@@ -390,7 +390,7 @@ After using the model for some tasks, it feels fine. It is capable of doing most
 
 With one GPU I couldn't really scale anything, but the setup makes it clear what you'd need to think about for a real deployment.
 
-**Concurrency is slots x replicas.** Each pod can serve `N_PARALLEL` requests at once, and anything above that queues. But the context is split between slots, so more users per pod means less context for each of them on the same GPU. For coding agents, which need a lot of context, that pushes you towards fewer slots per GPU and more GPUs.
+**Concurrency is slots x replicas.** Each pod can serve `N_PARALLEL` requests at once, and anything above that queues. But the context is split between slots, so more users per pod means less context for each of them on the same GPU. For coding agents, which need a lot of context, it's benefitial to use a shared cache across runs to maximise available context size.
 
 **Scale on queued requests, not CPU.** llama-server already exposes Prometheus metrics at `/metrics`, including how many requests are processing and how many are waiting. That's the signal to autoscale on, with something like KEDA. CPU tells you almost nothing: the only time it spiked on my setup was while loading the model.
 
