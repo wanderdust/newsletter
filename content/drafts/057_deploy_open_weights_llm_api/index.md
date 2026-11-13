@@ -16,7 +16,11 @@ cover:
 images: []
 ---
 
-Open weights models are becoming more and more capable, and many organisations are wondering whether they should deploy and manage their own. Earlier this year the [CEO of IBM](https://www.theregister.com/systems/2026/10/22/ibm-ceo-says-open-weight-models-are-now-irresistibly-good-and-cheap-on-prem/5304640) said that open weights models are getting good enough to use them instead of the closed ones. Running your own model also makes sense if you want your data to stay within your company and not go to third parties.
+Open weights models are becoming more and more capable, and many organisations are wondering whether they should deploy and manage their own.
+
+Earlier this year the [CEO of IBM](https://www.theregister.com/systems/2026/10/22/ibm-ceo-says-open-weight-models-are-now-irresistibly-good-and-cheap-on-prem/5304640) said that open weights models are getting close enough to closed models, for a fraction of the cost.
+
+Running your own model also makes sense if you want your data to stay within your company.
 
 The purpose of this article is to find out what it takes to deploy an open weights model behind an API. I'll be using Kubernetes to manage the deployment and scaling. Once the model is deployed, I'll use the [Pi](https://pi.dev) coding agent to test the model's coding capabilities and speed.
 
@@ -24,7 +28,7 @@ The purpose of this article is to find out what it takes to deploy an open weigh
 
 This project runs on my own GPU home lab running Ubuntu Server. The machine has an RTX 2060 with 6 GB of VRAM, which is a fairly old card by today's standards, but good enough to run some of the smaller models. The rest of the box is a Ryzen 5 3600 (12 threads) and 15 GB of RAM.
 
-For reference, the RTX 2060 is the same generation as the T4 in AWS's g4dn.xlarge, which costs about $0.53/hour on-demand, or roughly $380/month if left running. The T4 has 16 GB of VRAM though, so it can fit a bigger model than my card.
+For reference, the RTX 2060 is the same generation as the T4 in AWS's g4dn.xlarge, which costs about $0.53/hour on-demand, or roughly $380/month if left running (for a single instance). The T4 has 16 GB of VRAM though, so it can fit a bigger model than my card.
 
 The VRAM on my graphics card is what limits the model size. I also only have one GPU, which means I can't scale to more than one instance. In a production environment you'd have several nodes available when you need to scale.
 
@@ -35,6 +39,8 @@ For the model I'll use [Qwen3.5 with 4 billion parameters](https://huggingface.c
 The reason for picking this model is that it's as much as I can fit in my card's VRAM. The model file is about 2.7 GB, which gets loaded into the 6 GB of memory. The rest of the VRAM is needed for the KV cache, which holds the context and is what makes responses fast. (I wrote about [how KV caching works]({{< relref "/posts/054_k_v_caching" >}}) in a previous post.)
 
 The next size up is the 9 billion parameter model, which sits at about 5.7 GB before accounting for any memory for the KV cache. That would leave no room for context, making it useless on my card.
+
+{{< figure src="total_memory_allocation.png" alt="Memory allocation" caption="Memory allocation for my 6GB VRAM GPU" align=center >}}
 
 ## The deployment
 
@@ -55,8 +61,6 @@ metadata:
   labels:
     app: llm
 spec:
-  # No "replicas:" here on purpose: the HPA owns the replica count.
-  # Setting it would make every `kubectl apply` reset the count to that value.
   strategy:
     type: Recreate           # one GPU: old pod must release it before the new one starts
   selector:
@@ -76,7 +80,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: llama-server
-          image: ghcr.io/ggml-org/llama.cpp:server-cuda   # pin a build tag in real use
+          image: ghcr.io/ggml-org/llama.cpp:server-cuda
           envFrom:
             - configMapRef:
                 name: llm-config
@@ -121,7 +125,7 @@ spec:
             claimName: llm-models
 ```
 
-During the first deploy, the node needs to pull the image and download the model. The 2.6 GB image took about 10 minutes to download. Then, once the container starts, llama-server downloads the model, which took almost another 13 minutes. This is why the startup probe needs a generous budget.
+During the first deploy, the node needs to pull the image and download the model. The 2.6 GB image took about 10 minutes to download. Then, once the container starts, llama-server downloads the model, which took almost another 13 minutes. This is why the startup probe needs a generous budget the first time.
 
 The Deployment is coupled with a Service, which is the interface we use to talk to the pods. The Service gives us a single IP and port, and does basic load balancing across the pods running the LLM. In K3s, a Service of type `LoadBalancer` is exposed on the node's IP, so the API is available on my home network at `192.168.1.149:8080`.
 
@@ -164,9 +168,6 @@ Another interesting setting is `LLAMA_ARG_N_PARALLEL`, which defines how many re
 
 The next part is the horizontal autoscaling. I've set it up to scale up to 2 instances if CPU usage goes over 70% (of the 1 CPU the pod requests). But this is pointless for two reasons.
 
-First, CPU usage is not the right metric to track. A better metric would be GPU memory usage or the number of queued requests. However, out of the box, the HPA only scales on CPU and memory (RAM, not GPU memory). To track these more useful metrics we could use [KEDA](https://keda.sh) instead, but this is out of scope for this project because of the next reason.
-
-Second, I only have one GPU. Even when autoscaling triggers (which it does), the new pod can't start because there are no more GPUs available, so it stays in `Pending`. On the first deploy, the CPU spike from loading the model was enough to trigger it: the HPA scaled to 2 replicas, and scaled back down to 1 six minutes later. I set up the HPA for illustrative purposes, and to check that it does work with these settings.
 
 ```yaml
 apiVersion: autoscaling/v2
@@ -195,7 +196,13 @@ spec:
       stabilizationWindowSeconds: 300   # avoid flapping; model loads are slow
 ```
 
+First, CPU usage is not the right metric to track. A better metric would be GPU memory usage or the number of queued requests. However, out of the box, the HPA only scales on CPU and memory (RAM, not GPU memory). To track these more useful metrics we could use [KEDA](https://keda.sh) instead, but this is out of scope for this project because of the next reason.
+
+Second, I only have one GPU. Even when autoscaling triggers (which it does), the new pod can't start because there are no more GPUs available, so it stays in `Pending`. On the first deploy, the CPU spike from loading the model was enough to trigger it: the HPA scaled to 2 replicas, and scaled back down to 1 six minutes later. I set up the HPA for illustrative purposes, and to check that it does work with these settings.
+
 {{< figure src="k9s_pod_restarts_and_pending_replica.png" alt="k9s showing two llm pods: one running at 100% of its CPU request, and a second replica stuck in Pending" caption="The HPA in action: the running pod is at 100% of its 1 CPU request, so a second replica is created. With no second GPU, it stays in `Pending`." align=center >}}
+
+One thing to note about autoscaling, is that the K,V cache is maintaned at the pod level. If you make a request and it goes to one pod, but the next request goes to a different pod you lose the K,V cache and your next response will be very slow. In the context of coding agents, this is important. There are different methods you can use for this that I won't discuss in this post, such as sticky sessions by IP or session ID, or using a shared cache.
 
 Finally, there's the Secret, which holds the API key needed to call the API. As everyone using Kubernetes knows, secrets are not really secret: the values are only base64 encoded. In a production environment it's better to load your secrets from a secrets vault instead.
 
@@ -237,7 +244,7 @@ The API returns a JSON object that follows the OpenAI API standard. Apart from t
 - `usage`: the prompt and completion tokens. Here 20 tokens in and 708 tokens out.
 - `timings`: a llama.cpp extra with the speed of each step. The model generates at about 80 tokens/second, which it does consistently on every request.
 
-The very first request was slow: a whole minute just to process the prompt. Every request after that processed its prompt in well under a second, so this is a one-off cost after the model loads.
+The very first request suffers from a cold start, usually taking a whole minute just to process the prompt. Every request after that processed its prompt in well under a second, so this is a one-off cost after the model loads.
 
 We can also call the API with streaming, by adding `"stream": true`. This is a much more useful approach, since we don't have to wait for the full answer to be ready. We can read it as it gets generated, as we're already used to from every LLM app out there.
 
@@ -282,7 +289,7 @@ The agent runs the tool, sends the result back in the next request, and the loop
 
 ## Using the model in a coding agent
 
-To make the model useful, I'll use the [Pi](https://pi.dev) coding agent. Pi is an open source coding agent in the same vein as Codex or Claude Code, and because our API follows the OpenAI standard, it can connect to it to handle our coding tasks.
+To make the model useful, I'll use the [Pi](https://pi.dev) coding agent. Pi is an open source coding agent like Codex or Claude Code, and because our API follows the OpenAI standard, it can connect to it to handle our coding tasks.
 
 To make this similar to a real production setup, I install Pi on my laptop rather than on the machine running the model. This is the same as if you deployed the model on EC2 and ran the agent from your local machine.
 
@@ -303,9 +310,7 @@ Once Pi is installed, add the model to `~/.pi/agent/models.json`:
 }
 ```
 
-The `contextWindow` tells Pi when to compact the conversation, so I set it to match the server. `apiKey` is the name of the environment variable that holds the key, so don't forget to set it.
-
-Pi hides providers it can't authenticate with, so if the variable isn't set the model won't show up at all. To make sure it loads automatically, add it to your `~/.bashrc` or `~/.zshrc`:
+The `contextWindow` tells Pi when to compact the conversation, so I set it to match the server. `apiKey` is the name of the environment variable that holds the key, so don't forget to set it. To make sure the env variable loads automatically, add it to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
 export LLM_KEY=...
@@ -333,18 +338,20 @@ When I checked my settings, I found why the context was so small. The total cont
 
 16k tokens sounds like a lot: it's around 12,000 words. But a coding agent burns through it fast. The system prompt and tool definitions go in every request, and so does every file the model reads and every command output. In one session the context doubled from about 6,000 to 12,000 tokens in a few minutes, and the server logs showed all the requests going to slot 0. Slot 1 was never used.
 
+In reality, splitting the context size between n parallel runs is a tradeoff you don't want to make. You want to be able to run n_parallel runs with a shared K,V cache so you can make the most of the context size. To do this, you can set the number of parallel runs and use the `LLAMA_ARG_KV_UNIFIED=True` environment variable.
+
 Qwen3.5 supports up to 262K tokens of context, but because the context is held in memory as the KV cache, I'm limited by the amount of VRAM I have. llama.cpp reserves all the memory it needs when the instance starts, so I can use [nvtop](https://github.com/Syllo/nvtop) to check how much memory the model needs. The memory used is the model size + the KV cache for the full context + some compute buffers. Once it's loaded, it doesn't grow: a longer conversation gets slower, not bigger.
 
 This is nvtop with my initial setup (2 slots, 32,768 tokens of context):
 
 {{< figure src="nvtop_idle_initial_config.png" alt="nvtop with the model loaded and idle: 0% GPU utilisation, 10 W, and llama-server holding 4800 MiB of GPU memory" caption="The initial setup, idle: llama-server holds 4.8 GB of the 6 GB even when nobody is using it, while drawing only 10 W." align=center >}}
 
-Since I'm the only user, I set `LLAMA_ARG_N_PARALLEL` to 1, which gives one slot with the full context size, and matched Pi's context window to it. Pi went from 16k to 33k of context, and the session recovered.
+Since I'm the only user, I set `LLAMA_ARG_N_PARALLEL` to 1, which gives one slot with the full context size, and matched Pi's context window to it. Pi went from 16k to 33k of context, and the session recovered. I can also use `LLAMA_ARG_N_PARALLEL=auto` to automatically enable the shared K,V cache. But I prefer to be explicit.
 
 {{< figure src="pi_after_parallel_1_33k.png" alt="The same Pi session after the change, with the status bar at 36.1% of 33k and the model rewriting the file" caption="The same session after setting `LLAMA_ARG_N_PARALLEL=1`: the context goes from 16k to 33k, and the model gets back to work." align=center >}}
 <!-- TODO: verify. The 33k is Pi's own contextWindow setting. The 10 Nov ConfigMap screenshot shows the cluster still on 2 slots of 16k the next morning, so the recovery may have come from the maxTokens change rather than N_PARALLEL. Adjust the paragraph above if so. -->
 
-However, 32k of context is still small for a coding agent, and my memory usage was already pretty close to the limit. What I did next was store the KV cache in 8 bits (`q8_0`) instead of the default 16 bits (`f16`), and turn on flash attention. This roughly halves the memory per token of context, so I could double the context size to 65,536, and then push it further to 81,920.
+32k of context is still small for a coding agent, and my memory usage was already pretty close to the limit. What I did next was store the KV cache in 8 bits (`q8_0`) instead of the default 16 bits (`f16`), and turn on flash attention. This roughly halves the memory per token of context, so I could double the context size to 65,536, and then push it further to 81,920.
 
 ```bash
 ## Optimising context
@@ -383,7 +390,7 @@ After using the model for some tasks, it feels fine. It is capable of doing most
 
 With one GPU I couldn't really scale anything, but the setup makes it clear what you'd need to think about for a real deployment.
 
-**Concurrency is slots × replicas.** Each pod can serve `N_PARALLEL` requests at once, and anything above that queues. But the context is split between slots, so more users per pod means less context for each of them on the same GPU. For coding agents, which need a lot of context, that pushes you towards fewer slots per GPU and more GPUs.
+**Concurrency is slots x replicas.** Each pod can serve `N_PARALLEL` requests at once, and anything above that queues. But the context is split between slots, so more users per pod means less context for each of them on the same GPU. For coding agents, which need a lot of context, that pushes you towards fewer slots per GPU and more GPUs.
 
 **Scale on queued requests, not CPU.** llama-server already exposes Prometheus metrics at `/metrics`, including how many requests are processing and how many are waiting. That's the signal to autoscale on, with something like KEDA. CPU tells you almost nothing: the only time it spiked on my setup was while loading the model.
 
